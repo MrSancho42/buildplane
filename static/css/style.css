@@ -1,0 +1,420 @@
+/* Обнулення */
+*,*:before,*:after{
+	margin: 0;
+	padding: 0;
+	border: 0;
+	outline: 0;
+	-moz-box-sizing: border-box;
+	-webkit-box-sizing: border-box;
+	box-sizing: border-box;
+	position: relative;
+}
+:focus,:active{outline: none;}
+a:focus,a:active{outline: none;}
+nav,footer,header,aside{display: block;}
+html,body{
+	height: 100%;
+	width: 100%;
+	line-height: 1;
+	font-size: 14px;
+	-ms-text-size-adjust: 100%;
+	-moz-text-size-adjust: 100%;
+	-webkit-text-size-adjust: 100%;
+}
+input,button,textarea{font-family:inherit;}
+input::-ms-clear{display: none;}
+button{cursor: pointer;}
+button::-moz-focus-inner {padding:0;border:0;}
+a, a:visited, a:hover{text-decoration: none;}
+ul li{list-style: none;}
+img{vertical-align: top;}
+h1,h2,h3,h4,h5,h6{font-size:inherit;font-weight: 400;}
+/*--------------------*/
+
+/* Змінні */
+:root{
+	--info: #2f3d5a;
+	--success: #4aad74;
+	--warning: #c79d3c;
+	--danger: #f44336;
+    --light-color: #ffffff;
+    --light-accent-color: #f5f5f5;
+    --main-color: #44a7c8;
+    --dark-accent-color: #889EB7;
+    --dark-color: #303d5a;
+	--font-color: #3c4043;
+	--opacity: #ffffff00;
+    --font: 20px Exo;
+	--shadow-color: #56585856 /* #3c40434d  5658583d*/;
+	--shadow:  4px 0 var(--shadow-color);
+}
+
+/* Шрифт */
+@font-face{
+	font-family: Exo;
+	src: url(Exo.ttf);
+}
+*{
+	font: var(--font);
+	color: var(--font-color);
+}
+
+/* Прямокутний блок що розміщується по центру.
+   Призначений для форм. */
+.center{
+	width: 100%;
+	height: 100%;
+	background-color: var(--main-color);
+}
+.center > div,
+.center > form{
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	background-color: var(--light-color);
+	padding: 40px;
+	border-radius: 15px;
+	box-shadow: 0 2px var(--shadow);
+	position: absolute;
+	left: 50%;
+	top: 50%;
+	transform: translate(-50%, -50%);
+	gap: 25px;
+}
+.center a,
+.form input[type=submit]{
+	background-color: var(--main-color);
+	text-align: center;
+	color: var(--light-color);
+	width: 200px;
+	padding: 15px;
+	box-shadow: 0 0 var(--shadow);
+	border-radius: 27px;
+}
+.center a:hover,
+.form input[type=submit]:hover{
+	transition: transform 0.09s ease-in;
+	transform: scale(1.02);
+}
+
+/* Форми входу та реєстрації */
+.form{
+	align-items: flex-start !important;
+}
+.form label{margin-left: 10px;}
+.form > div{width: 100%;}
+.form > div > label{
+	display: block;
+	width: inherit;
+}
+.form > div > input{
+	position: absolute;
+	right: 10px;
+	bottom: 2px;
+}
+.form input[type=text],
+.form input[type=password]{
+	background-color: var(--light-accent-color);
+	margin-top: -10px;
+	height: 40px;
+	border-radius: 20px;
+	padding: 8px 10px;
+	box-shadow: inset 0 0 var(--shadow);
+	width: 100%;
+}
+.form input[type=submit]{align-self: center;}
+.form span{
+	margin-top: -16px;
+	margin-left: 10px;
+	font-size: 16px;
+	color: var(--danger)
+}
+
+/* Головна сторінка та розміщення елементів на ній */
+.main-wrap{
+	display: grid;
+	grid-template: 'top-bar top-bar'
+					'left-bar  work-area';
+	height: 100%;
+	grid-template-rows: 80px 1fr;
+	grid-template-columns: min-content 1fr;
+}
+
+/* Верхнє меню */
+.top-bar{
+	grid-area: top-bar;
+	display: flex;
+	justify-items: flex-end;
+	align-items: center;
+    height: 100%;
+    width: 100%;
+    background-color: var(--dark-color);
+	box-shadow: 0 2px var(--shadow);
+	padding: 0 20px;
+	z-index: 3;
+	gap: 20px;
+}
+
+/* Логотип на верхньому меню */
+.logo{
+	content: url(../ico/logo.png);
+	height: 50px;
+	padding: 0 7.8px;
+	margin-right: auto;
+}
+
+/* Користувач */
+.user{max-width: 200px;}
+
+/* Ліве меню для команд і груп */
+.left-bar{
+	grid-area: left-bar;
+	display: flex;
+	min-height: 100%;
+	width: min-content;
+	overflow: hidden;
+	min-width: 40px;
+	background-color: var(--main-color);
+	z-index: 2;
+}
+.left-bar > div{
+    display: flex;
+	flex-direction: column;
+	max-height: 100%;
+    width: 400px;
+    background-color: var(--light-color);
+	box-shadow: 2px 0 var(--shadow);
+	padding: 46px 25px 20px;
+	gap: 20px;
+	margin-right: 15px;
+	overflow-x: hidden;
+	overflow-y: auto;
+}
+
+/* Кнопочка що згортає ліве меню */
+#left-bar__minimize{display: none;}
+#left-bar__minimize ~ label{
+	content: url(../ico/close.svg);
+	position: absolute;
+	height: 34px;
+	padding: 8px;
+	border-radius: 50%;
+	top: 10px;
+	right: 40px;
+	z-index: 2;
+	background-color: var(--light-color);
+	box-shadow: 0 0 var(--shadow);
+	cursor: pointer;
+}
+#left-bar__minimize ~ label:hover{
+	background-color: var(--dark-accent-color);
+	transition: background-color 0.1s ease-in;
+}
+#left-bar__minimize:checked ~ div{
+	width: 0;
+	padding: 0;
+	overflow: hidden;
+}
+#left-bar__minimize:checked ~ label{
+	content: url(../ico/arrow-right.svg);
+	right: 0;
+}
+
+/* Кнопка для створення команд */
+.left-bar__add-button{
+	position: sticky;
+	min-height: 60px;
+	align-self: flex-end;
+	overflow: visible;
+	margin-top: auto;
+	bottom: 0;
+}
+
+/* Стандартні кнопки для меню */
+.bar__item{
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	white-space: nowrap;
+	width: 100%;
+	height: 60px;
+	border-radius: 30px;
+	padding: 0 20px;
+	background-color: var(--light-color);
+	box-shadow: 0 0 var(--shadow);
+}
+.bar__item:hover,
+.add-button:hover{
+	transition: transform 0.09s ease-in;
+	transform: scale(1.02);
+}
+.bar__item > a:nth-child(1){
+	display: flex;
+	align-items: center;
+	overflow: hidden;
+	height: inherit;
+	width: 100%;
+}
+.bar__item span{
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+.bar__item > a:nth-child(2){
+	content: url(../ico/seting.svg);
+	height: inherit;
+	padding: 16px 18px;
+	margin-right: -20px;
+	opacity: 1;
+}
+.bar__item > a:nth-child(2):hover{opacity: 0.6;}
+
+/* Стандартні кнопки які приймають найменший розмір */
+.bar__item_small{width: min-content !important;}
+
+/* Кнопка з плюсиком */
+.add-button{
+	display: flex;
+	align-items: center;
+	border-radius: 30px;
+	height: 60px;
+	background-color: var(--light-color);
+	box-shadow: 0 0 var(--shadow);
+}
+.add-button > span:first-child{padding-left: 20px;}
+.add-button > span:last-child{
+	content: url(../ico/plus.svg);
+	height: inherit;
+	padding: 15px;
+}
+
+/* Кнопка з плюсиком яка згортається */
+.add-button_minimize > span:first-child{
+	max-width: 0px;
+	overflow: hidden;
+	padding: 0;
+}
+.add-button_minimize:hover > span:first-child{
+	max-width: 100%;
+	padding-left: 20px;
+}
+
+/* Основна область */
+.work-area{
+	display: flex;
+	min-height: 400px;
+	flex-direction: column;
+	grid-area: work-area;
+	overflow: hidden;
+	padding-top: 20px;
+	gap: 20px;
+	background-color: var(--main-color);
+}
+.work-area > div{
+	display: flex;
+	gap: 20px;
+	padding: 0 20px 0 5px;
+}
+
+/* Меню основної області */
+.work-area__bar{
+	height: 60px;
+	align-items: center;
+	position: sticky;
+	right: 0;
+}
+.work-area__bar .bar__item{
+	justify-content: center;
+	text-align: center;
+	height: 40px;
+	min-width: 140px;
+}
+.work-area__bar > *:first-child{
+	height: 60px;
+	margin-right: auto;
+}
+
+/* Дошка із завданнями та подіями */
+.work-area__board{
+	display: flex;
+	padding-bottom: 10px !important;
+	overflow-y: hidden;
+	overflow-x: auto;
+}
+
+/* Колонки із завданнями */
+.coll{
+	display: flex;
+	height: min-content;
+	max-height: 100%;
+	flex-direction: column;
+	background-color: var(--light-accent-color);
+	box-shadow: 0 0 var(--shadow);
+	min-width: 300px;
+	flex: 1 0 0;
+	border-radius: 8px;
+	overflow: hidden;
+}
+.coll > span{padding: 10px 25px 10px 10px;}
+.coll > div{
+	width: 100%;
+	display: flex;
+	flex-direction: column;
+	overflow-x: hidden;
+	overflow-y: auto;
+	gap: 20px;
+	padding: 5px 10px;
+}
+.coll > div > div:last-child{
+	margin-top: -20px;
+	min-height: 10px;
+}
+
+/* Блок завдання */
+.task{
+	display: block;
+	background-color: var(--light-color);
+	box-shadow: 0 0 var(--shadow);
+	width: 100%;
+	border-radius: 10px;
+	padding: 10px;
+}
+.task:hover{
+	transition: transform 0.09s ease-in;
+	transform: scale(1.01);
+}
+.task > a{
+	display: block;
+	height: 100%;
+	width: inherit;
+	user-select: none;
+	z-index: 1;
+}
+.task p:first-of-type{margin-bottom: 10px;}
+.task p:not(:first-of-type){font-size: 18px;}
+.task__doc{
+	content: url(../ico/document-clip.svg);
+	float: right;
+	height: 34px;
+}
+.task__submit{
+	position: absolute;
+	height: 38px !important;
+	width: 38px !important;
+	border-radius: 50%;
+	border: 1px solid var(--shadow-color);
+	box-shadow: 0 0 var(--shadow);
+	bottom: 10px;
+	right: 10px;
+	padding: 6px;
+	z-index: 2;
+}
+.task__submit:hover{
+	transition: transform 0.09s ease-in;
+	transform: scale(1.05);
+}
+.task__submit_done{
+	content: url(../ico/check.svg);
+	background-color: var(--success);
+}
+.task__submit_done:hover{background-color: var(--warning);}

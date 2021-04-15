@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block content %}
+	<div class="center">
+		<form action="", method="POST" class="form">
+			<img src="../static/ico/logo.png" alt="">
+
+			{{ form.hidden_tag() }}
+
+			{% for field in form if field.name not in ['csrf_token', 'submit'] %}
+				{{ field.label() }} {{ field() }}
+				{% if field.errors %}
+					<span class="error">
+						{% for error in field.errors %}
+							{{ error }}
+						{% endfor %}
+					</span>
+				{% endif %}
+			{% endfor %}
+
+			{% for message in get_flashed_messages() %}
+				<span class="error">{{ message }}</span>
+			{% endfor %}
+			
+			{{ form.submit(class="button") }}
+		</form>
+	</div>
+{% endblock %}

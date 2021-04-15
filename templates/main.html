@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% block content %}
+	<div class="center">
+		<div>
+			<img src="../static/ico/logo.png" alt="">
+			<a href="{{ url_for('registration') }}" class="button">Зареєструватися</a>
+			<a href="{{ url_for('login') }}" class="button">Увійти</a>
+		</div>
+	</div>
+{% endblock %}
