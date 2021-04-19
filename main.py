@@ -76,6 +76,13 @@ def registration():
 			
 	return render_template('registration.html', form=form)
 
+@app.route('/add_command', methods=["POST", "GET"])
+def add_command():
+	form = wtf.add_command_form()
+
+	if form.validate_on_submit():
+		print("pidar")
+	return render_template('add_command.html', form=form)
 
 if __name__ == '__main__':
 	app.run(host=config.HOST, debug=config.DEBUG)

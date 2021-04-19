@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="stylesheet" href="../static/css/style.css">
+	<title>Planer</title>
+</head>
+<body>
+	<div class="main-wrap">
+		<div class="top-bar">
+			<div class="logo"></div>
+			<a href="" class="bar__item user">
+				<span>Возний Олександр</span>
+			</a>
+		</div>
+		<div class="left-bar">
+			<input type="checkbox" id="left-bar__minimize">
+			<div>
+				<div class="bar__item">
+					<a href="">
+						<span>Налаштування 1</span>
+					</a>
+				</div>
+				<div class="bar__item">
+					<a href="">
+						<span>Налаштування 2</span>
+					</a>
+				</div>
+			</div>
+			<label for="left-bar__minimize"></label>
+		</div>
+        <div class="work-area">
+
+            {{ form.hidden_tag() }}
+
+            {% for field in form if field.name not in ['csrf_token', 'submit'] %}
+            {{ field.label() }} {{ field() }}
+            {% if field.errors %}
+                <span class="error">
+                    {% for error in field.errors %}
+                        {{ error }}
+                    {% endfor %}
+                </span>
+            {% endif %}
+            {% endfor %}
+            
+            {{ form.submit(class="button") }}
+
+        </div>
+        
+    </div>
+</body>
+</html>

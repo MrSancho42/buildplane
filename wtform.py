@@ -41,3 +41,7 @@ class reg_form(FlaskForm):
 						DataRequired(message='Заповніть це поле'),
 						EqualTo('psw', message='Паролі не співпадають')])
 	submit = SubmitField('Зареєструватися')
+
+class add_command_form(FlaskForm):
+	name = StringField("Назва команди", validators=[DataRequired(message='Заповніть це поле')])
+	submit = SubmitField('Створити команду')
