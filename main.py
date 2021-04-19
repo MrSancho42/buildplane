@@ -5,12 +5,21 @@ from datetime import timedelta
 import config
 from db_work import db_work
 import wtform as wtf
+from os import path
 
 
 """
 Головний скрипт додатку.
 Обробляє всі запити.
 """
+
+def get_path(f):
+	"""
+	Приймає шлях до файлу.
+	Повертає повний нормалізований шлях до нього,
+	відштовхуючись від місця запуску коду.
+	"""
+	return path.normcase(path.dirname(path.abspath(__file__)) + f)
 
 
 app = Flask(__name__)
@@ -22,7 +31,7 @@ db = None
 @app.before_request
 def before_request():
 	if not hasattr(g, 'link_db'):
-		g.link_db = sqlite3.connect(config.DATABASE)
+		g.link_db = sqlite3.connect(get_path(config.DATABASE))
 		g.link_db.row_factory = sqlite3.Row
 	global db
 	db = db_work(g.link_db.cursor(), session)
