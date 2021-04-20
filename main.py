@@ -66,8 +66,8 @@ def login():
 		res = db.login(form.login.data, form.psw.data)
 		if res['status']:
 			session.permanent = form.remember.data
-			session['user'] = res['id']
-			return redirect(url_for('main'))
+			session['user'] = res['user']
+			return redirect(url_for('home'))
 
 		flash(res['message'])
 			
@@ -85,6 +85,14 @@ def registration():
 		flash('Такий логін уже існує')
 			
 	return render_template('registration.html', form=form)
+
+
+@app.route('/home/task')
+def home():
+	"""
+	Головна сторінка користувача
+	"""
+	return render_template('work_space.html', user=session['user'])
 
 
 if __name__ == '__main__':
