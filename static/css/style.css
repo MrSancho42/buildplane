@@ -133,29 +133,6 @@ h1,h2,h3,h4,h5,h6{font-size:inherit;font-weight: 400;}
 /* Стилі форм на сторінках налаштувань */
 .form-settings {
 	flex-direction: column;
-	align-items: center;
-	width: 600px;
-}
-
-.form-settings__block {
-	display: flex;
-	flex-direction: column;
-	width: 500px;
-	background-color: var(--light-color);
-	height: auto;
-	padding: 25px;
-	border-radius: 20px;
-}
-
-.form-settings__title-block {
-	background-color: var(--light-color);
-	padding: 17px;
-	border-radius: 20px;
-	/*align-self: flex-start;*/
-}
-
-.form-settings label{
-	padding-bottom: 10px;
 }
 
 .form-settings input[type=text] {
@@ -163,15 +140,19 @@ h1,h2,h3,h4,h5,h6{font-size:inherit;font-weight: 400;}
 	height: 40px;
 	border-radius: 20px;
 	box-shadow: inset 0 0 var(--shadow);
-	width: 100%;
+	width: 600px;
 }
 
-.form-settings input[type=submit]{
+.form-settings input[type=submit] {
 	height: 50px;
 	width: 140px;
 	border-radius: 10px;
-	align-self: center;
 }
+
+.setting {
+	background-color: var(--light-color) !important;
+}
+
 /* Головна сторінка та розміщення елементів на ній */
 .main-wrap{
 	display: grid;

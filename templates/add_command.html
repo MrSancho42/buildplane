@@ -1,55 +1,41 @@
-{% extends "base.html" %}
-{% block content %}
-<body>
-	<div class="main-wrap">
-		<div class="top-bar">
-			<div class="logo"></div>
-			<a href="" class="bar__item user">
-				<span>Возний Олександр</span>
-			</a>
-		</div>
-		<div class="left-bar">
-			<input type="checkbox" id="left-bar__minimize">
-			<div>
-				<div class="bar__item">
-					<a href="">
-						<span>Налаштування 1</span>
-					</a>
-				</div>
-				<div class="bar__item">
-					<a href="">
-						<span>Налаштування 2</span>
-					</a>
-				</div>
-			</div>
-			<label for="left-bar__minimize"></label>
-		</div>
-        <div class="work-area">
-            <div class="form-settings">
-				<div class="form-settings__title-block">Створити нову команду:</div>
-                {{ form.hidden_tag() }}
+{% extends "work_space.html" %}
 
-                {% for field in form if field.name not in ['csrf_token', 'submit'] %}
-                    <div class="form-settings__block">{{ field.label() }} {{ field() }}</div>
+{% block left_bar %}
+	<div class="bar__item">
+		<a href="">
+			<span>Налаштування 1</span>
+		</a>
+	</div>
+	<div class="bar__item">
+		<a href="">
+			<span>Налаштування 2</span>
+		</a>
+	</div>
+{% endblock %}
 
-                    {% if field.errors %}
-                        <span class="error">
-                            {% for error in field.errors %}
-                                {{ error }}
-                            {% endfor %}
-                        </span>
-                    {% endif %}
-                {% endfor %}
+{% block work_area %}
 
-                {% for message in get_flashed_messages() %}
-				    <span class="error">{{ message }}</span>
-			    {% endfor %}
+	<div class="form-settings">
+		Створити нову команду:
+		{{ form.hidden_tag() }}
 
-                {{ form.submit(class="button") }}
-            </div>
-        </div>
-        
-    </div>
-</body>
-</html>
+		{% for field in form if field.name not in ['csrf_token', 'submit'] %}
+			{{ field.label() }} {{ field() }}
+
+			{% if field.errors %}
+				<span class="error">
+					{% for error in field.errors %}
+						{{ error }}
+					{% endfor %}
+				</span>
+			{% endif %}
+		{% endfor %}
+
+		{% for message in get_flashed_messages() %}
+			<span class="error">{{ message }}</span>
+		{% endfor %}
+
+		{{ form.submit(class="button") }}
+	</div>
+
 {% endblock %}
