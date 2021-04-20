@@ -5,7 +5,7 @@ from datetime import timedelta
 import config
 from db_work import db_work
 import wtform as wtf
-from os import path
+from os.path import normcase, dirname, abspath
 
 
 """
@@ -13,13 +13,14 @@ from os import path
 Обробляє всі запити.
 """
 
+
 def get_path(f):
 	"""
 	Приймає шлях до файлу.
 	Повертає повний нормалізований шлях до нього,
 	відштовхуючись від місця запуску коду.
 	"""
-	return path.normcase(path.dirname(path.abspath(__file__)) + f)
+	return normcase(dirname(abspath(__file__)) + f)
 
 
 app = Flask(__name__)
