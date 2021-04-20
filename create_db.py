@@ -1,5 +1,5 @@
 import sqlite3
-from os import path
+from os import path, remove
 from os.path import exists
 import config
 
@@ -16,18 +16,28 @@ def get_path(f):
 	"""
 	return path.normcase(path.dirname(path.abspath(__file__)) + f)
 
-def create_db():
+
+def execute_script(path_to_file):
 	db = sqlite3.connect(get_path(config.DATABASE))
-	with open(get_path(config.SHEMA), 'r') as shema:
-		db.cursor().executescript(shema.read())
+
+	with open(get_path(path_to_file), 'r') as file_sql:
+		db.cursor().executescript(file_sql.read())
+	
 	db.commit()
 	db.close()
 
 
 if __name__ == '__main__':
-	if exists(config.DATABASE):
-		if input('База даних уже існує. Створити нову? (т/Н) ') == 'т':
-			create_db()
+	if exists(get_path(config.DATABASE)):
+		if input('База даних уже існує. Створити нову? (т/Н) ') == 'т' or 'Т':
+			remove(get_path(config.DATABASE))
+			execute_script(config.SHEMA)
 	else:
-		if input('Створити нову базу даних? (Т/н) ') != 'н':
-			create_db()
+		if input('Створити нову базу даних? (Т/н) ') != 'н' or 'Н':
+			execute_script(config.SHEMA)
+
+	if input('Імпортувати дані із "data.sql"? (Т/н) ') != 'н' or 'Н':
+		execute_script(config.DB_DATA)
+	
+	if input('Створити представлення із "views.sql" (Т/н) ') != 'н' or 'Н':
+		execute_script(config.VIEWS)
