@@ -5,12 +5,22 @@ from datetime import timedelta
 import config
 from db_work import db_work
 import wtform as wtf
+from os.path import normcase, dirname, abspath
 
 
 """
 Головний скрипт додатку.
 Обробляє всі запити.
 """
+
+
+def get_path(f):
+	"""
+	Приймає шлях до файлу.
+	Повертає повний нормалізований шлях до нього,
+	відштовхуючись від місця запуску коду.
+	"""
+	return normcase(dirname(abspath(__file__)) + f)
 
 
 app = Flask(__name__)
@@ -22,7 +32,7 @@ db = None
 @app.before_request
 def before_request():
 	if not hasattr(g, 'link_db'):
-		g.link_db = sqlite3.connect(config.DATABASE)
+		g.link_db = sqlite3.connect(get_path(config.DATABASE))
 		g.link_db.row_factory = sqlite3.Row
 	global db
 	db = db_work(g.link_db.cursor(), session)
@@ -56,8 +66,8 @@ def login():
 		res = db.login(form.login.data, form.psw.data)
 		if res['status']:
 			session.permanent = form.remember.data
-			session['user'] = res['id']
-			return redirect(url_for('main'))
+			session['user'] = res['user']
+			return redirect(url_for('home'))
 
 		flash(res['message'])
 			
@@ -83,6 +93,14 @@ def add_command():
 	if form.validate_on_submit():
 		print("pidar")
 	return render_template('add_command.html', form=form)
+
+@app.route('/home/task')
+def home():
+	"""
+	Головна сторінка користувача
+	"""
+	return render_template('work_space.html', user=session['user'])
+
 
 if __name__ == '__main__':
 	app.run(host=config.HOST, debug=config.DEBUG)

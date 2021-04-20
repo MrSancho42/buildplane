@@ -15,7 +15,7 @@ class login_form(FlaskForm):
 						validators=[Length(min=3, max=64,
 										message='Логін повинен бути від 3 до 64 символів'),
 						DataRequired(message='Заповніть це поле'),
-						Regexp('[0-9a-zA-Z]', message='Заборогнені символи')])
+						Regexp('[0-9a-zA-Z]', message='Заборонені символи')])
 	psw = PasswordField('Пароль',
 						validators=[Length(min=3, max=64,
 										message='Пароль повинен бути від 3 до 64 символів'),
@@ -29,7 +29,7 @@ class reg_form(FlaskForm):
 						validators=[Length(min=3, max=64,
 										message='Логін повинен бути від 3 до 64 символів'),
 						DataRequired(message='Заповніть це поле'),
-						Regexp('[0-9a-zA-Z]', message='Заборогнені символи')])
+						Regexp('[0-9a-zA-Z]', message='Заборонені символи')])
 	name = StringField('Ім\'я', validators=[DataRequired(message='Заповніть це поле')])
 	psw = PasswordField('Пароль',
 						validators=[Length(min=3, max=64,

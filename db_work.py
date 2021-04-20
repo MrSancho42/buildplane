@@ -29,7 +29,10 @@ class db_work():
 		try:
 			res = self.__cur.execute(f'SELECT * FROM users WHERE login = "{login}"').fetchone()
 			if res['password'] == self.hash(password):
-				return {'status': True, 'id': res['user_id']}
+				user = self.__cur.execute(f'''SELECT *
+											FROM v_users
+											WHERE user_id = "{res['user_id']}"''').fetchone()
+				return {'status': True, 'user': dict(user)}
 			
 			return {'status': False, 'message': 'Неправильний пароль'}
 

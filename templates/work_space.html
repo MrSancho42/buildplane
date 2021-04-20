@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block content %}
+	<div class="main-wrap">
+		<div class="top-bar">
+			<div class="logo"></div>
+			{% block top_bar %}
+			{% endblock %}
+			<a href="" class="bar__item user">
+				<span>{{ user.name }}</span>
+			</a>
+		</div>
+		<div class="left-bar {{ setting }}">
+			<input type="checkbox" id="left-bar__minimize">
+			<div>
+				{% block left_bar %}
+				{% endblock %}
+			</div>
+			<label for="left-bar__minimize"></label>
+		</div>
+		<div class="work-area {{ setting }}">
+			{% block work_area %}
+			{% endblock %}
+		</div>
+	</div>
+{% endblock %}
