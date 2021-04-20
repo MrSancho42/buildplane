@@ -1,12 +1,5 @@
-<!DOCTYPE html>
-<html>
-<head>
-	<meta charset="UTF-8">
-	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<link rel="stylesheet" href="../static/css/style.css">
-	<title>Planer</title>
-</head>
+{% extends "base.html" %}
+{% block content %}
 <body>
 	<div class="main-wrap">
 		<div class="top-bar">
@@ -32,24 +25,31 @@
 			<label for="left-bar__minimize"></label>
 		</div>
         <div class="work-area">
+            <div class="form-settings">
+				<div class="form-settings__title-block">Створити нову команду:</div>
+                {{ form.hidden_tag() }}
 
-            {{ form.hidden_tag() }}
+                {% for field in form if field.name not in ['csrf_token', 'submit'] %}
+                    <div class="form-settings__block">{{ field.label() }} {{ field() }}</div>
 
-            {% for field in form if field.name not in ['csrf_token', 'submit'] %}
-            {{ field.label() }} {{ field() }}
-            {% if field.errors %}
-                <span class="error">
-                    {% for error in field.errors %}
-                        {{ error }}
-                    {% endfor %}
-                </span>
-            {% endif %}
-            {% endfor %}
-            
-            {{ form.submit(class="button") }}
+                    {% if field.errors %}
+                        <span class="error">
+                            {% for error in field.errors %}
+                                {{ error }}
+                            {% endfor %}
+                        </span>
+                    {% endif %}
+                {% endfor %}
 
+                {% for message in get_flashed_messages() %}
+				    <span class="error">{{ message }}</span>
+			    {% endfor %}
+
+                {{ form.submit(class="button") }}
+            </div>
         </div>
         
     </div>
 </body>
 </html>
+{% endblock %}
