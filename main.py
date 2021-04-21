@@ -92,8 +92,7 @@ def add_command():
 
 	if form.validate_on_submit():
 		print("pidar")
-	return render_template(
-		'add_command.html', form=form, user=session['user'], setting="setting")
+	return render_template('add_command.html', form=form, user=session['user'])
 
 @app.route('/home/task')
 def home():

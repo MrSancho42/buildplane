@@ -43,7 +43,7 @@ class reg_form(FlaskForm):
 	submit = SubmitField('Зареєструватися')
 
 class add_command_form(FlaskForm):
-	name = StringField("Назва команди", validators=[DataRequired(message='Заповніть це поле')])
-	name1 = StringField("Фігнюшка для тесту 1", validators=[DataRequired(message='Заповніть це поле')])
-	name2 = StringField("Фігнюшка для тесту 2", validators=[DataRequired(message='Заповніть це поле')])
+	name = StringField("НАЗВА:", validators=[DataRequired(message='Заповніть це поле')])
+	name1 = StringField("ФІГНЮШКА 1:", validators=[DataRequired(message='Заповніть це поле')])
+	name2 = StringField("ФІГНЮШКА 2:", validators=[DataRequired(message='Заповніть це поле')])
 	submit = SubmitField('Підтвердити')

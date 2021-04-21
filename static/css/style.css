@@ -47,6 +47,8 @@ h1,h2,h3,h4,h5,h6{font-size:inherit;font-weight: 400;}
 	--font: 20px Exo;
 	--shadow-color: #56585856 /* #3c40434d  5658583d*/;
 	--shadow:  4px 0 var(--shadow-color);
+	--settings-label-color: #696969;
+	--settings-submit-color: #d2e1e2;
 }
 
 /* Шрифт */
@@ -133,20 +135,37 @@ h1,h2,h3,h4,h5,h6{font-size:inherit;font-weight: 400;}
 /* Стилі форм на сторінках налаштувань */
 .form-settings {
 	flex-direction: column;
+	gap: 5px !important;
+	margin-left: 50px;
 }
 
 .form-settings input[type=text] {
 	background-color: var(--light-accent-color);
 	height: 40px;
+	/*width: 550px;*/
+	padding-left: 7px;
+	margin-bottom: 20px;
 	border-radius: 20px;
 	box-shadow: inset 0 0 var(--shadow);
-	width: 600px;
 }
 
 .form-settings input[type=submit] {
+	background-color: var(--settings-submit-color);
 	height: 50px;
 	width: 140px;
+	margin-left: 20px;
 	border-radius: 10px;
+}
+
+.form-settings input[type=submit]:hover{
+	transition: transform 0.09s ease-in;
+	transform: scale(1.02);
+	cursor: pointer;
+}
+
+.form-settings label {
+	padding-left: 30px;
+	color: var(--settings-label-color);
 }
 
 .setting {

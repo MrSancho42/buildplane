@@ -1,22 +1,8 @@
-{% extends "work_space.html" %}
-
-{% block left_bar %}
-	<div class="bar__item">
-		<a href="">
-			<span>Налаштування 1</span>
-		</a>
-	</div>
-	<div class="bar__item">
-		<a href="">
-			<span>Налаштування 2</span>
-		</a>
-	</div>
-{% endblock %}
+{% extends "settings.html" %}
 
 {% block work_area %}
 
 	<div class="form-settings">
-		Створити нову команду:
 		{{ form.hidden_tag() }}
 
 		{% for field in form if field.name not in ['csrf_token', 'submit'] %}
