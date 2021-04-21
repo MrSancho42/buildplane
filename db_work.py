@@ -54,7 +54,20 @@ class db_work():
 								ON commands_user.command_id = v_command.command_id
 								WHERE commands_user.user_id = "{self.__session['user']['user_id']}"''').fetchall()
 		return [dict(i) for i in res]
+	
 
+	def get_cols(self, element):
+		res = self.__cur.execute(f'''SELECT cols_order
+									FROM v_{element}_cols
+									WHERE {element}_id = {self.__session['user']['user_id']}''').fetchone()
+		res = list(res['cols_order'].split(','))
+
+		cols_order = []
+		for col in res:
+			cols_order.append(self.__cur.execute(f'SELECT * FROM cols WHERE col_id = {col}').fetchone())
+
+		return cols_order
+		
 
 if __name__ == '__main__':
 	print(db_work.hash(input('Введіть значення для хешування: ')))

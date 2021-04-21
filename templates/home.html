@@ -18,5 +18,23 @@
 {% endblock %}
 
 {% block work_area %}
-
+	<div class="work-area__bar">
+		<a href="" class="add-button">
+			<span>Нове завдання</span>
+			<span></span>
+		</a>
+		<a href="" class="bar__item bar__item_small">
+			Події
+		</a>
+	</div>
+	<div class="work-area__board">
+		{% for col in cols %}
+			<div class="coll" data-coll="{{ col.col_id }}">
+				<span>{{ col.name }}</span>
+				<div>
+					<div></div>
+				</div>
+			</div>
+		{% endfor %}
+	</div>
 {% endblock %}
