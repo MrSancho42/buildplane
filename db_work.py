@@ -45,7 +45,15 @@ class db_work():
 			return False
 
 		self.__cur.execute('INSERT INTO users VALUES(NULL, ?, ?, ?, NULL)', (login, self.hash(password), name))
-		return True		
+		return True
+
+	
+	def get_commands(self):
+		res = self.__cur.execute(f'''SELECT v_command.command_id, v_command.name, v_command.owner_id FROM v_command
+								INNER JOIN commands_user
+								ON commands_user.command_id = v_command.command_id
+								WHERE commands_user.user_id = "{self.__session['user']['user_id']}"''').fetchall()
+		return [dict(i) for i in res]
 
 
 if __name__ == '__main__':

@@ -101,7 +101,17 @@ def home():
 	"""
 	Головна сторінка користувача
 	"""
-	return render_template('work_space.html', user=session['user'])
+	if 'commands' not in session:
+		commands = db.get_commands()
+		for i in commands:
+			i['ownership'] = i['owner_id'] == session['user']['user_id']
+			i.pop('owner_id')
+
+		session['commands'] = commands
+
+	return render_template('home.html',
+							user=session['user'],
+							commands=session['commands'])
 
 
 if __name__ == '__main__':
