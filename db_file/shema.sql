@@ -68,8 +68,7 @@ CREATE TABLE IF NOT EXISTS "groups_user" (
 /* Kanban-колонки */
 CREATE TABLE IF NOT EXISTS "cols" (
 	"col_id" INTEGER PRIMARY KEY AUTOINCREMENT,
-	"name"   TEXT NOT NULL,
-	"number" INTEGER NOT NULL
+	"name"   TEXT NOT NULL
 );
 
 

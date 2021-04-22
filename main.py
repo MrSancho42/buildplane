@@ -31,6 +31,10 @@ app.permanent_session_lifetime = timedelta(days=60)
 db = None
 @app.before_request
 def before_request():
+	exceptions = ['/', '/login', '/registration']
+	if 'user' not in session and request.path not in exceptions:
+		return redirect(url_for('login'))
+
 	if not hasattr(g, 'link_db'):
 		g.link_db = sqlite3.connect(get_path(config.DATABASE))
 		g.link_db.row_factory = sqlite3.Row
@@ -63,6 +67,11 @@ def login():
 	form = wtf.login_form()
 
 	if form.validate_on_submit():
+		keys = [key for key in session if key != 'csrf_token']
+		for key in keys:
+			session.pop(key)
+		print(session)
+
 		res = db.login(form.login.data, form.psw.data)
 		if res['status']:
 			session.permanent = form.remember.data
@@ -101,7 +110,17 @@ def home():
 	"""
 	Головна сторінка користувача
 	"""
-	return render_template('work_space.html', user=session['user'])
+	if 'commands' not in session:
+		commands = db.get_commands()
+		for i in commands:
+			i['ownership'] = i['owner_id'] == session['user']['user_id']
+			i.pop('owner_id')
+
+		session['commands'] = commands
+
+	return render_template('home.html',
+							user=session['user'],
+							commands=session['commands'])
 
 
 if __name__ == '__main__':

@@ -1,0 +1,22 @@
+{% extends "work_space.html" %}
+
+{% block top_bar %}
+
+{% endblock %}
+
+{% block left_bar %}
+	{% for item in commands %}
+		<div class="bar__item">
+			<a href="">
+				<span>{{ item.name }}</span>
+			</a>
+			{% if item.ownership %}	
+				<a href=""></a>
+			{% endif %}
+		</div>
+	{% endfor %}
+{% endblock %}
+
+{% block work_area %}
+
+{% endblock %}
