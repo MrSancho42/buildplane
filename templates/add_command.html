@@ -7,7 +7,7 @@
 			{{ field.label() }} {{ field() }}
 
 			{% if field.errors %}
-				<span class="error">
+				<span>
 					{% for error in field.errors %}
 						{{ error }}
 					{% endfor %}
@@ -16,7 +16,7 @@
 		{% endfor %}
 
 		{% for message in get_flashed_messages() %}
-			<span class="error">{{ message }}</span>
+			<span>{{ message }}</span>
 		{% endfor %}
 
 		{{ form.submit(class="button") }}
