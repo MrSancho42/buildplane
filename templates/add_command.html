@@ -1,24 +1,24 @@
 {% extends "setting.html" %}
 
 {% block work_area %}
-	{{ form.hidden_tag() }}
+	<form action="", method="POST" class="form-settings">
+		{{ form.hidden_tag() }}
+		{% for field in form if field.name not in ['csrf_token', 'submit'] %}
+			{{ field.label() }} {{ field() }}
 
-	{% for field in form if field.name not in ['csrf_token', 'submit'] %}
-		{{ field.label() }} {{ field() }}
+			{% if field.errors %}
+				<span class="error">
+					{% for error in field.errors %}
+						{{ error }}
+					{% endfor %}
+				</span>
+			{% endif %}
+		{% endfor %}
 
-		{% if field.errors %}
-			<span class="error">
-				{% for error in field.errors %}
-					{{ error }}
-				{% endfor %}
-			</span>
-		{% endif %}
-	{% endfor %}
+		{% for message in get_flashed_messages() %}
+			<span class="error">{{ message }}</span>
+		{% endfor %}
 
-	{% for message in get_flashed_messages() %}
-		<span class="error">{{ message }}</span>
-	{% endfor %}
-
-	{{ form.submit(class="button") }}
-
+		{{ form.submit(class="button") }}
+	</form>
 {% endblock %}

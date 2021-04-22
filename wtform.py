@@ -44,6 +44,4 @@ class reg_form(FlaskForm):
 
 class add_command_form(FlaskForm):
 	name = StringField("НАЗВА:", validators=[DataRequired(message='Заповніть це поле')])
-	name1 = StringField("ФІГНЮШКА 1:", validators=[DataRequired(message='Заповніть це поле')])
-	name2 = StringField("ФІГНЮШКА 2:", validators=[DataRequired(message='Заповніть це поле')])
 	submit = SubmitField('Підтвердити')
