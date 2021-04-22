@@ -136,9 +136,9 @@ h1,h2,h3,h4,h5,h6{font-size:inherit;font-weight: 400;}
 .form-settings {
 	align-self: center;
 	flex-direction: column;
-	width: 1000px;
+	max-width: 1000px;
+	width: 100%;                            
 	gap: 5px !important;
-	/*margin-left: 50px;*/
 }
 
 .form-settings input[type=text] {
@@ -156,7 +156,6 @@ h1,h2,h3,h4,h5,h6{font-size:inherit;font-weight: 400;}
 	align-self: center;
 	height: 50px;
 	width: 140px;
-	/*margin-left: 20px;*/
 	border-radius: 10px;
 }
 
