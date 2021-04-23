@@ -67,7 +67,22 @@ class db_work():
 			cols_order.append(self.__cur.execute(f'SELECT * FROM cols WHERE col_id = {col}').fetchone())
 
 		return cols_order
-		
+
+
+	def get_user_tasks(self):
+		cols = self.get_cols('user')
+
+		cols = [dict(col) for col in cols]
+
+		for col in cols:
+			res = self.__cur.execute(f'''SELECT *
+										FROM v_personal_tasks
+										WHERE col_id = {col['col_id']}''').fetchall()
+			col['tasks'] = res
+			
+		return cols
+			
+
 
 if __name__ == '__main__':
 	print(db_work.hash(input('Введіть значення для хешування: ')))

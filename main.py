@@ -109,7 +109,7 @@ def home():
 
 		session['commands'] = commands
 	
-	cols = db.get_cols('user')
+	cols = db.get_user_tasks()
 	return render_template('home.html',
 							user=session['user'],
 							commands=session['commands'],
