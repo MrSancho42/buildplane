@@ -56,21 +56,28 @@ class db_work():
 		return [dict(i) for i in res]
 	
 
-	def get_cols(self, element):
-		res = self.__cur.execute(f'''SELECT cols_order
-									FROM v_{element}_cols
-									WHERE {element}_id = {self.__session['user']['user_id']}''').fetchone()
-		res = list(res['cols_order'].split(','))
+	def get_cols(self, element, element_id):
+		try:
+			res = self.__cur.execute(f'''SELECT cols_order
+										FROM v_{element}_cols
+										WHERE {element}_id = {element_id}''').fetchone()
+			res = list(res['cols_order'].split(','))
 
-		cols_order = []
-		for col in res:
-			cols_order.append(self.__cur.execute(f'SELECT * FROM cols WHERE col_id = {col}').fetchone())
+			cols_order = []
+			for col in res:
+				cols_order.append(self.__cur.execute(f'SELECT * FROM cols WHERE col_id = {col}').fetchone())
 
-		return cols_order
+			return cols_order
+
+		except AttributeError:
+			return False
 
 
 	def get_user_tasks(self):
-		cols = self.get_cols('user')
+		cols = self.get_cols('user', self.__session['user']['user_id'])
+
+		if not cols:
+			return False
 
 		cols = [dict(col) for col in cols]
 

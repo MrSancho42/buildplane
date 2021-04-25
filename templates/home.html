@@ -28,37 +28,41 @@
 		</a>
 	</div>
 	<div class="work-area__board">
-		{% for col in cols %}
-			<div class="coll" data-coll="{{ col.col_id }}">
-				<span>{{ col.name }}</span>
-				<div>
-					{% for task in col.tasks %}
-						<div class="task" draggable="true" data-task="9">
-							<a href="" draggable="false">
-								<p>
-									{{ task.description }}
-								</p>
-								<p>
-									{{ task.name }}
-								</p>
-								<p>
-									{% if task.start_date %}
-										{% if task.end_date %}
-											{{ task.start_date }} - {{ task.end_date }}
-										{% else %}
-											Почати з {{ task.start_date }}
+		{% if cols %}
+			{% for col in cols %}
+				<div class="coll" data-coll="{{ col.col_id }}">
+					<span>{{ col.name }}</span>
+					<div>
+						{% for task in col.tasks %}
+							<div class="task" draggable="true" data-task="9">
+								<a href="" draggable="false">
+									<p>
+										{{ task.description }}
+									</p>
+									<p>
+										{{ task.name }}
+									</p>
+									<p>
+										{% if task.start_date %}
+											{% if task.end_date %}
+												{{ task.start_date }} - {{ task.end_date }}
+											{% else %}
+												Почати з {{ task.start_date }}
+											{% endif %}
+										{% elif task.end_date %}
+											Закінчити до {{ task.end_date }}
 										{% endif %}
-									{% elif task.end_date %}
-										Закінчити до {{ task.end_date }}
-									{% endif %}
-								</p>
-							</a>
-							<a class="task__submit {% if task.done %} task__submit_done {% endif %}" href="http://shpargalkablog.ru/2016/05/flex.html"></a>
-						</div>
-					{% endfor %}
-					<div></div>
+									</p>
+								</a>
+								<a class="task__submit {% if task.done %} task__submit_done {% endif %}" href="http://shpargalkablog.ru/2016/05/flex.html"></a>
+							</div>
+						{% endfor %}
+						<div></div>
+					</div>
 				</div>
-			</div>
-		{% endfor %}
+			{% endfor %}
+		{% else %}
+			Колонок немає...
+		{% endif %}
 	</div>
 {% endblock %}
