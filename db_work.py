@@ -67,20 +67,15 @@ class db_work():
 			for col in res:
 				cols_order.append(self.__cur.execute(f'SELECT * FROM cols WHERE col_id = {col}').fetchone())
 
+			cols_order = [dict(col) for col in cols_order]
+
 			return cols_order
 
 		except AttributeError:
 			return False
 
 
-	def get_user_tasks(self):
-		cols = self.get_cols('user', self.__session['user']['user_id'])
-
-		if not cols:
-			return False
-
-		cols = [dict(col) for col in cols]
-
+	def get_personal_tasks(self, cols):
 		for col in cols:
 			res = self.__cur.execute(f'''SELECT *
 										FROM v_personal_tasks
