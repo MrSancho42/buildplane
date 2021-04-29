@@ -34,11 +34,13 @@
 					<span>{{ col.name }}</span>
 					<div>
 						{% for task in col.tasks %}
-							<div class="task" draggable="true" data-task="9">
+							<div class="task" draggable="true" data-task="{{ task.task_id }}">
 								<a href="" draggable="false">
+									<span class="task__doc"></span>
 									<p>
 										{{ task.description }}
 									</p>
+									<span class="task__submit-clone"></span>
 									<p>
 										{% if task.start_date %}
 											{% if task.end_date %}
@@ -51,7 +53,7 @@
 										{% endif %}
 									</p>
 								</a>
-								<a class="task__submit {% if task.done %} task__submit_done {% endif %}" href="http://shpargalkablog.ru/2016/05/flex.html"></a>
+								<a class="task__submit {% if task.done %} task__submit_done {% endif %}" href=""></a>
 							</div>
 						{% endfor %}
 						<div></div>
