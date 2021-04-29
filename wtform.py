@@ -43,5 +43,8 @@ class reg_form(FlaskForm):
 	submit = SubmitField('Зареєструватися')
 
 class edit_command_form(FlaskForm):
-	name = StringField('НАЗВА:', validators=[DataRequired(message='Заповніть це поле')])
+	#def __init__(self, name_text):
+	#	self.name_text = name_text
+
+	name = StringField('НАЗВА:', default='self.name_text', validators=[DataRequired(message='Заповніть це поле')])
 	submit = SubmitField('Підтвердити')
