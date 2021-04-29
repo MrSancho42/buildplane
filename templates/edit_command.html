@@ -1,0 +1,24 @@
+{% extends "setting_t.html" %}
+
+{% block work_area %}
+	<form action="", method="POST" class="form-settings">
+		{{ form.hidden_tag() }}
+		{% for field in form if field.name not in ['csrf_token', 'submit'] %}
+			{{ field.label() }} {{ field() }}
+
+			{% if field.errors %}
+				<span>
+					{% for error in field.errors %}
+						{{ error }}
+					{% endfor %}
+				</span>
+			{% endif %}
+		{% endfor %}
+
+		{% for message in get_flashed_messages() %}
+			<span>{{ message }}</span>
+		{% endfor %}
+
+		{{ form.submit(class="button") }}
+	</form>
+{% endblock %}

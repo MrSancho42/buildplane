@@ -118,7 +118,11 @@ def home():
 							commands=session['commands'],
 							cols=cols)
 
+@app.route('/edit_command')
+def edit_command():
+	form = wtf.edit_command_form()
 
+	return render_template('edit_command.html', user=session['user'], form=form)
 
 if __name__ == '__main__':
 	app.run(host=config.HOST, debug=config.DEBUG)

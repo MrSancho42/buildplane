@@ -41,3 +41,7 @@ class reg_form(FlaskForm):
 						DataRequired(message='Заповніть це поле'),
 						EqualTo('psw', message='Паролі не співпадають')])
 	submit = SubmitField('Зареєструватися')
+
+class edit_command_form(FlaskForm):
+	name = StringField('НАЗВА:', validators=[DataRequired(message='Заповніть це поле')])
+	submit = SubmitField('Підтвердити')
