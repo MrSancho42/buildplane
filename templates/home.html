@@ -18,5 +18,50 @@
 {% endblock %}
 
 {% block work_area %}
-
+	<div class="work-area__bar">
+		<a href="" class="add-button">
+			<span>Нове завдання</span>
+			<span></span>
+		</a>
+		<a href="" class="bar__item bar__item_small">
+			Події
+		</a>
+	</div>
+	<div class="work-area__board">
+		{% if cols %}
+			{% for col in cols %}
+				<div class="coll" data-coll="{{ col.col_id }}">
+					<span>{{ col.name }}</span>
+					<div>
+						{% for task in col.tasks %}
+							<div class="task" draggable="true" data-task="{{ task.task_id }}">
+								<a href="" draggable="false">
+									<span class="task__doc"></span>
+									<p>
+										{{ task.description }}
+									</p>
+									<span class="task__submit-clone"></span>
+									<p>
+										{% if task.start_date %}
+											{% if task.end_date %}
+												{{ task.start_date }} - {{ task.end_date }}
+											{% else %}
+												Почати з {{ task.start_date }}
+											{% endif %}
+										{% elif task.end_date %}
+											Закінчити до {{ task.end_date }}
+										{% endif %}
+									</p>
+								</a>
+								<a class="task__submit {% if task.done %} task__submit_done {% endif %}" href=""></a>
+							</div>
+						{% endfor %}
+						<div></div>
+					</div>
+				</div>
+			{% endfor %}
+		{% else %}
+			Колонок немає...
+		{% endif %}
+	</div>
 {% endblock %}

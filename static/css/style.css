@@ -439,23 +439,38 @@ h1,h2,h3,h4,h5,h6{font-size:inherit;font-weight: 400;}
 	user-select: none;
 	z-index: 1;
 }
+/* .task p{overflow: hidden;} */
 .task p:first-of-type{margin-bottom: 10px;}
 .task p:not(:first-of-type){font-size: 18px;}
+.task__name{
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	width: calc(100% - 60px);
+}
 .task__doc{
 	content: url(../ico/document-clip.svg);
 	float: right;
 	height: 34px;
+	margin-left: 10px;
+}
+.task__submit-clone,
+.task__submit{
+	height: 24px !important;
+	width: 54px !important;
+}
+.task__submit-clone{
+	margin-top: 10px;
+	float: right;
 }
 .task__submit{
 	position: absolute;
-	height: 38px !important;
-	width: 38px !important;
-	border-radius: 50%;
-	border: 1px solid var(--shadow-color);
-	box-shadow: 0 0 var(--shadow);
 	bottom: 10px;
 	right: 10px;
-	padding: 6px;
+	border: 1px solid var(--shadow-color);
+	border-radius: 12px;
+	box-shadow: 0 0 var(--shadow);
+	padding: 1px;
 	z-index: 2;
 }
 .task__submit:hover{
