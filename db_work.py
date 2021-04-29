@@ -83,6 +83,9 @@ class db_work():
 			col['tasks'] = res
 			
 		return cols
+
+	def get_command_name(self, command_id):
+		return self.__cur.execute(f"SELECT name FROM commands WHERE command_id = {command_id}").fetchone()[0]
 			
 
 	def add_command(self, name, owner_id):
