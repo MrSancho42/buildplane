@@ -108,10 +108,16 @@ def home():
 			i.pop('owner_id')
 
 		session['commands'] = commands
-
+	
+	cols = db.get_cols('user', session['user']['user_id'])
+	if cols:
+		cols = db.get_personal_tasks(cols)
+	
 	return render_template('home.html',
 							user=session['user'],
-							commands=session['commands'])
+							commands=session['commands'],
+							cols=cols)
+
 
 
 if __name__ == '__main__':

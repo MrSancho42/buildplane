@@ -54,6 +54,36 @@ class db_work():
 								ON commands_user.command_id = v_command.command_id
 								WHERE commands_user.user_id = "{self.__session['user']['user_id']}"''').fetchall()
 		return [dict(i) for i in res]
+	
+
+	def get_cols(self, element, element_id):
+		try:
+			res = self.__cur.execute(f'''SELECT cols_order
+										FROM v_{element}_cols
+										WHERE {element}_id = {element_id}''').fetchone()
+			res = list(res['cols_order'].split(','))
+
+			cols_order = []
+			for col in res:
+				cols_order.append(self.__cur.execute(f'SELECT * FROM cols WHERE col_id = {col}').fetchone())
+
+			cols_order = [dict(col) for col in cols_order]
+
+			return cols_order
+
+		except AttributeError:
+			return False
+
+
+	def get_personal_tasks(self, cols):
+		for col in cols:
+			res = self.__cur.execute(f'''SELECT *
+										FROM v_personal_tasks
+										WHERE col_id = {col['col_id']}''').fetchall()
+			col['tasks'] = res
+			
+		return cols
+			
 
 
 if __name__ == '__main__':
