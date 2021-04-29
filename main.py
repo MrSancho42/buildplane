@@ -33,7 +33,8 @@ db = None
 def before_request():
 	exceptions = ['/', '/login', '/registration']
 	if 'user' not in session and request.path not in exceptions:
-		return redirect(url_for('login'))
+		#return redirect(url_for('login'))
+		pass
 
 	if not hasattr(g, 'link_db'):
 		g.link_db = sqlite3.connect(get_path(config.DATABASE))
@@ -100,8 +101,12 @@ def add_command():
 	form = wtf.add_command_form()
 
 	if form.validate_on_submit():
-		print("pidar")
-		render_template('add_command.html', form=form, user=session['user'])
+		if db.add_command(form.name.data, session['user']['user_id']):
+			if 'commands' in session:
+				session.pop('commands')
+			render_template('home.html', user=session['user'])
+		else:
+			print("shos' pizda")
 
 	return render_template('add_command.html', form=form, user=session['user'])
 
@@ -110,6 +115,8 @@ def home():
 	"""
 	Головна сторінка користувача
 	"""
+	if 'commands' in session:
+		print(session['commands'])
 	if 'commands' not in session:
 		commands = db.get_commands()
 		for i in commands:
@@ -117,7 +124,7 @@ def home():
 			i.pop('owner_id')
 
 		session['commands'] = commands
-
+	print(session['commands'])
 	return render_template('home.html',
 							user=session['user'],
 							commands=session['commands'])

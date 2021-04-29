@@ -55,6 +55,12 @@ class db_work():
 								WHERE commands_user.user_id = "{self.__session['user']['user_id']}"''').fetchall()
 		return [dict(i) for i in res]
 
+	def add_command(self, name, owner_id):
+		self.__cur.execute('INSERT INTO commands VALUES(NULL, ?, ?, NULL)', (name, owner_id))
+		command_id = self.__cur.execute("SELECT last_insert_rowid() from commands").fetchone()[0]
+		self.__cur.execute('INSERT INTO commands_user VALUES(?, ?)', (owner_id, command_id))
+		return True
+
 
 if __name__ == '__main__':
 	print(db_work.hash(input('Введіть значення для хешування: ')))
