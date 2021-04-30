@@ -19,6 +19,9 @@
 			<span>{{ message }}</span>
 		{% endfor %}
 
-		{{ form.submit(class="button") }}
+		<div class="form-settings__button-box">
+			<div class="form-settings__delete-button">Видалити</div>
+			{{ form.submit(class="button") }}
+		</div>
 	</form>
 {% endblock %}

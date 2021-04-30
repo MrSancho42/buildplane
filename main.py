@@ -1,5 +1,6 @@
 import sqlite3
 from flask import Flask, render_template, g, redirect, url_for, request, flash, session
+from werkzeug.datastructures import MultiDict
 from datetime import timedelta
 
 import config
@@ -135,12 +136,11 @@ def home():
 							commands=session['commands'],
 							cols=cols)
 
-@app.route('/edit_command/<int:command_id>')
+@app.route('/edit_command/<int:command_id>', methods=['GET', 'POST'])
 def edit_command(command_id):
 	name = db.get_command_name(command_id)
-	form = wtf.edit_command_form(name)
-
-
+	form = wtf.edit_command_form(formdata=MultiDict({'name': f'{name}'}))
+	
 	return render_template('edit_command.html', user=session['user'], form=form, name=name)
 
 if __name__ == '__main__':

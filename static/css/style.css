@@ -49,6 +49,7 @@ h1,h2,h3,h4,h5,h6{font-size:inherit;font-weight: 400;}
 	--shadow:  4px 0 var(--shadow-color);
 	--settings-label-color: #696969;
 	--settings-submit-color: #d2e1e2;
+	--settings-delete-color: #ff958e;
 }
 
 /* Шрифт */
@@ -177,6 +178,30 @@ h1,h2,h3,h4,h5,h6{font-size:inherit;font-weight: 400;}
 	margin-left: 10px;
 	font-size: 16px;
 	color: var(--danger)
+}
+
+.form-settings__button-box{
+	display: flex;
+	flex-direction: row;
+	gap: 25px;
+	align-items: center;
+	justify-content: center;
+}
+
+.form-settings__delete-button{
+	background-color: var(--settings-delete-color);
+	text-align: center;
+	padding-top: 12px;
+	height: 50px;
+	width: 140px;
+	margin-top: 25px;
+	border-radius: 10px;
+}
+
+.form-settings__delete-button:hover{
+	transition: transform 0.09s ease-in;
+	transform: scale(1.02);
+	cursor: pointer;
 }
 
 /* Головна сторінка та розміщення елементів на ній */
