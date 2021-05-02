@@ -24,4 +24,17 @@
 			{{ form.submit(class="button") }}
 		</div>
 	</form>
+
+	<dialog class="dialog-box">
+		<form method="dialog">
+			<div>Ви справді хочете видалити команду? Ця дія є незворотньою.</div>
+			<div class="form-settings__button-box">
+				<button class="dialog-box__green-button">Ні</button>
+				<button type="submit" class="dialog-box__red-button">Так</button>
+			</div>
+		</form>
+	</dialog>
+
+	<script type="text/javascript" src="{{url_for('static', filename='js/dialog_window.js')}}"
+	charset="utf-8"></script>
 {% endblock %}
