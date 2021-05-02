@@ -210,21 +210,18 @@ h1,h2,h3,h4,h5,h6{font-size:inherit;font-weight: 400;}
 	display: flex;
 	flex-direction: column;
 }
-.dialog-box__red-button{
-	background-color: var(--settings-delete-color);
+.dialog-box__button{
 	text-align: center;
 	height: 50px;
 	width: 140px;
 	margin-top: 25px;
 	border-radius: 10px;
 }
+.dialog-box__red-button{
+	background-color: var(--settings-delete-color);
+}
 .dialog-box__green-button{
 	background-color: var(--settings-submit-color);
-	text-align: center;
-	height: 50px;
-	width: 140px;
-	margin-top: 25px;
-	border-radius: 10px;
 }
 
 /* Головна сторінка та розміщення елементів на ній */
