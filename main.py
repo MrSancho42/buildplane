@@ -140,8 +140,12 @@ def home():
 def edit_command(command_id):
 	name = db.get_command_name(command_id)
 	form = wtf.edit_command_form(formdata=MultiDict({'name': f'{name}'}))
-	
-	return render_template('edit_command.html', user=session['user'], form=form, name=name)
+
+	if form.validate_on_submit():
+		print('Підтвердити')
+
+	return render_template('edit_command.html', user=session['user'],
+							form=form, name=name)
 
 if __name__ == '__main__':
 	app.run(host=config.HOST, debug=config.DEBUG)

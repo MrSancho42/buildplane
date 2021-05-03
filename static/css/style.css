@@ -196,8 +196,8 @@ h1,h2,h3,h4,h5,h6{font-size:inherit;font-weight: 400;}
 	cursor: pointer;
 }
 
-/*Діалогове вікно*/
-.dialog-box{
+/*Діалогове вікно. Архів, раптом знадобиться*/
+/*.dialog-box{
 	background-color: var(--light-color);
 	border: solid 3px var(--dark-color);
 	border-radius: 10px;
@@ -222,7 +222,7 @@ h1,h2,h3,h4,h5,h6{font-size:inherit;font-weight: 400;}
 }
 .dialog-box__green-button{
 	background-color: var(--settings-submit-color);
-}
+}*/
 
 /* Головна сторінка та розміщення елементів на ній */
 .main-wrap{

@@ -94,6 +94,13 @@ class db_work():
 		self.__cur.execute('INSERT INTO commands_user VALUES(?, ?)', (owner_id, command_id))
 		return True
 
+	def del_command(self, comand_id):
+		#self.__cur.execute(f'DELETE FROM commands WHERE command_id = {comand_id}')
+		print("hi from db_work!")
+		groups = self.__cur.execute(f"SELECT group_id FROM commands WHERE command_id = {comand_id}").fetchall()
+		print(groups)
+		#return True
+
 
 if __name__ == '__main__':
 	print(db_work.hash(input('Введіть значення для хешування: ')))
