@@ -96,9 +96,12 @@ class db_work():
 
 	def del_command(self, comand_id):
 		#self.__cur.execute(f'DELETE FROM commands WHERE command_id = {comand_id}')
-		print("hi from db_work!")
-		groups = self.__cur.execute(f"SELECT group_id FROM commands WHERE command_id = {comand_id}").fetchall()
-		print(groups)
+		#print("hi from db_work!")
+		#groups = self.__cur.execute(f"SELECT group_id FROM commands WHERE command_id = {comand_id}").fetchall()
+		#print(groups)
+		self.__cur.execute(f'DELETE FROM commands WHERE command_id = {comand_id}')
+		#колонки!!!!
+		self.__cur.execute(f'DELETE FROM commands_event WHERE command_id = {comand_id}')
 		#return True
 
 

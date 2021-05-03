@@ -136,10 +136,10 @@ def home():
 							commands=session['commands'],
 							cols=cols)
 
-@app.route('/edit_command/<int:command_id>', methods=['GET', 'POST'])
+@app.route('/edit_command/<int:command_id>', methods=["GET", "POST"])
 def edit_command(command_id):
 	name = db.get_command_name(command_id)
-	form = wtf.edit_command_form(formdata=MultiDict({'name': f'{name}'}))
+	form = wtf.edit_command_form(name=name)
 
 	if form.validate_on_submit():
 		print('Підтвердити')
