@@ -76,7 +76,10 @@ class db_work():
 								INNER JOIN commands_user
 								ON commands_user.command_id = v_command.command_id
 								WHERE commands_user.user_id = "{self.__user}"''').fetchall()
-		return [dict(i) for i in res]
+		if res:
+			return [dict(i) for i in res]
+		
+		return False
 	
 
 	def get_cols(self, element, element_id):

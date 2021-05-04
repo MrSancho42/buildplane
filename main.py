@@ -155,9 +155,10 @@ def home():
 	user = db.get_user()
 
 	commands = db.get_commands()
-	for i in commands:
-		i['ownership'] = i['owner_id'] == session['user']
-		i.pop('owner_id')
+	if commands:
+		for i in commands:
+			i['ownership'] = i['owner_id'] == session['user']
+			i.pop('owner_id')
 	
 	cols = db.get_personal_tasks()
 	

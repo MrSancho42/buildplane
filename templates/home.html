@@ -5,16 +5,20 @@
 {% endblock %}
 
 {% block left_bar %}
-	{% for item in commands %}
-		<div class="bar__item">
-			<a href="">
-				<span>{{ item.name }}</span>
-			</a>
-			{% if item.ownership %}	
-				<a href=""></a>
-			{% endif %}
-		</div>
-	{% endfor %}
+	{% if commands %}
+		{% for item in commands %}
+			<div class="bar__item">
+				<a href="">
+					<span>{{ item.name }}</span>
+				</a>
+				{% if item.ownership %}	
+					<a href=""></a>
+				{% endif %}
+			</div>
+		{% endfor %}
+	{% else %}
+		Команд немає...
+	{% endif %}
 {% endblock %}
 
 {% block work_area %}
