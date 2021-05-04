@@ -22,16 +22,26 @@ class db_work():
 		Генератор хеш функцій.
 		Може використовуватися як самостійний скрипт.
 		"""
+
 		return sha256(str(value).encode('utf-8')).hexdigest()
 
 
 	def get_user(self):
+		"""
+		Функція для отримання імені користувача.
+		"""
 		return self.__cur.execute(f'''SELECT *
 									FROM v_users
 									WHERE user_id = "{self.__user}"''').fetchone()
 
 
 	def login(self, login, password):
+		"""
+		Функція для авторизації користувача.
+		Перевіряє чи вписаний логін є у базі, та чи збігаються хеш функції
+		паролів у базі та введеного.
+		"""
+
 		try:
 			res = self.__cur.execute(f'SELECT user_id, password FROM users WHERE login = "{login}"').fetchone()
 			if res['password'] == self.hash(password):
@@ -44,6 +54,12 @@ class db_work():
 	
 
 	def registration(self, login, password, name):
+		"""
+		Функція реєстрації.
+		Перевіряє чи введений пароль існує.
+		Якщо ні то вводить інформацію користувача у базу.
+		"""
+
 		if self.__cur.execute(f'SELECT * FROM users WHERE login = "{login}"').fetchone():
 			return False
 
@@ -52,6 +68,10 @@ class db_work():
 
 	
 	def get_commands(self):
+		"""
+		Функція що дістає команди до яких належить користувач.
+		"""
+
 		res = self.__cur.execute(f'''SELECT v_command.command_id, v_command.name, v_command.owner_id FROM v_command
 								INNER JOIN commands_user
 								ON commands_user.command_id = v_command.command_id
@@ -60,6 +80,10 @@ class db_work():
 	
 
 	def get_cols(self, element, element_id):
+		"""
+		Функція що дістає колонки наданого елемента.
+		"""
+
 		try:
 			res = self.__cur.execute(f'''SELECT cols_order
 										FROM v_{element}_cols
@@ -80,6 +104,10 @@ class db_work():
 
 
 	def get_personal_tasks(self):
+		"""
+		Функція що дістає завдання та колонки користувача.
+		"""
+
 		cols = self.get_cols('user', self.__user)
 		if not cols:
 			return False
