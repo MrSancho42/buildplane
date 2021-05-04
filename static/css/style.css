@@ -157,7 +157,7 @@ h1,h2,h3,h4,h5,h6{font-size:inherit;font-weight: 400;}
 
 /* Логотип на верхньому меню */
 .logo{
-	content: url(../ico/logo.png);
+	content: url(../ico/logo_BP_kran_light.svg);
 	height: 50px;
 	padding: 0 7.8px;
 	margin-right: auto;
