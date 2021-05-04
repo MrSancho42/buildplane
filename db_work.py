@@ -10,10 +10,10 @@ import _pickle as cpickle
 
 
 class db_work():
-	def __init__(self, cursor, session):
+	def __init__(self, cursor, user):
 		self.__cur = cursor
 		self.__cur.execute('PRAGMA foreign_keys = ON')
-		self.__session = session
+		self.__user = user
 	
 
 	@staticmethod	
@@ -24,15 +24,18 @@ class db_work():
 		"""
 		return sha256(str(value).encode('utf-8')).hexdigest()
 
-	
+
+	def get_user(self):
+		return self.__cur.execute(f'''SELECT *
+									FROM v_users
+									WHERE user_id = "{self.__user}"''').fetchone()
+
+
 	def login(self, login, password):
 		try:
-			res = self.__cur.execute(f'SELECT * FROM users WHERE login = "{login}"').fetchone()
+			res = self.__cur.execute(f'SELECT user_id, password FROM users WHERE login = "{login}"').fetchone()
 			if res['password'] == self.hash(password):
-				user = self.__cur.execute(f'''SELECT *
-											FROM v_users
-											WHERE user_id = "{res['user_id']}"''').fetchone()
-				return {'status': True, 'user': dict(user)}
+				return {'status': True, 'user': res['user_id']}
 			
 			return {'status': False, 'message': 'Неправильний пароль'}
 
@@ -52,7 +55,7 @@ class db_work():
 		res = self.__cur.execute(f'''SELECT v_command.command_id, v_command.name, v_command.owner_id FROM v_command
 								INNER JOIN commands_user
 								ON commands_user.command_id = v_command.command_id
-								WHERE commands_user.user_id = "{self.__session['user']['user_id']}"''').fetchall()
+								WHERE commands_user.user_id = "{self.__user}"''').fetchall()
 		return [dict(i) for i in res]
 	
 
@@ -62,10 +65,11 @@ class db_work():
 										FROM v_{element}_cols
 										WHERE {element}_id = {element_id}''').fetchone()
 			res = list(res['cols_order'].split(','))
-
-			cols_order = []
-			for col in res:
-				cols_order.append(self.__cur.execute(f'SELECT * FROM cols WHERE col_id = {col}').fetchone())
+			
+			cols_order = [self.__cur.execute(f'''SELECT * 
+												FROM cols 
+												WHERE col_id = {col}''')
+												.fetchone() for col in res]
 
 			cols_order = [dict(col) for col in cols_order]
 
@@ -75,7 +79,11 @@ class db_work():
 			return False
 
 
-	def get_personal_tasks(self, cols):
+	def get_personal_tasks(self):
+		cols = self.get_cols('user', self.__user)
+		if not cols:
+			return False
+
 		for col in cols:
 			res = self.__cur.execute(f'''SELECT *
 										FROM v_personal_tasks

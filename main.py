@@ -1,5 +1,7 @@
 import sqlite3
 from flask import Flask, render_template, g, redirect, url_for, request, flash, session
+from flask_session import Session
+import redis
 from datetime import timedelta
 
 import config
@@ -24,14 +26,24 @@ def get_path(f):
 
 
 app = Flask(__name__)
+
+app.config['SESSION_TYPE'] = 'redis'
 app.config['SECRET_KEY'] = config.SECRET_KEY
-app.permanent_session_lifetime = timedelta(days=60)
+app.config['SESSION_PERMANENT'] = False
+app.config['SESSION_USE_SIGNER'] = False
+app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(days=31)
+app.config['SESSION_KEY_PREFIX'] = 'session:' #  the prefix of the value stored in session 
+app.config['SESSION_MEMCACHED'] = redis.Redis(host=config.HOST, port='6379', password=config.SECRET_KEY)
+
+
+
+Session(app)
 
 
 db = None
 @app.before_request
 def before_request():
-	exceptions = ['/', '/login', '/registration']
+	exceptions = ['/', '/login', '/registration', '/static/css/style.css', '/static/ico/logo.png', '/static/css/Exo.ttf']
 	if 'user' not in session and request.path not in exceptions:
 		return redirect(url_for('login'))
 
@@ -39,7 +51,7 @@ def before_request():
 		g.link_db = sqlite3.connect(get_path(config.DATABASE))
 		g.link_db.row_factory = sqlite3.Row
 	global db
-	db = db_work(g.link_db.cursor(), session)
+	db = db_work(g.link_db.cursor(), session.get('user'))
 
 
 @app.teardown_appcontext
@@ -101,21 +113,18 @@ def home():
 	"""
 	Головна сторінка користувача
 	"""
-	if 'commands' not in session:
-		commands = db.get_commands()
-		for i in commands:
-			i['ownership'] = i['owner_id'] == session['user']['user_id']
-			i.pop('owner_id')
+	user = db.get_user()
 
-		session['commands'] = commands
+	commands = db.get_commands()
+	for i in commands:
+		i['ownership'] = i['owner_id'] == session['user']
+		i.pop('owner_id')
 	
-	cols = db.get_cols('user', session['user']['user_id'])
-	if cols:
-		cols = db.get_personal_tasks(cols)
+	cols = db.get_personal_tasks()
 	
 	return render_template('home.html',
-							user=session['user'],
-							commands=session['commands'],
+							user=user,
+							commands=commands,
 							cols=cols)
 
 
