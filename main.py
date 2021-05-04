@@ -1,5 +1,7 @@
 import sqlite3
 from flask import Flask, render_template, g, redirect, url_for, request, flash, session
+from flask_session import Session
+import redis
 from datetime import timedelta
 
 import config
@@ -24,14 +26,34 @@ def get_path(f):
 
 
 app = Flask(__name__)
-app.config['SECRET_KEY'] = config.SECRET_KEY
-app.permanent_session_lifetime = timedelta(days=60)
+
+app.config['SESSION_TYPE'] = 'redis' #	Встановлення типу сесії
+app.config['SECRET_KEY'] = config.SECRET_KEY #	Встановлення секретного ключа із config.py
+app.config['SESSION_PERMANENT'] = False #	Встановлення запам'ятовування сесії
+app.config['SESSION_USE_SIGNER'] = False #	Вимагання підпису сеансу?
+app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(days=31) #	Час життя сеансу
+app.config['SESSION_KEY_PREFIX'] = 'session:' #  Префікс для ключів сесії у Redis 
+app.config['SESSION_MEMCACHED'] = redis.Redis(host=config.HOST, port='6379', password=config.SECRET_KEY) # Підключення до Redis
+
+Session(app)
+
 
 
 db = None
 @app.before_request
 def before_request():
-	exceptions = ['/', '/login', '/registration']
+	"""
+	Функція що спрацьовує перед запитом.
+
+	Спершу первіряє чи користувач авторизований,
+	якщо ні - то його переадресовує на /login.
+	Це спрацьовує для усіх запитів, окрім винятків.
+
+	Після цього іде підключення до БД. та створення глобальної змінної
+	для взаємодії із нею. id користувача передається тут же.
+	"""
+
+	exceptions = ['/', '/login', '/registration', '/static/css/style.css', '/static/ico/logo.png', '/static/css/Exo.ttf']
 	if 'user' not in session and request.path not in exceptions:
 		return redirect(url_for('login'))
 
@@ -39,11 +61,16 @@ def before_request():
 		g.link_db = sqlite3.connect(get_path(config.DATABASE))
 		g.link_db.row_factory = sqlite3.Row
 	global db
-	db = db_work(g.link_db.cursor(), session)
+	db = db_work(g.link_db.cursor(), session.get('user'))
 
 
 @app.teardown_appcontext
 def close_db(error):
+	"""
+	Функція що спрацьовує після запиту.
+	Закриває підключення до БД.
+	"""
+
 	if hasattr(g, 'link_db'):
 		g.link_db.commit()
 		g.link_db.close()
@@ -51,12 +78,20 @@ def close_db(error):
 
 @app.route('/clear')
 def clear():
+	"""
+	Тимчасова функція для очищення сесії.
+	"""
+	
 	session.clear()
 	return redirect(url_for('main'))
 
 
 @app.route('/')
 def main():
+	"""
+	Головна сторінка.
+	"""
+
 	print('Користувач', session.get('user'))
 	print(session.keys(), session.values())
 	return render_template('main.html')
@@ -64,6 +99,10 @@ def main():
 
 @app.route('/login', methods=["POST", "GET"])
 def login():
+	"""
+	Сторінка авторизації.
+	"""
+
 	form = wtf.login_form()
 
 	if form.validate_on_submit():
@@ -85,6 +124,10 @@ def login():
 
 @app.route('/registration', methods=["POST", "GET"])
 def registration():
+	"""
+	Сторінка реєстрації
+	"""
+
 	form = wtf.reg_form()
 
 	if form.validate_on_submit():
@@ -101,21 +144,19 @@ def home():
 	"""
 	Головна сторінка користувача
 	"""
-	if 'commands' not in session:
-		commands = db.get_commands()
-		for i in commands:
-			i['ownership'] = i['owner_id'] == session['user']['user_id']
-			i.pop('owner_id')
-
-		session['commands'] = commands
 	
-	cols = db.get_cols('user', session['user']['user_id'])
-	if cols:
-		cols = db.get_personal_tasks(cols)
+	user = db.get_user()
+
+	commands = db.get_commands()
+	for i in commands:
+		i['ownership'] = i['owner_id'] == session['user']
+		i.pop('owner_id')
+	
+	cols = db.get_personal_tasks()
 	
 	return render_template('home.html',
-							user=session['user'],
-							commands=session['commands'],
+							user=user,
+							commands=commands,
 							cols=cols)
 
 
