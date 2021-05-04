@@ -168,6 +168,22 @@ def home():
 							cols=cols)
 
 
+@app.route('/command/<command_id>/task')
+def command_task(command_id):
+	user = db.get_user()
+
+	groups = db.get_groups(command_id)
+	if groups:
+		for group in groups:
+			group['ownership'] = group['manager_id'] == group['user_id'] or group['owner_id'] == group['user_id']
+			group.pop('manager_id', 'owner_id')
+
+	cols = db.get_command_tasks(command_id)
+	return render_template('command_task.html',
+							user=user,
+							groups=groups,
+							cols=cols)
+
 
 if __name__ == '__main__':
 	app.run(host=config.HOST, debug=config.DEBUG)
