@@ -3,6 +3,7 @@ from flask import Flask, render_template, g, redirect, url_for, request, flash, 
 from flask_session import Session
 import redis
 from datetime import timedelta
+from re import search as research
 
 import config
 from db_work import db_work
@@ -45,7 +46,10 @@ def before_request():
 	"""
 	Функція що спрацьовує перед запитом.
 
-	Спершу первіряє чи користувач авторизований,
+	Спершу перевіряється чи не завантажується файл, якщо так, то подальше
+	виконання функції припиняється.
+
+	Потім первіряє чи користувач авторизований,
 	якщо ні - то його переадресовує на /login.
 	Це спрацьовує для усіх запитів, окрім винятків.
 
@@ -53,7 +57,10 @@ def before_request():
 	для взаємодії із нею. id користувача передається тут же.
 	"""
 
-	exceptions = ['/', '/login', '/registration', '/static/css/style.css', '/static/ico/logo.png', '/static/css/Exo.ttf']
+	if research('/static/', request.path):
+		return
+
+	exceptions = ['/', '/login', '/registration']
 	if 'user' not in session and request.path not in exceptions:
 		return redirect(url_for('login'))
 
