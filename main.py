@@ -155,14 +155,14 @@ def edit_command(command_id):
 	"""
 	Функція редагування команди
 	"""
-	print('edit')
 	name = db.get_command_name(command_id)
 	form = wtf.edit_command_form(name=name)
 	form_dialog = wtf.del_dialog_form()
 
 	if form.validate_on_submit():
-		print('Підтвердити')
-	return redirect(url_for('settings_command', command_id=command_id))
+		name = form.name.data
+		if db.edit_command(command_id, name):
+			return redirect(url_for('settings_command', command_id=command_id))
 
 
 @app.route('/del_command/<int:command_id>', methods=["GET", "POST"])
@@ -174,7 +174,6 @@ def del_command(command_id):
 	name = db.get_command_name(command_id)
 	form = wtf.edit_command_form(name=name)
 	form_dialog = wtf.del_dialog_form()
-	print('form_dialog.submit.data  --  ', form_dialog.submit.data)
 
 	if form_dialog.submit.data:
 		print('Так')

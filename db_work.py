@@ -93,15 +93,19 @@ class db_work():
 		command_id = self.__cur.execute("SELECT last_insert_rowid() from commands").fetchone()[0]
 		self.__cur.execute('INSERT INTO commands_user VALUES(?, ?)', (owner_id, command_id))
 		return True
+	
+	def edit_command(self, command_id, name):
+		self.__cur.execute(f"UPDATE commands SET name = '{name}' WHERE command_id = {command_id}")
+		return True
 
-	def del_command(self, comand_id):
+	#def del_command(self, comand_id):
 		#self.__cur.execute(f'DELETE FROM commands WHERE command_id = {comand_id}')
 		#print("hi from db_work!")
 		#groups = self.__cur.execute(f"SELECT group_id FROM commands WHERE command_id = {comand_id}").fetchall()
 		#print(groups)
-		self.__cur.execute(f'DELETE FROM commands WHERE command_id = {comand_id}')
+		#self.__cur.execute(f'DELETE FROM commands WHERE command_id = {comand_id}')
 		#колонки!!!!
-		self.__cur.execute(f'DELETE FROM commands_event WHERE command_id = {comand_id}')
+		#self.__cur.execute(f'DELETE FROM commands_event WHERE command_id = {comand_id}')
 		#return True
 
 
