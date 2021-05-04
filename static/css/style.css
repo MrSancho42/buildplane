@@ -196,8 +196,8 @@ h1,h2,h3,h4,h5,h6{font-size:inherit;font-weight: 400;}
 	cursor: pointer;
 }
 
-/*Діалогове вікно. Архів, раптом знадобиться*/
-/*.dialog-box{
+/* Діалогове вікно */
+.dialog-box{
 	background-color: var(--light-color);
 	border: solid 3px var(--dark-color);
 	border-radius: 10px;
@@ -217,12 +217,17 @@ h1,h2,h3,h4,h5,h6{font-size:inherit;font-weight: 400;}
 	margin-top: 25px;
 	border-radius: 10px;
 }
+.dialog-box__button:hover{
+	transition: transform 0.09s ease-in;
+	transform: scale(1.02);
+	cursor: pointer;
+}
 .dialog-box__red-button{
 	background-color: var(--settings-delete-color);
 }
 .dialog-box__green-button{
 	background-color: var(--settings-submit-color);
-}*/
+}
 
 /* Головна сторінка та розміщення елементів на ній */
 .main-wrap{

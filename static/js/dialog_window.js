@@ -1,5 +1,3 @@
-/*наразі ніде не використовується, проте нехай буде в разі
-необхідності діалогового вікна*/
 (function() {
     let dialogButton = document.getElementsByClassName('form-settings__delete-button')[0];
     let dialogWindow = document.getElementsByClassName('dialog-box')[0];
