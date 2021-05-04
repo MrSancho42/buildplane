@@ -136,17 +136,25 @@ def home():
 							commands=session['commands'],
 							cols=cols)
 
+
 @app.route('/settings_command/<int:command_id>', methods=["GET", "POST"])
 def settings_command(command_id):
+	"""
+	Сторінка налаштувань команди
+	"""
 	name = db.get_command_name(command_id)
 	form = wtf.edit_command_form(name=name)
 	form_dialog = wtf.del_dialog_form()
 
 	return render_template('edit_command.html', user=session['user'], command_id=command_id,
 							form=form, form_dialog=form_dialog, name=name)
-							
+
+
 @app.route('/edit_command/<int:command_id>', methods=["GET", "POST"])
 def edit_command(command_id):
+	"""
+	Функція редагування команди
+	"""
 	print('edit')
 	name = db.get_command_name(command_id)
 	form = wtf.edit_command_form(name=name)
@@ -156,8 +164,12 @@ def edit_command(command_id):
 		print('Підтвердити')
 	return redirect(url_for('settings_command', command_id=command_id))
 
+
 @app.route('/del_command/<int:command_id>', methods=["GET", "POST"])
 def del_command(command_id):
+	"""
+	Функція видалення команди
+	"""
 	print('del')
 	name = db.get_command_name(command_id)
 	form = wtf.edit_command_form(name=name)
@@ -167,6 +179,7 @@ def del_command(command_id):
 	if form_dialog.submit.data:
 		print('Так')
 	return redirect(url_for('settings_command', command_id=command_id))
+
 
 if __name__ == '__main__':
 	app.run(host=config.HOST, debug=config.DEBUG)
