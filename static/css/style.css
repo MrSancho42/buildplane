@@ -154,6 +154,18 @@ h1,h2,h3,h4,h5,h6{font-size:inherit;font-weight: 400;}
 	z-index: 3;
 	gap: 20px;
 }
+.top-bar > a{
+	width: min-content;
+	max-width: 200px;
+}
+.top-bar__home{
+	content: url(../ico/house.svg);
+	width: 60px !important;
+	padding: 0 12px !important;
+}
+.top-bar > *:last-child{
+	margin-left: 10px;
+}
 
 /* Логотип на верхньому меню */
 .logo{
@@ -162,9 +174,6 @@ h1,h2,h3,h4,h5,h6{font-size:inherit;font-weight: 400;}
 	padding: 0 7.8px;
 	margin-right: auto;
 }
-
-/* Користувач */
-.user{max-width: 200px;}
 
 /* Ліве меню для команд і груп */
 .left-bar{
