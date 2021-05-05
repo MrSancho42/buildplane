@@ -80,6 +80,12 @@ class db_work():
 		return False
 	
 
+	def get_command_name(self, command_id):
+		return self.__cur.execute(f'''SELECT command_id, name
+									FROM v_command
+									WHERE command_id = "{command_id}"''').fetchone()
+
+
 	def get_groups(self, command_id):
 		"""
 		Функція що дістає групи команди до яких належить користувач.

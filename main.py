@@ -171,7 +171,8 @@ def home():
 @app.route('/command/<command_id>/task')
 def command_task(command_id):
 	user = db.get_user()
-
+	command = db.get_command_name(command_id)
+	
 	groups = db.get_groups(command_id)
 	if groups:
 		for group in groups:
@@ -181,6 +182,7 @@ def command_task(command_id):
 	cols = db.get_command_tasks(command_id)
 	return render_template('command_task.html',
 							user=user,
+							command=command,
 							groups=groups,
 							cols=cols)
 
