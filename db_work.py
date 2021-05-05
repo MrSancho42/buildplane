@@ -21,6 +21,8 @@ class db_work():
 		"""
 		Генератор хеш функцій.
 		Може використовуватися як самостійний скрипт.
+
+		Повертає захешоване заначення
 		"""
 
 		return sha256(str(value).encode('utf-8')).hexdigest()
@@ -29,6 +31,8 @@ class db_work():
 	def get_user(self):
 		"""
 		Функція для отримання імені користувача.
+
+		Повертає {user_id, name}
 		"""
 		return self.__cur.execute(f'''SELECT *
 									FROM v_users
@@ -58,6 +62,10 @@ class db_work():
 		Функція реєстрації.
 		Перевіряє чи введений пароль існує.
 		Якщо ні то вводить інформацію користувача у базу.
+		Повертає True
+
+		Якщо із таким логіном користувач існує
+		Повертає False
 		"""
 
 		if self.__cur.execute(f'SELECT * FROM users WHERE login = "{login}"').fetchone():
@@ -70,6 +78,8 @@ class db_work():
 	def get_commands(self):
 		"""
 		Функція що дістає команди до яких належить користувач.
+
+		Повертає {command_id, name, owner_id, user_id}
 		"""
 
 		res = self.__cur.execute(f'''SELECT * FROM v_command
@@ -81,6 +91,12 @@ class db_work():
 	
 
 	def get_command_name(self, command_id):
+		"""
+		Функція що дістає команду.
+
+		Повертає {command_id, name}
+		"""
+
 		return self.__cur.execute(f'''SELECT command_id, name
 									FROM v_command
 									WHERE command_id = "{command_id}"''').fetchone()
@@ -89,6 +105,8 @@ class db_work():
 	def get_groups(self, command_id):
 		"""
 		Функція що дістає групи команди до яких належить користувач.
+
+		Повертає [{group_id, name, color, command_id, manager_id, user_id, owner_id}]
 		"""
 
 		res = self.__cur.execute(f'''SELECT *
@@ -105,6 +123,10 @@ class db_work():
 	def get_cols(self, element, element_id):
 		"""
 		Функція що дістає колонки наданого елемента.
+
+		Повертає [{col_id, name}],
+		або якщо колонок немає
+		Повертає False
 		"""
 
 		try:
@@ -129,6 +151,10 @@ class db_work():
 	def get_personal_tasks(self):
 		"""
 		Функція що дістає завдання та колонки користувача.
+
+		Повертає [{col_id, name, tasks: [{task_id, description, start_date, end_date, done, col_id}]}]
+		або якщо колонок немає
+		Повертає False
 		"""
 
 		cols = self.get_cols('user', self.__user)
@@ -145,6 +171,13 @@ class db_work():
 
 
 	def get_command_tasks(self, command_id):
+		"""
+		Функція що дістає завдання та колонки команди.
+
+		Повертає [{col_id, name, tasks: [{task_id, description, start_date, end_date, done, performer_id, col_id, command_id, name}]}]
+		або якщо колонок немає False
+		"""
+
 		cols = self.get_cols('command', command_id)
 		if not cols:
 			return False
