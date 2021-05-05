@@ -197,6 +197,7 @@ h1,h2,h3,h4,h5,h6{font-size:inherit;font-weight: 400;}
 	content: url(../ico/close.svg);
 	position: absolute;
 	height: 34px;
+	width: 34px;
 	padding: 8px;
 	border-radius: 50%;
 	top: 10px;
@@ -263,7 +264,7 @@ h1,h2,h3,h4,h5,h6{font-size:inherit;font-weight: 400;}
 .bar__item > a:nth-child(2){
 	content: url(../ico/seting.svg);
 	height: inherit;
-	padding: 16px 18px;
+	padding: 16px 26px;
 	margin-right: -20px;
 	opacity: 1;
 }
