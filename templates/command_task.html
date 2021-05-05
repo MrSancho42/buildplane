@@ -1,14 +1,15 @@
 {% extends "work_space.html" %}
 
 {% block top_bar %}
-
+<a class="bar__item top-bar__home" href="/home/task"></a>
+<a class="bar__item" href="">{{ command.name }}</a>
 {% endblock %}
 
 {% block left_bar %}
-	{% if commands %}
-		{% for item in commands %}
+	{% if groups %}
+		{% for item in groups %}
 			<div class="bar__item">
-				<a href="/command/{{ item.command_id }}/task">
+				<a href="">
 					<span>{{ item.name }}</span>
 				</a>
 				{% if item.ownership %}	
@@ -17,7 +18,7 @@
 			</div>
 		{% endfor %}
 	{% else %}
-		Команд немає...
+		Груп немає...
 	{% endif %}
 {% endblock %}
 
@@ -45,6 +46,9 @@
 										{{ task.description }}
 									</p>
 									<span class="task__submit-clone"></span>
+									<p>
+										{{ task.name }}
+									</p>
 									<p>
 										{% if task.start_date %}
 											{% if task.end_date %}
