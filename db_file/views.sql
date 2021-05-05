@@ -1,4 +1,9 @@
-CREATE VIEW "v_command" AS SELECT "command_id", "name", "owner_id" FROM "commands";
+CREATE VIEW "v_command" AS 
+SELECT "commands"."command_id", "name", "owner_id", "user_id"
+FROM "commands"
+INNER JOIN "commands_user"
+ON "commands_user"."command_id" = "commands"."command_id";
+
 CREATE VIEW "v_users" AS SELECT "user_id", "name" FROM "users";
 CREATE VIEW "v_user_cols" AS SELECT "user_id", "cols_order" FROM "users";
 CREATE VIEW "v_personal_tasks" AS

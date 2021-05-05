@@ -72,10 +72,8 @@ class db_work():
 		Функція що дістає команди до яких належить користувач.
 		"""
 
-		res = self.__cur.execute(f'''SELECT v_command.command_id, v_command.name, v_command.owner_id FROM v_command
-								INNER JOIN commands_user
-								ON commands_user.command_id = v_command.command_id
-								WHERE commands_user.user_id = "{self.__user}"''').fetchall()
+		res = self.__cur.execute(f'''SELECT * FROM v_command
+								WHERE user_id = "{self.__user}"''').fetchall()
 		if res:
 			return [dict(i) for i in res]
 		
