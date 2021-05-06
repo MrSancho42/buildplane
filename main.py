@@ -148,6 +148,7 @@ def registration():
 
 @app.route('/add_command', methods=["POST", "GET"])
 def add_command():
+	user = db.get_user()['user_id']
 	form = wtf.add_command_form()
 
 	if form.validate_on_submit():
@@ -158,7 +159,7 @@ def add_command():
 		else:
 			print("shos' pizda")
 
-	return render_template('add_command.html', form=form, user=session['user'])
+	return render_template('add_command.html', form=form, user=user)
 
 @app.route('/home/task')
 def home():
@@ -225,7 +226,7 @@ def del_command(command_id):
 
 	return redirect(url_for('settings_command', command_id=command_id))
 
-	
+
 @app.route('/command/<command_id>/task')
 def command_task(command_id):
 	user = db.get_user()
