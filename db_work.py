@@ -170,6 +170,9 @@ class db_work():
 		return cols
 
 	def get_command_name(self, command_id):
+		'''
+		Функція отримання ім'я команди
+		'''
 		return self.__cur.execute(f"SELECT name FROM commands WHERE command_id = {command_id}").fetchone()[0]
 
 	def get_command_tasks(self, command_id):
@@ -194,16 +197,31 @@ class db_work():
 
 
 	def add_command(self, name, owner_id):
+		'''
+		Функція додання нової команди.
+		Повертає True після виконання операції
+		'''
+
 		self.__cur.execute('INSERT INTO commands VALUES(NULL, ?, ?, NULL)', (name, owner_id))
 		command_id = self.__cur.execute("SELECT last_insert_rowid() from commands").fetchone()[0]
 		self.__cur.execute('INSERT INTO commands_user VALUES(?, ?)', (owner_id, command_id))
 		return True
 	
 	def edit_command(self, command_id, name):
+		'''
+		Функція редагування команди
+		Повертає True після виконання операції
+		'''
+		
 		self.__cur.execute(f"UPDATE commands SET name = '{name}' WHERE command_id = {command_id}")
 		return True
 
 	def del_command(self, comand_id):
+		'''
+		Функція видалення команди.
+
+		'''
+
 		# перебір груп команди
 		groups = self.__cur.execute(f'SELECT group_id FROM groups WHERE command_id = {comand_id}')
 		if groups:

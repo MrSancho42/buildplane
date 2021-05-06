@@ -148,6 +148,9 @@ def registration():
 
 @app.route('/add_command', methods=["POST", "GET"])
 def add_command():
+	"""
+	Сторінка створення нової команди
+	"""
 	user = db.get_user()['user_id']
 	form = wtf.add_command_form()
 
