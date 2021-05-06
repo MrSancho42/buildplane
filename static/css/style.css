@@ -253,17 +253,26 @@ h1,h2,h3,h4,h5,h6{font-size:inherit;font-weight: 400;}
 	z-index: 3;
 	gap: 20px;
 }
+.top-bar > a{
+	width: min-content;
+	max-width: 200px;
+}
+.top-bar__home{
+	content: url(../ico/house.svg);
+	width: 60px !important;
+	padding: 0 12px !important;
+}
+.top-bar > *:last-child{
+	margin-left: 10px;
+}
 
 /* Логотип на верхньому меню */
 .logo{
-	content: url(../ico/logo.png);
+	content: url(../ico/logo_BP_kran_light.svg);
 	height: 50px;
 	padding: 0 7.8px;
 	margin-right: auto;
 }
-
-/* Користувач */
-.user{max-width: 200px;}
 
 /* Ліве меню для команд і груп */
 .left-bar{
@@ -289,6 +298,7 @@ h1,h2,h3,h4,h5,h6{font-size:inherit;font-weight: 400;}
 	overflow-x: hidden;
 	overflow-y: auto;
 }
+.left-bar .bar__item{max-width: 330px;}
 
 /* Кнопочка що згортає ліве меню */
 #left-bar__minimize{display: none;}
@@ -296,6 +306,7 @@ h1,h2,h3,h4,h5,h6{font-size:inherit;font-weight: 400;}
 	content: url(../ico/close.svg);
 	position: absolute;
 	height: 34px;
+	width: 34px;
 	padding: 8px;
 	border-radius: 50%;
 	top: 10px;
@@ -362,7 +373,7 @@ h1,h2,h3,h4,h5,h6{font-size:inherit;font-weight: 400;}
 .bar__item > a:nth-child(2){
 	content: url(../ico/seting.svg);
 	height: inherit;
-	padding: 16px 18px;
+	padding: 16px 26px;
 	margin-right: -20px;
 	opacity: 1;
 }

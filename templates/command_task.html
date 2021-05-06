@@ -1,27 +1,24 @@
 {% extends "work_space.html" %}
 
 {% block top_bar %}
-
+<a class="bar__item top-bar__home" href="/home/task"></a>
+<a class="bar__item" href="">{{ command.name }}</a>
 {% endblock %}
 
 {% block left_bar %}
-	{% if commands %}
-	{% for item in commands %}
-		<div class="bar__item">
-			<a href="/command/{{ item.command_id }}/task">
-				<span>{{ item.name }}</span>
-			</a>
-			{% if item.ownership %}	
-				<a href=""></a>
-			{% endif %}
-		</div>
-	{% endfor %}
-	<a href="/add_command" class="add-button add-button_minimize left-bar__add-button">
-		<span>Додати команду</span>
-		<span></span>
-	</a>
+	{% if groups %}
+		{% for item in groups %}
+			<div class="bar__item">
+				<a href="">
+					<span>{{ item.name }}</span>
+				</a>
+				{% if item.ownership %}	
+					<a href=""></a>
+				{% endif %}
+			</div>
+		{% endfor %}
 	{% else %}
-		Команд немає...
+		Груп немає...
 	{% endif %}
 {% endblock %}
 
@@ -49,6 +46,9 @@
 										{{ task.description }}
 									</p>
 									<span class="task__submit-clone"></span>
+									<p>
+										{{ task.name }}
+									</p>
 									<p>
 										{% if task.start_date %}
 											{% if task.end_date %}
