@@ -176,7 +176,8 @@ def del_command(command_id):
 	form_dialog = wtf.del_dialog_form()
 
 	if form_dialog.submit.data:
-		print('Так')
+		db.del_command(command_id)
+
 	return redirect(url_for('settings_command', command_id=command_id))
 
 

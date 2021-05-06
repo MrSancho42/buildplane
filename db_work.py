@@ -98,7 +98,32 @@ class db_work():
 		self.__cur.execute(f"UPDATE commands SET name = '{name}' WHERE command_id = {command_id}")
 		return True
 
-	#def del_command(self, comand_id):
+	def del_command(self, comand_id):
+		# перебір груп команди
+		groups = self.__cur.execute(f'SELECT group_id FROM groups WHERE command_id = {comand_id}')
+		if groups:
+			print('groups')
+			for group in groups:
+				group_id = group['group_id']
+				print('g', group_id)
+
+				# перебір подій групи
+				group_events = self.__cur.execute(f'SELECT event_id FROM groups_event WHERE group_id = {group_id}')
+				if group_events:
+					print('group events')
+					for event in group_events:
+						event_id = event['event_id']
+						print('e', event)
+				
+				# перебір колонок групи
+				list_group_cols = self.__cur.execute(f'SELECT cols_order FROM groups WHERE group_id = {group_id}')
+				if list_group_cols:
+					print('group cols')
+
+
+
+		#for i in id_groups:
+		#	print("hhh --- ", id_groups[i])
 		#self.__cur.execute(f'DELETE FROM commands WHERE command_id = {comand_id}')
 		#print("hi from db_work!")
 		#groups = self.__cur.execute(f"SELECT group_id FROM commands WHERE command_id = {comand_id}").fetchall()
