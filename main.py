@@ -1,5 +1,5 @@
 import sqlite3
-from flask import Flask, render_template, g, redirect, url_for, request, flash, session
+from flask import Flask, render_template, g, redirect, url_for, request, flash, session, jsonify, make_response
 from flask_session import Session
 import redis
 from datetime import timedelta
@@ -166,6 +166,15 @@ def home():
 							user=user,
 							commands=commands,
 							cols=cols)
+
+
+@app.route('/home/task/dnd', methods=["POST"])
+def home_dnd():
+	data = request.get_json()
+
+	print('Zone: ' + data['coll'] + '\n' + 'Item: ' + data['task'])
+
+	return make_response(jsonify({}, 200))
 
 
 @app.route('/command/<command_id>/task')
