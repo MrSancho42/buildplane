@@ -152,7 +152,7 @@ h1,h2,h3,h4,h5,h6{font-size:inherit;font-weight: 400;}
 	box-shadow: 0 2px var(--shadow);
 	padding: 0 20px;
 	z-index: 3;
-	gap: 20px;
+	gap: 10px;
 }
 .top-bar > a{
 	width: min-content;
@@ -164,7 +164,7 @@ h1,h2,h3,h4,h5,h6{font-size:inherit;font-weight: 400;}
 	padding: 0 12px !important;
 }
 .top-bar > *:last-child{
-	margin-left: 10px;
+	margin-left: 25px;
 }
 
 /* Логотип на верхньому меню */

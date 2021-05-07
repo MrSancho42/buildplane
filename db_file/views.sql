@@ -1,16 +1,19 @@
+CREATE VIEW "v_users" AS SELECT "user_id", "name" FROM "users";
+
+CREATE VIEW "v_user_cols" AS SELECT "user_id", "cols_order" FROM "users";
+
+CREATE VIEW "v_personal_tasks" AS
+SELECT "task_id", "description", "start_date", "end_date", "done", "col_id"
+FROM "personal_tasks";
+
 CREATE VIEW "v_command" AS 
 SELECT "commands"."command_id", "name", "owner_id", "user_id"
 FROM "commands"
 INNER JOIN "commands_user"
 ON "commands_user"."command_id" = "commands"."command_id";
 
-CREATE VIEW "v_users" AS SELECT "user_id", "name" FROM "users";
-CREATE VIEW "v_user_cols" AS SELECT "user_id", "cols_order" FROM "users";
-CREATE VIEW "v_personal_tasks" AS
-SELECT "task_id", "description", "start_date", "end_date", "done", "col_id"
-FROM "personal_tasks";
-
 CREATE VIEW "v_command_cols" AS SELECT "command_id", "cols_order" FROM "commands";
+
 CREATE VIEW "v_command_tasks" AS
 SELECT "tasks"."task_id", "description", "start_date", "end_date", "done", "performer_id", "col_id", "commands_task"."command_id", "users"."name"
 FROM "tasks"
@@ -26,3 +29,13 @@ INNER JOIN "groups_user"
 ON "groups"."group_id" = "groups_user"."group_id"
 INNER JOIN "commands"
 ON "groups"."command_id" = "commands"."command_id";
+
+CREATE VIEW "v_group_cols" AS SELECT "group_id", "cols_order" FROM "groups";
+
+CREATE VIEW "v_group_tasks" AS
+SELECT "tasks"."task_id", "description", "start_date", "end_date", "done", "performer_id", "col_id", "groups_task"."group_id", "users"."name"
+FROM "tasks"
+INNER JOIN "groups_task"
+ON "tasks"."task_id" = "groups_task"."task_id"
+INNER JOIN "users"
+ON "tasks"."performer_id" = "users"."user_id";
