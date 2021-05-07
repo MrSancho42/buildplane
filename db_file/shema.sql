@@ -136,6 +136,7 @@ CREATE TABLE IF NOT EXISTS "events" (
 	"event_id" INTEGER PRIMARY KEY AUTOINCREMENT,
 	"description" TEXT NOT NULL,
 	"date" TEXT
+	
 );
 
 /* Призначені користувачам події */
@@ -159,6 +160,6 @@ CREATE TABLE IF NOT EXISTS "commands_event" (
 CREATE TABLE IF NOT EXISTS "groups_event" (
 	"event_id" INTEGER NOT NULL,
 	"group_id" INTEGER NOT NULL,
-	FOREIGN KEY ("event_id") REFERENCES "events" ("event_id"),
+	FOREIGN KEY ("event_id") REFERENCES "events" ("event_id") ON DELETE CASCADE,
 	FOREIGN KEY ("group_id") REFERENCES "groups" ("group_id")
 );

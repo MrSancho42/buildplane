@@ -240,10 +240,11 @@ class db_work():
 				if group_events:
 					for event in group_events:
 						event = event['event_id']
+						self.__cur.execute(f'DELETE FROM events WHERE event_id = {event}')
 				
 				# перебір колонок групи
 				group_cols = self.__cur.execute(f'''SELECT cols_order
-									FROM v_group WHERE group_id = {group}''').fetchall()
+									FROM groups WHERE group_id = {group}''').fetchall()
 				if group_cols:
 					for col in group_cols:
 						col = col['cols_order'].split(',')
@@ -262,7 +263,7 @@ class db_work():
 			event = event['event_id']
 
 		# перебір колонок команди
-		command_cols = self.__cur.execute(f'''SELECT cols_order FROM v_command
+		command_cols = self.__cur.execute(f'''SELECT cols_order FROM commands
 									WHERE command_id = {command_id}''').fetchall()
 		for col in command_cols:
 			col = col['cols_order'].split(',')
