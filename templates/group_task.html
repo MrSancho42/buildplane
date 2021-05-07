@@ -2,7 +2,8 @@
 
 {% block top_bar %}
 <a class="bar__item top-bar__home" href="/home/task"></a>
-<a class="bar__item" href="">{{ command.name }}</a>
+<a class="bar__item" href="/command/{{ command.command_id }}/task">{{ command.name }}</a>
+<a class="bar__item" href="">{{ current_group.name }}</a>
 {% endblock %}
 
 {% block left_bar %}
@@ -18,7 +19,7 @@
 			</div>
 		{% endfor %}
 	{% else %}
-		Груп немає...
+		Груп немає, і це мене лякає...
 	{% endif %}
 {% endblock %}
 
@@ -32,6 +33,7 @@
 			Події
 		</a>
 	</div>
+
 	<div class="work-area__board">
 		{% if cols %}
 			{% for col in cols %}

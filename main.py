@@ -249,5 +249,27 @@ def command_task(command_id):
 							cols=cols)
 
 
+@app.route('/group/<group_id>/task')
+def group_task(group_id):
+	user = db.get_user()
+	current_group = db.get_group_info(group_id)
+	
+	command = db.get_command_name(current_group['command_id'])
+	
+	groups = db.get_groups(current_group['command_id'])
+	if groups:
+		for group in groups:
+			group['ownership'] = group['manager_id'] == group['user_id'] or group['owner_id'] == group['user_id']
+			group.pop('manager_id', 'owner_id')
+
+	cols = db.get_group_tasks(group_id)
+	return render_template('group_task.html',
+							user=user,
+							command=command,
+							current_group=current_group,
+							groups=groups,
+							cols=cols)
+
+
 if __name__ == '__main__':
 	app.run(host=config.HOST, debug=config.DEBUG)
