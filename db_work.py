@@ -120,6 +120,18 @@ class db_work():
 		return False
 
 
+	def get_group_info(self, group_id):
+		"""
+		Функція що дістає групи команди до яких належить користувач.
+
+		Повертає {group_id, name, command_id}
+		"""
+
+		return self.__cur.execute(f'''SELECT group_id, name, command_id
+									FROM v_group
+									WHERE group_id = "{group_id}"''').fetchone()
+
+
 	def get_cols(self, element, element_id):
 		"""
 		Функція що дістає колонки наданого елемента.
@@ -185,6 +197,27 @@ class db_work():
 		for col in cols:
 			res = self.__cur.execute(f'''SELECT *
 										FROM v_command_tasks
+										WHERE col_id = {col['col_id']}''').fetchall()
+			col['tasks'] = res
+			
+		return cols
+
+
+	def get_group_tasks(self, group_id):
+		"""
+		Функція що дістає завдання та колонки команди.
+
+		Повертає [{col_id, name, tasks: [{task_id, description, start_date, end_date, done, performer_id, col_id, group_id, name}]}]
+		або якщо колонок немає False
+		"""
+
+		cols = self.get_cols('group', group_id)
+		if not cols:
+			return False
+
+		for col in cols:
+			res = self.__cur.execute(f'''SELECT *
+										FROM v_group_tasks
 										WHERE col_id = {col['col_id']}''').fetchall()
 			col['tasks'] = res
 			
