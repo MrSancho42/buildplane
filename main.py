@@ -172,7 +172,7 @@ def home():
 def home_dnd():
 	data = request.get_json()
 
-	print('Zone: ' + data['coll'] + '\n' + 'Item: ' + data['task'])
+	db.set_personal_task_col(data['coll'], data['task'])
 
 	return make_response(jsonify({}, 200))
 

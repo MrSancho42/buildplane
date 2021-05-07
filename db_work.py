@@ -182,6 +182,19 @@ class db_work():
 		return cols
 
 
+	def set_personal_task_col(self, col, task):
+		"""
+		Функція що змінює колонку завдання.
+
+		Якщо дані невірні, то нічого не відбувається.
+		"""
+
+		if int(col) in [i['col_id'] for i in self.get_cols('user', self.__user)]:
+			self.__cur.execute(f'''UPDATE personal_tasks
+								SET col_id = {col}
+								WHERE task_id = {task} and user_id = {self.__user}''')
+
+
 	def get_command_tasks(self, command_id):
 		"""
 		Функція що дістає завдання та колонки команди.
