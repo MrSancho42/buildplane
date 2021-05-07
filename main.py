@@ -155,10 +155,10 @@ def add_command():
 	form = wtf.add_command_form()
 
 	if form.validate_on_submit():
-		if db.add_command(form.name.data, session['user']['user_id']):
+		if db.add_command(form.name.data, user):
 			if 'commands' in session:
 				session.pop('commands')
-			render_template('home.html', user=session['user'])
+			render_template('home.html', user=user)
 		else:
 			print("shos' pizda")
 

@@ -171,7 +171,9 @@ class db_work():
 
 	def get_command_name(self, command_id):
 		'''
-		Функція отримання ім'я команди
+		Функція отримання ім'я команди.
+
+		Повертає ім'я команди
 		'''
 		return self.__cur.execute(f"SELECT name FROM commands WHERE command_id = {command_id}").fetchone()[0]
 
@@ -199,6 +201,7 @@ class db_work():
 	def add_command(self, name, owner_id):
 		'''
 		Функція додання нової команди.
+
 		Повертає True після виконання операції
 		'''
 
@@ -210,38 +213,81 @@ class db_work():
 	def edit_command(self, command_id, name):
 		'''
 		Функція редагування команди
+
 		Повертає True після виконання операції
 		'''
-		
+
 		self.__cur.execute(f"UPDATE commands SET name = '{name}' WHERE command_id = {command_id}")
 		return True
 
-	def del_command(self, comand_id):
+	def del_command(self, command_id):
 		'''
 		Функція видалення команди.
 
 		'''
 
 		# перебір груп команди
-		groups = self.__cur.execute(f'SELECT group_id FROM groups WHERE command_id = {comand_id}')
+		groups = self.__cur.execute(f'''SELECT group_id FROM v_group
+									WHERE command_id = {command_id}''').fetchall()
+
 		if groups:
-			print('groups')
+			print('!!GROUPS!!')
 			for group in groups:
-				group_id = group['group_id']
-				print('g', group_id)
+				group = group['group_id']
 
 				# перебір подій групи
-				group_events = self.__cur.execute(f'SELECT event_id FROM groups_event WHERE group_id = {group_id}')
+				group_events = self.__cur.execute(f'''SELECT event_id
+									FROM groups_event WHERE group_id = {group}''').fetchall()
 				if group_events:
-					print('group events')
+					print('!!group events!!')
 					for event in group_events:
-						event_id = event['event_id']
+						event = event['event_id']
 						print('e', event)
 				
 				# перебір колонок групи
-				list_group_cols = self.__cur.execute(f'SELECT cols_order FROM groups WHERE group_id = {group_id}')
-				if list_group_cols:
-					print('group cols')
+				group_cols = self.__cur.execute(f'''SELECT cols_order
+									FROM v_group WHERE group_id = {group}''').fetchall()
+				if group_cols:
+					print('!!group cols!!')
+					for col in group_cols:
+						col = col['cols_order'].split(',')
+						print('g_c', col)
+
+						# перебір завдань колонок групи
+						for col_id in col:
+							print('!!group col', col_id, 'tasks!!')
+							group_tasks = self.__cur.execute(f'''SELECT task_id
+									FROM groups_task WHERE group_id = {group}''').fetchall()
+							for task in group_tasks:
+								task = task['task_id']
+								print('g_c_t', task)
+
+		# перебір подій команди
+		command_events = self.__cur.execute(f'''SELECT event_id FROM commands_event
+									WHERE command_id = {command_id}''').fetchall()
+		print('!!COMMAND EVENTS!!')
+		for event in command_events:
+			event = event['event_id']
+			print('c_e', event)
+
+		# перебір колонок команди
+		command_cols = self.__cur.execute(f'''SELECT cols_order FROM v_command
+									WHERE command_id = {command_id}''').fetchall()
+		print('!!COMMAND COLS!!')
+		for col in command_cols:
+			col = col['cols_order'].split(',')
+			print('c_c', col)
+
+			# перебір завдань в колонках команди
+			for col_id in col:
+				print('!!command col', col_id, 'tasks!!')
+				command_tasks = self.__cur.execute(f'''SELECT task_id FROM commands_task
+									WHERE command_id = {command_id}''').fetchall()
+				for task in command_tasks:
+					task = task['task_id']
+					print('c_c_t', task)
+
+
 
 
 
