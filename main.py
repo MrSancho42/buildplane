@@ -227,7 +227,7 @@ def del_command(command_id):
 	if form_dialog.submit.data:
 		db.del_command(command_id)
 
-	return redirect(url_for('settings_command', command_id=command_id))
+	return redirect(url_for('home'))
 
 
 @app.route('/command/<command_id>/task')

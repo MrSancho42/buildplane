@@ -245,7 +245,6 @@ class db_work():
 		if groups:
 			for group in groups:
 				group = group['group_id']
-
 				# перебір подій групи
 				group_events = self.__cur.execute(f'''SELECT event_id
 									FROM groups_event WHERE group_id = {group}''').fetchall()
@@ -256,26 +255,31 @@ class db_work():
 				
 				# перебір колонок групи
 				group_cols = self.__cur.execute(f'''SELECT cols_order
-									FROM groups WHERE group_id = {group}''').fetchall()
+									FROM v_group_cols WHERE group_id = {group}''').fetchall()
 				if group_cols:
 					for col in group_cols:
 						col = col['cols_order'].split(',')
-
 						# перебір завдань колонок групи
 						for col_id in col:
 							group_tasks = self.__cur.execute(f'''SELECT task_id
 									FROM groups_task WHERE group_id = {group}''').fetchall()
+							
 							for task in group_tasks:
 								task = task['task_id']
+								self.__cur.execute(f'DELETE FROM tasks WHERE task_id = {task}')
+							
+							self.__cur.execute(f'DELETE FROM cols WHERE col_id = {col_id}')
+				self.__cur.execute(f'DELETE FROM groups WHERE group_id = {group}')
 
 		# перебір подій команди
 		command_events = self.__cur.execute(f'''SELECT event_id FROM commands_event
 									WHERE command_id = {command_id}''').fetchall()
 		for event in command_events:
 			event = event['event_id']
+			self.__cur.execute(f'DELETE FROM events WHERE event_id = {event}')
 
 		# перебір колонок команди
-		command_cols = self.__cur.execute(f'''SELECT cols_order FROM commands
+		command_cols = self.__cur.execute(f'''SELECT cols_order FROM v_command_cols
 									WHERE command_id = {command_id}''').fetchall()
 		for col in command_cols:
 			col = col['cols_order'].split(',')
@@ -286,21 +290,10 @@ class db_work():
 									WHERE command_id = {command_id}''').fetchall()
 				for task in command_tasks:
 					task = task['task_id']
+					self.__cur.execute(f'DELETE FROM tasks WHERE task_id = {task}')
+		self.__cur.execute(f'DELETE FROM commands WHERE command_id = {command_id}')
 
 
-
-
-
-		#for i in id_groups:
-		#	print("hhh --- ", id_groups[i])
-		#self.__cur.execute(f'DELETE FROM commands WHERE command_id = {comand_id}')
-		#print("hi from db_work!")
-		#groups = self.__cur.execute(f"SELECT group_id FROM commands WHERE command_id = {comand_id}").fetchall()
-		#print(groups)
-		#self.__cur.execute(f'DELETE FROM commands WHERE command_id = {comand_id}')
-		#колонки!!!!
-		#self.__cur.execute(f'DELETE FROM commands_event WHERE command_id = {comand_id}')
-		#return True
 	def get_group_tasks(self, group_id):
 		"""
 		Функція що дістає завдання та колонки команди.
