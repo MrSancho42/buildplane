@@ -25,7 +25,7 @@ CREATE TABLE IF NOT EXISTS "commands_user" (
 	"user_id"    INTEGER NOT NULL,
 	"command_id" INTEGER NOT NULL,
 	FOREIGN KEY ("user_id") REFERENCES "users" ("user_id"),
-	FOREIGN KEY ("command_id") REFERENCES "commands" ("command_id")
+	FOREIGN KEY ("command_id") REFERENCES "commands" ("command_id") ON DELETE CASCADE
 );
 
 /* Інвайти
@@ -60,7 +60,7 @@ CREATE TABLE IF NOT EXISTS "groups_user" (
 	"user_id"  INTEGER NOT NULL,
 	"group_id" INTEGER NOT NULL,
 	FOREIGN KEY ("user_id") REFERENCES "users" ("user_id"),
-	FOREIGN KEY ("group_id") REFERENCES "groups" ("group_id")
+	FOREIGN KEY ("group_id") REFERENCES "groups" ("group_id") ON DELETE CASCADE
 );
 
 
@@ -105,7 +105,7 @@ CREATE TABLE IF NOT EXISTS "tasks" (
 CREATE TABLE IF NOT EXISTS "commands_task" (
 	"task_id" INTEGER NOT NULL,
 	"command_id" INTEGER NOT NULL,
-	FOREIGN KEY ("task_id") REFERENCES "tasks" ("task_id"),
+	FOREIGN KEY ("task_id") REFERENCES "tasks" ("task_id") ON DELETE CASCADE,
 	FOREIGN KEY ("command_id") REFERENCES "commands" ("command_id")
 );
 
@@ -113,7 +113,7 @@ CREATE TABLE IF NOT EXISTS "commands_task" (
 CREATE TABLE IF NOT EXISTS "groups_task" (
 	"task_id" INTEGER NOT NULL,
 	"group_id" INTEGER NOT NULL,
-	FOREIGN KEY ("task_id") REFERENCES "tasks" ("task_id"),
+	FOREIGN KEY ("task_id") REFERENCES "tasks" ("task_id") ON DELETE CASCADE,
 	FOREIGN KEY ("group_id") REFERENCES "groups" ("group_id")
 );
 
@@ -152,7 +152,7 @@ CREATE TABLE IF NOT EXISTS "users_event" (
 CREATE TABLE IF NOT EXISTS "commands_event" (
 	"event_id" INTEGER NOT NULL,
 	"command_id" INTEGER NOT NULL,
-	FOREIGN KEY ("event_id") REFERENCES "events" ("event_id"),
+	FOREIGN KEY ("event_id") REFERENCES "events" ("event_id") ON DELETE CASCADE,
 	FOREIGN KEY ("command_id") REFERENCES "commands" ("command_id")
 );
 
