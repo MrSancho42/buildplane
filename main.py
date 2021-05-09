@@ -196,6 +196,15 @@ def command_task(command_id):
 							cols=cols)
 
 
+@app.route('/command/<command_id>/task/dnd', methods=["POST"])
+def command_task_dnd(command_id):
+	data = request.get_json()
+	
+	print('Хуй', data['coll'], data['task'], command_id)
+	db.set_command_task_col(data['coll'], data['task'], command_id)
+	return make_response(jsonify({}, 200))
+
+
 @app.route('/group/<group_id>/task')
 def group_task(group_id):
 	user = db.get_user()

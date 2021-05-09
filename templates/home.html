@@ -30,7 +30,7 @@
 	<div class="work-area__board">
 		{% if cols %}
 			{% for col in cols %}
-				<div class="coll">
+				<div class="coll" data-coll="{{ col.col_id }}">
 					<span>{{ col.name }}</span>
 					<div class="drop-zone" data-coll="{{ col.col_id }}">
 						{% for task in col.tasks %}

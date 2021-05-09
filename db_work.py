@@ -199,7 +199,7 @@ class db_work():
 		"""
 		Функція що дістає завдання та колонки команди.
 
-		Повертає [{col_id, name, tasks: [{task_id, description, start_date, end_date, done, performer_id, col_id, command_id, name}]}]
+		Повертає [{col_id, name, tasks: [{task_id, description, start_date, end_date, done, performer_id, col_id, command_id, name, owner_id}]}]
 		або якщо колонок немає False
 		"""
 
@@ -215,6 +215,22 @@ class db_work():
 			
 		return cols
 
+
+	def set_command_task_col(self, col, task, command_id):
+		"""
+		Функція що змінює колонку завдання команди.
+
+		Якщо дані невірні, то нічого не відбувається.
+		"""
+		
+		if int(col) in [i['col_id'] for i in self.get_cols('command', command_id)]:
+			self.__cur.execute(f'''UPDATE tasks
+								SET col_id = {col}
+								WHERE task_id = {task} and 
+									(SELECT count("task_id")
+									FROM "commands_task"
+									WHERE "command_id" = {command_id} and "task_id" = {task}) = 1''')
+	
 
 	def get_group_tasks(self, group_id):
 		"""
