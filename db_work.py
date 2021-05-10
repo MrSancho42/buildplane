@@ -145,7 +145,7 @@ class db_work():
 			res = self.__cur.execute(f'''SELECT cols_order
 										FROM v_{element}_cols
 										WHERE {element}_id = {element_id}''').fetchone()
-			res = list(res['cols_order'].split(','))
+			res = res['cols_order'].split(',')
 			
 			cols_order = [self.__cur.execute(f'''SELECT * 
 												FROM cols 
@@ -158,7 +158,6 @@ class db_work():
 
 		except AttributeError:
 			return False
-
 
 	def get_personal_tasks(self):
 		"""
@@ -181,6 +180,13 @@ class db_work():
 			
 		return cols
 
+	def get_command_name(self, command_id):
+		'''
+		Функція отримання ім'я команди.
+
+		Повертає ім'я команди
+		'''
+		return self.__cur.execute(f"SELECT name FROM commands WHERE command_id = {command_id}").fetchone()[0]
 
 	def set_personal_task_col(self, col, task):
 		"""
@@ -214,6 +220,131 @@ class db_work():
 			col['tasks'] = res
 			
 		return cols
+
+	def get_edit_command_rights(self, command_id, user_id):
+		'''
+		Перевіряє, чи в користувача є права на редагування команди.
+		
+		Якщо є - повертає True
+		якщо нема
+		повертає False
+		'''
+
+		result = self.__cur.execute(f'''SELECT owner_id FROM commands
+									WHERE command_id = {command_id}''').fetchall()[0]
+		if result['owner_id'] == user_id:
+			return True
+		else: return False
+
+
+	def add_command(self, name, owner_id):
+		'''
+		Функція додання нової команди.
+
+		Повертає True після виконання операції
+		'''
+
+		self.__cur.execute('INSERT INTO commands VALUES(NULL, ?, ?, NULL)', (name, owner_id))
+		command_id = self.__cur.execute("SELECT last_insert_rowid() from commands").fetchone()[0]
+		self.__cur.execute('INSERT INTO commands_user VALUES(?, ?)', (owner_id, command_id))
+		return True
+	
+	def edit_command(self, command_id, name):
+		'''
+		Функція редагування команди
+
+		Повертає True після виконання операції
+		'''
+
+		self.__cur.execute(f"UPDATE commands SET name = '{name}' WHERE command_id = {command_id}")
+		return True
+
+	def del_command(self, command_id):
+		'''
+		Функція видалення команди.
+
+		'''
+
+		# перебір груп
+		groups = self.__cur.execute(f'''SELECT group_id FROM v_group
+									WHERE command_id = {command_id}''').fetchall()
+
+		if groups:
+			for group in groups:
+				self.del_group(group['group_id'])
+
+		# перебір подій
+		command_events = self.__cur.execute(f'''SELECT event_id FROM commands_event
+									WHERE command_id = {command_id}''').fetchall()
+		if command_events:
+			for event in command_events:
+				event = event['event_id']
+				self.del_event(event)
+
+		# перебір колонок	
+		cols_list = self.__cur.execute(f'''SELECT cols_order FROM v_command_cols
+									WHERE command_id = {command_id}''').fetchall()
+		if cols_list:
+			for cols in cols_list:
+				if cols['cols_order'] is not None:
+					cols = cols['cols_order'].split(',')
+					for col_id in cols:
+						self.del_col('command', command_id, col_id)
+
+		self.__cur.execute(f'DELETE FROM commands WHERE command_id = {command_id}')
+
+
+	def del_group(self, group_id):
+		"""
+		Функція видалення групи
+		
+		"""
+
+		# перебір подій
+		group_events = self.__cur.execute(f'''SELECT event_id FROM groups_event
+										WHERE group_id = {group_id}''').fetchall()
+		if group_events:
+			for event in group_events:
+				event = event['event_id']
+				self.del_event(event)
+				
+		# перебір колонок 
+		cols_list = self.__cur.execute(f'''SELECT cols_order FROM v_group_cols
+									WHERE group_id = {group_id}''').fetchall()
+		if cols_list:
+			for cols in cols_list:
+				if cols['cols_order'] is not None:
+					cols = cols['cols_order'].split(',')
+					for col_id in cols:
+						self.del_col('group', group_id, col_id)
+
+		self.__cur.execute(f'DELETE FROM groups WHERE group_id = {group_id}')
+
+
+	def del_col(self, element, element_id, col_id):
+		'''
+		Видаляє одну колонку
+
+		Приймає ім'я та id елемента (команди, групи, користувача)
+		та id колонки
+		'''
+
+		tasks = self.__cur.execute(f'''SELECT task_id FROM v_{element}_tasks
+							WHERE {element}_id = {element_id}''').fetchall()
+		if tasks:
+			for task in tasks:
+				task = task['task_id']
+				self.__cur.execute(f'DELETE FROM tasks WHERE task_id = {task}')
+						
+		self.__cur.execute(f'DELETE FROM cols WHERE col_id = {col_id}')
+
+
+	def del_event(self, event_id):
+		'''
+		Видаляє одну подію
+		'''
+
+		self.__cur.execute(f'DELETE FROM events WHERE event_id = {event_id}')
 
 
 	def set_command_task_col(self, col, task, command_id):

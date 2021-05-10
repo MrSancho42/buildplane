@@ -2,16 +2,20 @@
 
 {% block left_bar %}
 	{% if commands %}
-		{% for item in commands %}
-			<div class="bar__item">
-				<a href="/command/{{ item.command_id }}/task">
-					<span>{{ item.name }}</span>
-				</a>
-				{% if item.ownership %}	
-					<a href=""></a>
-				{% endif %}
-			</div>
-		{% endfor %}
+	{% for item in commands %}
+		<div class="bar__item">
+			<a href="/command/{{ item.command_id }}/task">
+				<span>{{ item.name }}</span>
+			</a>
+			{% if item.ownership %}	
+				<a href="/settings_command/{{ item.command_id }}"></a>
+			{% endif %}
+		</div>
+	{% endfor %}
+	<a href="/add_command" class="add-button add-button_minimize left-bar__add-button">
+		<span>Додати команду</span>
+		<span></span>
+	</a>
 	{% else %}
 		Команд немає...
 	{% endif %}
