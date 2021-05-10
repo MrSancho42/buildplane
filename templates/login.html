@@ -20,11 +20,11 @@
 			{% for message in get_flashed_messages() %}
 				<span class="error">{{ message }}</span>
 			{% endfor %}
-			
+
 			<div>
 				{{ form.remember.label() }} {{ form.remember() }}
 			</div>
-			
+
 			{{ form.submit(class="button") }}
 		</form>
 	</div>

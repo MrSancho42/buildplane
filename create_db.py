@@ -27,7 +27,7 @@ def execute_script(path_to_file):
 
 	with open(get_path(path_to_file), 'r') as file_sql:
 		db.cursor().executescript(file_sql.read())
-	
+
 	db.commit()
 	db.close()
 
@@ -43,6 +43,6 @@ if __name__ == '__main__':
 
 	if input('Імпортувати дані із "data.sql"? (Т/н) ') != 'н' or 'Н':
 		execute_script(config.DB_DATA)
-	
+
 	if input('Створити представлення із "views.sql" (Т/н) ') != 'н' or 'Н':
 		execute_script(config.VIEWS)

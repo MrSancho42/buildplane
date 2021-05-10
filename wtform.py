@@ -47,7 +47,7 @@ class add_command_form(FlaskForm):
 										message='Довжина назви повинна бути до 30 символів'),
 						DataRequired(message='Заповніть це поле')])
 	submit = SubmitField('Підтвердити')
-		
+
 class edit_command_form(FlaskForm):
 	name = StringField('НАЗВА:', validators=[DataRequired(message='Заповніть це поле')])
 	submit = SubmitField('Підтвердити')

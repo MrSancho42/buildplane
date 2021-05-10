@@ -89,7 +89,7 @@ def clear():
 	"""
 	Тимчасова функція для очищення сесії.
 	"""
-	
+
 	session.clear()
 	return redirect(url_for('main'))
 
@@ -126,7 +126,7 @@ def login():
 			return redirect(url_for('home'))
 
 		flash(res['message'])
-			
+
 	return render_template('login.html', form=form)
 
 
@@ -141,32 +141,19 @@ def registration():
 	if form.validate_on_submit():
 		if db.registration(form.login.data, form.psw.data, form.name.data):
 			return redirect(url_for('login'))
-			
+
 		flash('Такий логін уже існує')
-			
+
 	return render_template('registration.html', form=form)
 
-@app.route('/add_command', methods=["POST", "GET"])
-def add_command():
-	"""
-	Сторінка створення нової команди
-	"""
-	user = db.get_user()
-	user_id = user['user_id']
-	form = wtf.add_command_form()
 
-	if form.validate_on_submit():
-		if db.add_command(form.name.data, user_id):
-			return redirect(url_for('home'))
-
-	return render_template('add_command.html', form=form, user=user)
-
+#Користувач///////////////////////////////////////////////////////////////////
 @app.route('/home/task')
 def home():
 	"""
 	Головна сторінка користувача
 	"""
-	
+
 	user = db.get_user()
 
 	commands = db.get_commands()
@@ -174,9 +161,9 @@ def home():
 		for i in commands:
 			i['ownership'] = i['owner_id'] == session['user']
 			i.pop('owner_id')
-	
+
 	cols = db.get_personal_tasks()
-	
+
 	return render_template('home.html',
 							user=user,
 							commands=commands,
@@ -192,6 +179,23 @@ def home_dnd():
 	return make_response(jsonify({}, 200))
 
 
+#Команди//////////////////////////////////////////////////////////////////////
+@app.route('/add_command', methods=["POST", "GET"])
+def add_command():
+	"""
+	Сторінка створення нової команди
+	"""
+	user = db.get_user()
+	user_id = user['user_id']
+	form = wtf.add_command_form()
+
+	if form.validate_on_submit():
+		if db.add_command(form.name.data, user_id):
+			return redirect(url_for('home'))
+
+	return render_template('add_command.html', form=form, user=user)
+
+
 @app.route('/settings_command/<int:command_id>', methods=["GET", "POST"])
 def settings_command(command_id):
 	"""
@@ -201,7 +205,7 @@ def settings_command(command_id):
 	user = db.get_user()
 	user_id = user['user_id']
 	if db.get_edit_command_rights(command_id, user_id):
-		name = db.get_command_name(command_id)
+		name = db.get_command_name(command_id)['name']
 		form = wtf.edit_command_form(name=name)
 		form_dialog = wtf.del_dialog_form()
 
@@ -216,7 +220,7 @@ def edit_command(command_id):
 	Функція редагування команди
 	"""
 
-	name = db.get_command_name(command_id)
+	name = db.get_command_name(command_id)['name']
 	form = wtf.edit_command_form(name=name)
 	form_dialog = wtf.del_dialog_form()
 
@@ -224,7 +228,7 @@ def edit_command(command_id):
 		name = form.name.data
 		if db.edit_command(command_id, name):
 			return redirect(url_for('settings_command', command_id=command_id))
-	
+
 	abort(404) # якщо користувач прописав шлях сам
 
 
@@ -235,7 +239,7 @@ def del_command(command_id):
 	"""
 
 	try:
-		name = db.get_command_name(command_id)
+		name = db.get_command_name(command_id)['name']
 		form = wtf.edit_command_form(name=name)
 		form_dialog = wtf.del_dialog_form()
 	except TypeError: #якщо команда уже видалена
@@ -248,23 +252,11 @@ def del_command(command_id):
 	abort(404)	# якщо користувач прописав шлях сам
 
 
-def groups_ownership(command_id):
-	groups = db.get_groups(command_id)
-
-	if groups:
-		for group in groups:
-			group['ownership'] = group['user_id'] in [group['owner_id'], group['command_owner_id']]
-			group.pop('owner_id')
-			group.pop('command_owner_id')
-
-	return groups
-
-
 @app.route('/command/<command_id>/task')
 def command_task(command_id):
 	user = db.get_user()
 	command = db.get_command_name(command_id)
-	
+
 	groups = groups_ownership(command_id)
 
 	cols = db.get_command_tasks(command_id)
@@ -278,18 +270,37 @@ def command_task(command_id):
 @app.route('/command/<command_id>/task/dnd', methods=["POST"])
 def command_task_dnd(command_id):
 	data = request.get_json()
-	
+
 	db.set_command_task_col(data['coll'], data['task'], command_id)
 	return make_response(jsonify({}, 200))
+
+
+#Групи////////////////////////////////////////////////////////////////////////
+def groups_ownership(command_id):
+	"""
+	Функція що дістає групи команди та визначає чи користувач є їх власником
+
+	Повертає список груп
+	"""
+
+	groups = db.get_groups(command_id)
+
+	if groups:
+		for group in groups:
+			group['ownership'] = group['user_id'] in [group['owner_id'], group['command_owner_id']]
+			group.pop('owner_id')
+			group.pop('command_owner_id')
+
+	return groups
 
 
 @app.route('/group/<group_id>/task')
 def group_task(group_id):
 	user = db.get_user()
 	current_group = db.get_group_info(group_id)
-	
+
 	command = db.get_command_name(current_group['command_id'])
-	
+
 	groups = groups_ownership(current_group['command_id'])
 
 	cols = db.get_group_tasks(group_id)
@@ -304,7 +315,7 @@ def group_task(group_id):
 @app.route('/group/<group_id>/task/dnd', methods=["POST"])
 def group_task_dnd(group_id):
 	data = request.get_json()
-	
+
 	db.set_group_task_col(data['coll'], data['task'], group_id)
 	return make_response(jsonify({}, 200))
 

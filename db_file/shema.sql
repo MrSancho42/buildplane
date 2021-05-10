@@ -136,7 +136,6 @@ CREATE TABLE IF NOT EXISTS "events" (
 	"event_id" INTEGER PRIMARY KEY AUTOINCREMENT,
 	"description" TEXT NOT NULL,
 	"date" TEXT
-	
 );
 
 /* Призначені користувачам події */
