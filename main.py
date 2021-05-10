@@ -177,16 +177,24 @@ def home_dnd():
 	return make_response(jsonify({}, 200))
 
 
+def groups_ownership(command_id):
+	groups = db.get_groups(command_id)
+
+	if groups:
+		for group in groups:
+			group['ownership'] = group['user_id'] in [group['owner_id'], group['command_owner_id']]
+			group.pop('owner_id')
+			group.pop('command_owner_id')
+	
+	return groups
+
+
 @app.route('/command/<command_id>/task')
 def command_task(command_id):
 	user = db.get_user()
 	command = db.get_command_name(command_id)
 	
-	groups = db.get_groups(command_id)
-	if groups:
-		for group in groups:
-			group['ownership'] = group['owner_id'] == group['user_id'] or group['command_owner_id'] == group['user_id']
-			group.pop('owner_id', 'command_owner_id')
+	groups = groups_ownership(command_id)
 
 	cols = db.get_command_tasks(command_id)
 	return render_template('command_task.html',
@@ -211,11 +219,7 @@ def group_task(group_id):
 	
 	command = db.get_command_name(current_group['command_id'])
 	
-	groups = db.get_groups(current_group['command_id'])
-	if groups:
-		for group in groups:
-			group['ownership'] = group['owner_id'] == group['user_id'] or group['command_owner_id'] == group['user_id']
-			group.pop('owner_id', 'command_owner_id')
+	groups = groups_ownership(current_group['command_id'])
 
 	cols = db.get_group_tasks(group_id)
 	return render_template('group_task.html',
