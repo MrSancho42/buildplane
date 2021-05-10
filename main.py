@@ -1,5 +1,5 @@
 import sqlite3
-from flask import Flask, render_template, g, redirect, url_for, request, flash, session
+from flask import Flask, render_template, g, redirect, url_for, request, flash, session, abort
 from flask_session import Session
 import redis
 from datetime import timedelta
@@ -220,9 +220,12 @@ def del_command(command_id):
 	Функція видалення команди
 	"""
 	print('del')
-	name = db.get_command_name(command_id)
-	form = wtf.edit_command_form(name=name)
-	form_dialog = wtf.del_dialog_form()
+	try:
+		name = db.get_command_name(command_id)
+		form = wtf.edit_command_form(name=name)
+		form_dialog = wtf.del_dialog_form()
+	except TypeError:
+		abort(404)
 
 	if form_dialog.submit.data:
 		db.del_command(command_id)

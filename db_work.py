@@ -258,9 +258,10 @@ class db_work():
 									WHERE command_id = {command_id}''').fetchall()
 		if cols_list:
 			for cols in cols_list:
-				cols = cols['cols_order'].split(',')
-				for col_id in cols:
-					self.del_col('command', command_id, col_id)
+				if cols['cols_order'] is not None:
+					cols = cols['cols_order'].split(',')
+					for col_id in cols:
+						self.del_col('command', command_id, col_id)
 
 		self.__cur.execute(f'DELETE FROM commands WHERE command_id = {command_id}')
 
@@ -284,9 +285,10 @@ class db_work():
 									WHERE group_id = {group_id}''').fetchall()
 		if cols_list:
 			for cols in cols_list:
-				cols = cols['cols_order'].split(',')
-				for col_id in cols:
-					self.del_col('group', group_id, col_id)
+				if cols['cols_order'] is not None:
+					cols = cols['cols_order'].split(',')
+					for col_id in cols:
+						self.del_col('group', group_id, col_id)
 
 		self.__cur.execute(f'DELETE FROM groups WHERE group_id = {group_id}')
 
