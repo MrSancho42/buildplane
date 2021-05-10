@@ -200,7 +200,6 @@ def command_task(command_id):
 def command_task_dnd(command_id):
 	data = request.get_json()
 	
-	print('Хуй', data['coll'], data['task'], command_id)
 	db.set_command_task_col(data['coll'], data['task'], command_id)
 	return make_response(jsonify({}, 200))
 
@@ -225,6 +224,14 @@ def group_task(group_id):
 							current_group=current_group,
 							groups=groups,
 							cols=cols)
+
+
+@app.route('/group/<group_id>/task/dnd', methods=["POST"])
+def group_task_dnd(group_id):
+	data = request.get_json()
+	
+	db.set_group_task_col(data['coll'], data['task'], group_id)
+	return make_response(jsonify({}, 200))
 
 
 if __name__ == '__main__':

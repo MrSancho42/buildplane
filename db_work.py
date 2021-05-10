@@ -253,6 +253,22 @@ class db_work():
 		return cols
 
 
+	def set_group_task_col(self, col, task, group_id):
+		"""
+		Функція що змінює колонку завдання команди.
+
+		Якщо дані невірні, то нічого не відбувається.
+		"""
+		
+		if int(col) in [i['col_id'] for i in self.get_cols('group', group_id)]:
+			self.__cur.execute(f'''UPDATE tasks
+								SET col_id = {col}
+								WHERE task_id = {task} and 
+									(SELECT count("task_id")
+									FROM "groups_task"
+									WHERE "group_id" = {group_id} and "task_id" = {task}) = 1''')
+
+
 
 if __name__ == '__main__':
 	print(db_work.hash(input('Введіть значення для хешування: ')))
