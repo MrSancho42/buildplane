@@ -151,16 +151,14 @@ def add_command():
 	"""
 	Сторінка створення нової команди
 	"""
-	user = db.get_user()['user_id']
+	user = db.get_user()
+	user_id = user['user_id']
 	form = wtf.add_command_form()
 
 	if form.validate_on_submit():
-		if db.add_command(form.name.data, user):
-			if 'commands' in session:
-				session.pop('commands')
+		if db.add_command(form.name.data, user_id):
 			render_template('home.html', user=user)
-		else:
-			print("shos' pizda")
+
 
 	return render_template('add_command.html', form=form, user=user)
 
@@ -191,12 +189,17 @@ def settings_command(command_id):
 	"""
 	Сторінка налаштувань команди
 	"""
-	name = db.get_command_name(command_id)
-	form = wtf.edit_command_form(name=name)
-	form_dialog = wtf.del_dialog_form()
 
-	return render_template('edit_command.html', user=session['user'], command_id=command_id,
-							form=form, form_dialog=form_dialog, name=name)
+	user = db.get_user()
+	user_id = user['user_id']
+	if db.get_edit_command_rights(command_id, user_id):
+		name = db.get_command_name(command_id)
+		form = wtf.edit_command_form(name=name)
+		form_dialog = wtf.del_dialog_form()
+
+		return render_template('edit_command.html', user=user, command_id=command_id,
+								form=form, form_dialog=form_dialog, name=name)
+	else: abort(404)
 
 
 @app.route('/edit_command/<int:command_id>', methods=["GET", "POST"])
@@ -204,6 +207,7 @@ def edit_command(command_id):
 	"""
 	Функція редагування команди
 	"""
+
 	name = db.get_command_name(command_id)
 	form = wtf.edit_command_form(name=name)
 	form_dialog = wtf.del_dialog_form()
@@ -219,12 +223,12 @@ def del_command(command_id):
 	"""
 	Функція видалення команди
 	"""
-	print('del')
+
 	try:
 		name = db.get_command_name(command_id)
 		form = wtf.edit_command_form(name=name)
 		form_dialog = wtf.del_dialog_form()
-	except TypeError:
+	except TypeError: #якщо команда уже видалена
 		abort(404)
 
 	if form_dialog.submit.data:
