@@ -251,7 +251,7 @@ class db_work():
 		if command_events:
 			for event in command_events:
 				event = event['event_id']
-				self.__cur.execute(f'DELETE FROM events WHERE event_id = {event}')
+				self.del_event(event)
 
 		# перебір колонок	
 		cols_list = self.__cur.execute(f'''SELECT cols_order FROM v_command_cols
@@ -277,7 +277,7 @@ class db_work():
 		if group_events:
 			for event in group_events:
 				event = event['event_id']
-				self.__cur.execute(f'DELETE FROM events WHERE event_id = {event}')
+				self.del_event(event)
 				
 		# перебір колонок 
 		cols_list = self.__cur.execute(f'''SELECT cols_order FROM v_group_cols
@@ -307,6 +307,14 @@ class db_work():
 				self.__cur.execute(f'DELETE FROM tasks WHERE task_id = {task}')
 						
 		self.__cur.execute(f'DELETE FROM cols WHERE col_id = {col_id}')
+
+
+	def del_event(self, event_id):
+		'''
+		Видаляє одну подію
+		'''
+
+		self.__cur.execute(f'DELETE FROM events WHERE event_id = {event_id}')
 
 
 	def get_group_tasks(self, group_id):
