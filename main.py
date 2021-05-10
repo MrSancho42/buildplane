@@ -1,5 +1,5 @@
 import sqlite3
-from flask import Flask, render_template, g, redirect, url_for, request, flash, session
+from flask import Flask, render_template, g, redirect, url_for, request, flash, session, abort
 from flask_session import Session
 import redis
 from datetime import timedelta
@@ -62,7 +62,8 @@ def before_request():
 
 	exceptions = ['/', '/login', '/registration']
 	if 'user' not in session and request.path not in exceptions:
-		return redirect(url_for('login'))
+		#return redirect(url_for('login'))
+		pass
 
 	if not hasattr(g, 'link_db'):
 		g.link_db = sqlite3.connect(get_path(config.DATABASE))
@@ -145,6 +146,20 @@ def registration():
 			
 	return render_template('registration.html', form=form)
 
+@app.route('/add_command', methods=["POST", "GET"])
+def add_command():
+	"""
+	Сторінка створення нової команди
+	"""
+	user = db.get_user()
+	user_id = user['user_id']
+	form = wtf.add_command_form()
+
+	if form.validate_on_submit():
+		if db.add_command(form.name.data, user_id):
+			return redirect(url_for('home'))
+
+	return render_template('add_command.html', form=form, user=user)
 
 @app.route('/home/task')
 def home():
@@ -166,6 +181,62 @@ def home():
 							user=user,
 							commands=commands,
 							cols=cols)
+
+
+@app.route('/settings_command/<int:command_id>', methods=["GET", "POST"])
+def settings_command(command_id):
+	"""
+	Сторінка налаштувань команди
+	"""
+
+	user = db.get_user()
+	user_id = user['user_id']
+	if db.get_edit_command_rights(command_id, user_id):
+		name = db.get_command_name(command_id)
+		form = wtf.edit_command_form(name=name)
+		form_dialog = wtf.del_dialog_form()
+
+		return render_template('edit_command.html', user=user, command_id=command_id,
+								form=form, form_dialog=form_dialog, name=name)
+	else: abort(404)
+
+
+@app.route('/edit_command/<int:command_id>', methods=["GET", "POST"])
+def edit_command(command_id):
+	"""
+	Функція редагування команди
+	"""
+
+	name = db.get_command_name(command_id)
+	form = wtf.edit_command_form(name=name)
+	form_dialog = wtf.del_dialog_form()
+
+	if form.validate_on_submit():
+		name = form.name.data
+		if db.edit_command(command_id, name):
+			return redirect(url_for('settings_command', command_id=command_id))
+	
+	abort(404) # якщо користувач прописав шлях сам
+
+
+@app.route('/del_command/<int:command_id>', methods=["GET", "POST"])
+def del_command(command_id):
+	"""
+	Функція видалення команди
+	"""
+
+	try:
+		name = db.get_command_name(command_id)
+		form = wtf.edit_command_form(name=name)
+		form_dialog = wtf.del_dialog_form()
+	except TypeError: #якщо команда уже видалена
+		abort(404)
+
+	if form_dialog.submit.data:
+		db.del_command(command_id)
+		return redirect(url_for('home'))
+
+	abort(404)	# якщо користувач прописав шлях сам
 
 
 @app.route('/command/<command_id>/task')
