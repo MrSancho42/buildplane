@@ -215,6 +215,8 @@ def edit_command(command_id):
 		name = form.name.data
 		if db.edit_command(command_id, name):
 			return redirect(url_for('settings_command', command_id=command_id))
+	
+	abort(404) # якщо користувач прописав шлях сам
 
 
 @app.route('/del_command/<int:command_id>', methods=["GET", "POST"])
@@ -232,8 +234,9 @@ def del_command(command_id):
 
 	if form_dialog.submit.data:
 		db.del_command(command_id)
+		return redirect(url_for('home'))
 
-	return redirect(url_for('home'))
+	abort(404)	# якщо користувач прописав шлях сам
 
 
 @app.route('/command/<command_id>/task')
