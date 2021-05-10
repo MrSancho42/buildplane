@@ -106,7 +106,7 @@ class db_work():
 		"""
 		Функція що дістає групи команди до яких належить користувач.
 
-		Повертає [{group_id, name, color, command_id, manager_id, user_id, owner_id}]
+		Повертає [{group_id, name, color, command_id, owner_id, user_id, command_owner_id}]
 		"""
 
 		res = self.__cur.execute(f'''SELECT *

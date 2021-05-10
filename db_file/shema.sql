@@ -47,11 +47,11 @@ CREATE TABLE IF NOT EXISTS "groups" (
 	"name"       TEXT NOT NULL,
 	"color"      TEXT NOT NULL,
 	"command_id" INTEGER NOT NULL,
-	"manager_id" INTEGER NOT NULL,
+	"owner_id" INTEGER NOT NULL,
 	"blocked" INTEGER DEFAULT 0 NOT NULL,
 	"cols_order" TEXT,
 	FOREIGN KEY ("command_id") REFERENCES "commands" ("command_id"),
-	FOREIGN KEY ("manager_id") REFERENCES "users" ("user_id")
+	FOREIGN KEY ("owner_id") REFERENCES "users" ("user_id")
 );
 
 /* Проміжна таблиця між групами та користувачами

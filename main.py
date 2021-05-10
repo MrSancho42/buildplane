@@ -185,8 +185,8 @@ def command_task(command_id):
 	groups = db.get_groups(command_id)
 	if groups:
 		for group in groups:
-			group['ownership'] = group['manager_id'] == group['user_id'] or group['owner_id'] == group['user_id']
-			group.pop('manager_id', 'owner_id')
+			group['ownership'] = group['owner_id'] == group['user_id'] or group['command_owner_id'] == group['user_id']
+			group.pop('owner_id', 'command_owner_id')
 
 	cols = db.get_command_tasks(command_id)
 	return render_template('command_task.html',
@@ -214,8 +214,8 @@ def group_task(group_id):
 	groups = db.get_groups(current_group['command_id'])
 	if groups:
 		for group in groups:
-			group['ownership'] = group['manager_id'] == group['user_id'] or group['owner_id'] == group['user_id']
-			group.pop('manager_id', 'owner_id')
+			group['ownership'] = group['owner_id'] == group['user_id'] or group['command_owner_id'] == group['user_id']
+			group.pop('owner_id', 'command_owner_id')
 
 	cols = db.get_group_tasks(group_id)
 	return render_template('group_task.html',
