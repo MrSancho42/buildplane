@@ -145,7 +145,7 @@ class db_work():
 			res = self.__cur.execute(f'''SELECT cols_order
 										FROM v_{element}_cols
 										WHERE {element}_id = {element_id}''').fetchone()
-			res = list(res['cols_order'].split(','))
+			res = res['cols_order'].split(',')
 			
 			cols_order = [self.__cur.execute(f'''SELECT * 
 												FROM cols 
