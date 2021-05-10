@@ -265,21 +265,8 @@ class db_work():
 				event = event['event_id']
 				self.__cur.execute(f'DELETE FROM events WHERE event_id = {event}')
 
-		# перебір колонок
-		command_cols = self.__cur.execute(f'''SELECT cols_order FROM v_command_cols
-									WHERE command_id = {command_id}''').fetchall()
-		if command_cols:
-			for col in command_cols:
-				col = col['cols_order'].split(',')
-
-				# перебір завдань в колонках
-				for col_id in col:
-					command_tasks = self.__cur.execute(f'''SELECT task_id FROM commands_task
-										WHERE command_id = {command_id}''').fetchall()
-					if command_tasks:
-						for task in command_tasks:
-							task = task['task_id']
-							self.__cur.execute(f'DELETE FROM tasks WHERE task_id = {task}')
+		# перебір колонок	
+		self.del_cols('command', command_id)
 
 		self.__cur.execute(f'DELETE FROM commands WHERE command_id = {command_id}')
 
@@ -299,23 +286,8 @@ class db_work():
 				self.__cur.execute(f'DELETE FROM events WHERE event_id = {event}')
 				
 		# перебір колонок 
-		group_cols = self.__cur.execute(f'''SELECT cols_order FROM v_group_cols
-									WHERE group_id = {group_id}''').fetchall()
-		if group_cols:
-			for col in group_cols:
-				col = col['cols_order'].split(',')
+		self.del_cols('group', group_id)
 
-				# перебір завдань колонок
-				for col_id in col:
-					group_tasks = self.__cur.execute(f'''SELECT task_id FROM groups_task
-									WHERE group_id = {group_id}''').fetchall()
-					
-					if group_tasks:
-						for task in group_tasks:
-							task = task['task_id']
-							self.__cur.execute(f'DELETE FROM tasks WHERE task_id = {task}')
-							
-					self.__cur.execute(f'DELETE FROM cols WHERE col_id = {col_id}')
 		self.__cur.execute(f'DELETE FROM groups WHERE group_id = {group_id}')
 
 
