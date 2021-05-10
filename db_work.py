@@ -254,7 +254,13 @@ class db_work():
 				self.__cur.execute(f'DELETE FROM events WHERE event_id = {event}')
 
 		# перебір колонок	
-		self.del_cols('command', command_id)
+		cols_list = self.__cur.execute(f'''SELECT cols_order FROM v_command_cols
+									WHERE command_id = {command_id}''').fetchall()
+		if cols_list:
+			for cols in cols_list:
+				cols = cols['cols_order'].split(',')
+				for col_id in cols:
+					self.del_col('command', command_id, col_id)
 
 		self.__cur.execute(f'DELETE FROM commands WHERE command_id = {command_id}')
 
@@ -274,34 +280,33 @@ class db_work():
 				self.__cur.execute(f'DELETE FROM events WHERE event_id = {event}')
 				
 		# перебір колонок 
-		self.del_cols('group', group_id)
+		cols_list = self.__cur.execute(f'''SELECT cols_order FROM v_group_cols
+									WHERE group_id = {group_id}''').fetchall()
+		if cols_list:
+			for cols in cols_list:
+				cols = cols['cols_order'].split(',')
+				for col_id in cols:
+					self.del_col('group', group_id, col_id)
 
 		self.__cur.execute(f'DELETE FROM groups WHERE group_id = {group_id}')
 
 
-	def del_cols(self, element, element_id):
+	def del_col(self, element, element_id, col_id):
 		'''
-		Видаляє колонки із об'єкта (групи, команди, користувача).
+		Видаляє одну колонку
 
-		Приймає назву та id об'єкта
+		Приймає ім'я та id елемента (команди, групи, користувача)
+		та id колонки
 		'''
 
-		cols_list = self.__cur.execute(f'''SELECT cols_order FROM v_{element}_cols
-									WHERE {element}_id = {element_id}''').fetchall()
-		if cols_list:
-			for cols in cols_list:
-				cols = cols['cols_order'].split(',')
-				
-				# перебір завдань колонок
-				for col_id in cols:
-					tasks = self.__cur.execute(f'''SELECT task_id FROM v_{element}_tasks
-									WHERE {element}_id = {element_id}''').fetchall()
-					if tasks:
-						for task in tasks:
-							task = task['task_id']
-							self.__cur.execute(f'DELETE FROM tasks WHERE task_id = {task}')
-								
-					self.__cur.execute(f'DELETE FROM cols WHERE col_id = {col_id}')
+		tasks = self.__cur.execute(f'''SELECT task_id FROM v_{element}_tasks
+							WHERE {element}_id = {element_id}''').fetchall()
+		if tasks:
+			for task in tasks:
+				task = task['task_id']
+				self.__cur.execute(f'DELETE FROM tasks WHERE task_id = {task}')
+						
+		self.__cur.execute(f'DELETE FROM cols WHERE col_id = {col_id}')
 
 
 	def get_group_tasks(self, group_id):
