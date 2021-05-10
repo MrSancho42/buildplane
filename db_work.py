@@ -159,18 +159,6 @@ class db_work():
 		except AttributeError:
 			return False
 
-	def get_cols_id(self, element, element_id):
-		"""
-		Дістає id колонок елемента
-
-		Повертає [col_id]
-		"""
-
-		res = self.__cur.execute(f'''SELECT cols_order
-									FROM v_{element}_cols
-									WHERE {element}_id = {element_id}''').fetchone()
-		return res['cols_order'].split(',')
-
 	def get_personal_tasks(self):
 		"""
 		Функція що дістає завдання та колонки користувача.
