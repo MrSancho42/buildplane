@@ -218,8 +218,9 @@ class db_work():
 		'''
 
 		result = self.__cur.execute(f'''SELECT owner_id FROM commands
-									WHERE command_id = {command_id}''').fetchall()
-		if result['owner_id'] == str(user_id):
+									WHERE command_id = {command_id}''').fetchall()[0]
+		print(type(result['owner_id']), '111111111111', type(str(user_id)))
+		if result['owner_id'] == user_id:
 			return True
 		else: return False
 
