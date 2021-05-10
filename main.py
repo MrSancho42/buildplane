@@ -157,8 +157,7 @@ def add_command():
 
 	if form.validate_on_submit():
 		if db.add_command(form.name.data, user_id):
-			render_template('home.html', user=user)
-
+			return redirect(url_for('home'))
 
 	return render_template('add_command.html', form=form, user=user)
 
