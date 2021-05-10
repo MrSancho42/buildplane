@@ -319,6 +319,30 @@ class db_work():
 		self.__cur.execute(f'DELETE FROM groups WHERE group_id = {group_id}')
 
 
+	def del_cols(self, element, element_id):
+		'''
+		Видаляє колонки із об'єкта (групи, команди, користувача).
+
+		Приймає назву та id об'єкта
+		'''
+
+		cols = self.__cur.execute(f'''SELECT cols_order FROM v_{element}_cols
+									WHERE {element}_id = {element_id}''').fetchall()
+		if cols:
+			cols = cols['cols_order'].split(',')
+
+			# перебір завдань колонок
+			for col_id in cols:
+				tasks = self.__cur.execute(f'''SELECT task_id FROM v_{element}_tasks
+								WHERE {element}_id = {element_id}''').fetchall()
+				if tasks:
+					for task in tasks:
+						task = task['task_id']
+						self.__cur.execute(f'DELETE FROM tasks WHERE task_id = {task}')
+							
+				self.__cur.execute(f'DELETE FROM cols WHERE col_id = {col_id}')
+
+
 	def get_group_tasks(self, group_id):
 		"""
 		Функція що дістає завдання та колонки команди.
