@@ -35,11 +35,11 @@
 	<div class="work-area__board">
 		{% if cols %}
 			{% for col in cols %}
-				<div class="coll" data-coll="{{ col.col_id }}">
+				<div class="coll">
 					<span>{{ col.name }}</span>
-					<div>
+					<div class="drop-zone" data-coll="{{ col.col_id }}">
 						{% for task in col.tasks %}
-							<div class="task" draggable="true" data-task="{{ task.task_id }}">
+							<div class="task drag-item" draggable="true" data-task="{{ task.task_id }}">
 								<a href="" draggable="false">
 									<span class="task__doc"></span>
 									<p>
@@ -64,7 +64,6 @@
 								<a class="task__submit {% if task.done %} task__submit_done {% endif %}" href=""></a>
 							</div>
 						{% endfor %}
-						<div></div>
 					</div>
 				</div>
 			{% endfor %}
@@ -72,4 +71,8 @@
 			Колонок немає...
 		{% endif %}
 	</div>
+{% endblock %}
+
+{% block script %}
+	<script src="{{ url_for('static', filename='script/dnd.js') }}"></script>
 {% endblock %}

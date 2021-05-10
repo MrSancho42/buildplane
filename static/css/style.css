@@ -467,22 +467,21 @@ h1,h2,h3,h4,h5,h6{font-size:inherit;font-weight: 400;}
 }
 .coll > span{padding: 10px 25px 10px 10px;}
 .coll > div{
+	height: auto;
+	min-height: 50px;
 	width: 100%;
 	display: flex;
 	flex-direction: column;
 	overflow-x: hidden;
 	overflow-y: auto;
 	gap: 20px;
-	padding: 5px 10px;
-}
-.coll > div > div:last-child{
-	margin-top: -20px;
-	min-height: 10px;
+	padding: 10px;
 }
 
 /* Блок завдання */
 .task{
 	display: block;
+	min-height: 88px;
 	background-color: var(--light-color);
 	box-shadow: 0 0 var(--shadow);
 	width: 100%;
@@ -543,3 +542,12 @@ h1,h2,h3,h4,h5,h6{font-size:inherit;font-weight: 400;}
 	background-color: var(--success);
 }
 .task__submit_done:hover{background-color: var(--warning);}
+
+.drag-item_active{
+	opacity: 0.5;
+	background-color: var(--light-accent-color);
+}
+.drop-zone_active{
+	opacity: 0.5;
+	background-color: var(--light-accent-color);
+}

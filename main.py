@@ -1,5 +1,5 @@
 import sqlite3
-from flask import Flask, render_template, g, redirect, url_for, request, flash, session, abort
+from flask import Flask, render_template, g, redirect, url_for, request, flash, session, abort, jsonify, make_response
 from flask_session import Session
 import redis
 from datetime import timedelta
@@ -183,6 +183,15 @@ def home():
 							cols=cols)
 
 
+@app.route('/home/task/dnd', methods=["POST"])
+def home_dnd():
+	data = request.get_json()
+
+	db.set_personal_task_col(data['coll'], data['task'])
+
+	return make_response(jsonify({}, 200))
+
+
 @app.route('/settings_command/<int:command_id>', methods=["GET", "POST"])
 def settings_command(command_id):
 	"""
@@ -239,16 +248,24 @@ def del_command(command_id):
 	abort(404)	# якщо користувач прописав шлях сам
 
 
+def groups_ownership(command_id):
+	groups = db.get_groups(command_id)
+
+	if groups:
+		for group in groups:
+			group['ownership'] = group['user_id'] in [group['owner_id'], group['command_owner_id']]
+			group.pop('owner_id')
+			group.pop('command_owner_id')
+
+	return groups
+
+
 @app.route('/command/<command_id>/task')
 def command_task(command_id):
 	user = db.get_user()
 	command = db.get_command_name(command_id)
 	
-	groups = db.get_groups(command_id)
-	if groups:
-		for group in groups:
-			group['ownership'] = group['manager_id'] == group['user_id'] or group['owner_id'] == group['user_id']
-			group.pop('manager_id', 'owner_id')
+	groups = groups_ownership(command_id)
 
 	cols = db.get_command_tasks(command_id)
 	return render_template('command_task.html',
@@ -258,6 +275,14 @@ def command_task(command_id):
 							cols=cols)
 
 
+@app.route('/command/<command_id>/task/dnd', methods=["POST"])
+def command_task_dnd(command_id):
+	data = request.get_json()
+	
+	db.set_command_task_col(data['coll'], data['task'], command_id)
+	return make_response(jsonify({}, 200))
+
+
 @app.route('/group/<group_id>/task')
 def group_task(group_id):
 	user = db.get_user()
@@ -265,11 +290,7 @@ def group_task(group_id):
 	
 	command = db.get_command_name(current_group['command_id'])
 	
-	groups = db.get_groups(current_group['command_id'])
-	if groups:
-		for group in groups:
-			group['ownership'] = group['manager_id'] == group['user_id'] or group['owner_id'] == group['user_id']
-			group.pop('manager_id', 'owner_id')
+	groups = groups_ownership(current_group['command_id'])
 
 	cols = db.get_group_tasks(group_id)
 	return render_template('group_task.html',
@@ -278,6 +299,14 @@ def group_task(group_id):
 							current_group=current_group,
 							groups=groups,
 							cols=cols)
+
+
+@app.route('/group/<group_id>/task/dnd', methods=["POST"])
+def group_task_dnd(group_id):
+	data = request.get_json()
+	
+	db.set_group_task_col(data['coll'], data['task'], group_id)
+	return make_response(jsonify({}, 200))
 
 
 if __name__ == '__main__':

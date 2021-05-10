@@ -106,7 +106,7 @@ class db_work():
 		"""
 		Функція що дістає групи команди до яких належить користувач.
 
-		Повертає [{group_id, name, color, command_id, manager_id, user_id, owner_id}]
+		Повертає [{group_id, name, color, command_id, owner_id, user_id, command_owner_id}]
 		"""
 
 		res = self.__cur.execute(f'''SELECT *
@@ -188,11 +188,24 @@ class db_work():
 		'''
 		return self.__cur.execute(f"SELECT name FROM commands WHERE command_id = {command_id}").fetchone()[0]
 
+	def set_personal_task_col(self, col, task):
+		"""
+		Функція що змінює колонку завдання.
+
+		Якщо дані невірні, то нічого не відбувається.
+		"""
+
+		if int(col) in [i['col_id'] for i in self.get_cols('user', self.__user)]:
+			self.__cur.execute(f'''UPDATE personal_tasks
+								SET col_id = {col}
+								WHERE task_id = {task} and user_id = {self.__user}''')
+
+
 	def get_command_tasks(self, command_id):
 		"""
 		Функція що дістає завдання та колонки команди.
 
-		Повертає [{col_id, name, tasks: [{task_id, description, start_date, end_date, done, performer_id, col_id, command_id, name}]}]
+		Повертає [{col_id, name, tasks: [{task_id, description, start_date, end_date, done, performer_id, col_id, command_id, name, owner_id}]}]
 		або якщо колонок немає False
 		"""
 
@@ -334,6 +347,22 @@ class db_work():
 		self.__cur.execute(f'DELETE FROM events WHERE event_id = {event_id}')
 
 
+	def set_command_task_col(self, col, task, command_id):
+		"""
+		Функція що змінює колонку завдання команди.
+
+		Якщо дані невірні, то нічого не відбувається.
+		"""
+		
+		if int(col) in [i['col_id'] for i in self.get_cols('command', command_id)]:
+			self.__cur.execute(f'''UPDATE tasks
+								SET col_id = {col}
+								WHERE task_id = {task} and 
+									(SELECT count("task_id")
+									FROM "commands_task"
+									WHERE "command_id" = {command_id} and "task_id" = {task}) = 1''')
+	
+
 	def get_group_tasks(self, group_id):
 		"""
 		Функція що дістає завдання та колонки команди.
@@ -353,6 +382,22 @@ class db_work():
 			col['tasks'] = res
 			
 		return cols
+
+
+	def set_group_task_col(self, col, task, group_id):
+		"""
+		Функція що змінює колонку завдання команди.
+
+		Якщо дані невірні, то нічого не відбувається.
+		"""
+		
+		if int(col) in [i['col_id'] for i in self.get_cols('group', group_id)]:
+			self.__cur.execute(f'''UPDATE tasks
+								SET col_id = {col}
+								WHERE task_id = {task} and 
+									(SELECT count("task_id")
+									FROM "groups_task"
+									WHERE "group_id" = {group_id} and "task_id" = {task}) = 1''')
 
 
 
