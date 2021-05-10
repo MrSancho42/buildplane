@@ -208,6 +208,21 @@ class db_work():
 			
 		return cols
 
+	def get_edit_command_rights(self, command_id, user_id):
+		'''
+		Перевіряє, чи в користувача є права на редагування команди.
+		
+		Якщо є - повертає True
+		якщо нема
+		повертає False
+		'''
+
+		result = self.__cur.execute(f'''SELECT owner_id FROM commands
+									WHERE command_id = {command_id}''').fetchall()
+		if result['owner_id'] == str(user_id):
+			return True
+		else: return False
+
 
 	def add_command(self, name, owner_id):
 		'''
