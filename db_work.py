@@ -131,10 +131,10 @@ class db_work():
 		"""
 		Функція що дістає команду.
 
-		Повертає {command_id, name, owner_id}
+		Повертає {command_id, name}
 		"""
 
-		return self.__cur.execute(f'''SELECT command_id, name, owner_id
+		return self.__cur.execute(f'''SELECT command_id, name
 									FROM v_command
 									WHERE command_id = "{command_id}"''').fetchone()
 
