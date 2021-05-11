@@ -255,7 +255,7 @@ def del_command(command_id):
 @app.route('/command/<command_id>/task')
 def command_task(command_id):
 	user = db.get_user()
-	command = db.get_command_name(command_id)
+	command = db.get_command_info(command_id)
 
 	groups = groups_ownership(command_id)
 
@@ -299,7 +299,7 @@ def group_task(group_id):
 	user = db.get_user()
 	current_group = db.get_group_info(group_id)
 
-	command = db.get_command_name(current_group['command_id'])
+	command = db.get_command_info(current_group['command_id'])
 
 	groups = groups_ownership(current_group['command_id'])
 
