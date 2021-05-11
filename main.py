@@ -180,7 +180,7 @@ def home_dnd():
 
 
 #Команди//////////////////////////////////////////////////////////////////////
-@app.route('/add_command', methods=["POST", "GET"])
+@app.route('/command/add', methods=["POST", "GET"])
 def add_command():
 	"""
 	Сторінка створення нової команди
@@ -196,7 +196,7 @@ def add_command():
 	return render_template('add_command.html', form=form, user=user)
 
 
-@app.route('/settings_command/<int:command_id>', methods=["GET", "POST"])
+@app.route('/command/<int:command_id>/settings', methods=["GET", "POST"])
 def settings_command(command_id):
 	"""
 	Сторінка налаштувань команди
@@ -217,7 +217,7 @@ def settings_command(command_id):
 	else: abort(404)
 
 
-@app.route('/edit_command/<int:command_id>', methods=["GET", "POST"])
+@app.route('/command/<int:command_id>/edit', methods=["GET", "POST"])
 def edit_command(command_id):
 	"""
 	Функція редагування команди
@@ -235,7 +235,7 @@ def edit_command(command_id):
 	abort(404) # якщо користувач прописав шлях сам
 
 
-@app.route('/del_command/<int:command_id>', methods=["GET", "POST"])
+@app.route('/command/<int:command_id>/del', methods=["GET", "POST"])
 def del_command(command_id):
 	"""
 	Функція видалення команди
