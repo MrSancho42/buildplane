@@ -252,7 +252,11 @@ def del_command(command_id):
 		db.del_command(command_id)
 		return redirect(url_for('home'))
 
-	abort(404)	# якщо користувач прописав шлях сам
+	# при натисненні "НІ" у діалоговому вікні
+	if request.method == 'POST':
+		return redirect(url_for('settings_command', command_id=command_id))
+
+	abort(404) # якщо користувач прописав шлях сам
 
 
 @app.route('/command/<command_id>/task')
