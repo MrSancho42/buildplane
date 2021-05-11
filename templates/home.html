@@ -57,7 +57,11 @@
 										{% endif %}
 									</p>
 								</a>
-								<a class="task__submit {% if task.done %} task__submit_done {% endif %}" href=""></a>
+								{% if task.done %}
+									<a class="task__submit task__submit_done" data-status="true"></a>
+								{% else %}
+									<a class="task__submit" data-status="false"></a>
+								{% endif %}
 							</div>
 						{% endfor %}
 					</div>
@@ -71,4 +75,5 @@
 
 {% block script %}
 	<script src="{{ url_for('static', filename='script/dnd.js') }}"></script>
+	<script src="{{ url_for('static', filename='script/task_status.js') }}"></script>
 {% endblock %}
