@@ -179,6 +179,15 @@ def home_dnd():
 	return make_response(jsonify({}, 200))
 
 
+@app.route('/home/task/task_status', methods=["POST"])
+def home_task_status():
+	data = request.get_json()
+
+	db.set_personal_task_status(data['status'], data['task'])
+
+	return make_response(jsonify({}, 200))
+
+
 #Команди//////////////////////////////////////////////////////////////////////
 @app.route('/add_command', methods=["POST", "GET"])
 def add_command():

@@ -111,6 +111,12 @@ class db_work():
 								WHERE task_id = {task} and user_id = {self.__user}''')
 
 
+	def set_personal_task_status(self, status, task):
+		self.__cur.execute(f'''UPDATE personal_tasks
+								SET done = {int(status)}
+								WHERE task_id = {task} and user_id = {self.__user}''')
+
+
 	#Команди//////////////////////////////////////////////////////////////////
 	def get_commands(self):
 		"""
