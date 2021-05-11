@@ -1,6 +1,7 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, SubmitField, BooleanField, PasswordField
 from wtforms.validators import DataRequired, Length, EqualTo, InputRequired, Regexp
+from wtforms.widgets.html5 import ColorInput
 
 
 """
@@ -54,3 +55,10 @@ class edit_command_form(FlaskForm):
 
 class del_dialog_form(FlaskForm):
 	submit = SubmitField('Так')
+
+
+class add_group_form(FlaskForm):
+	name = StringField("НАЗВА ГРУПИ:", validators=[Length(min=1, max=30,
+										message='Довжина назви повинна бути до 30 символів'),
+						DataRequired(message='Заповніть це поле')])	
+	color = StringField(widget=ColorInput())
