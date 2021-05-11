@@ -180,7 +180,7 @@ def home_dnd():
 
 
 #Команди//////////////////////////////////////////////////////////////////////
-@app.route('/add_command', methods=["POST", "GET"])
+@app.route('/command/add', methods=["POST", "GET"])
 def add_command():
 	"""
 	Сторінка створення нової команди
@@ -196,7 +196,7 @@ def add_command():
 	return render_template('add_command.html', form=form, user=user)
 
 
-@app.route('/settings_command/<int:command_id>', methods=["GET", "POST"])
+@app.route('/command/<int:command_id>/settings', methods=["GET", "POST"])
 def settings_command(command_id):
 	"""
 	Сторінка налаштувань команди
@@ -204,17 +204,20 @@ def settings_command(command_id):
 
 	user = db.get_user()
 	user_id = user['user_id']
+	command = db.get_command_name(command_id)
+
 	if db.get_edit_command_rights(command_id, user_id):
 		name = db.get_command_name(command_id)['name']
 		form = wtf.edit_command_form(name=name)
 		form_dialog = wtf.del_dialog_form()
 
 		return render_template('edit_command.html', user=user, command_id=command_id,
-								form=form, form_dialog=form_dialog, name=name)
+								form=form, form_dialog=form_dialog, name=name,
+								command=command)
 	else: abort(404)
 
 
-@app.route('/edit_command/<int:command_id>', methods=["GET", "POST"])
+@app.route('/command/<int:command_id>/edit', methods=["GET", "POST"])
 def edit_command(command_id):
 	"""
 	Функція редагування команди
@@ -232,7 +235,7 @@ def edit_command(command_id):
 	abort(404) # якщо користувач прописав шлях сам
 
 
-@app.route('/del_command/<int:command_id>', methods=["GET", "POST"])
+@app.route('/command/<int:command_id>/del', methods=["GET", "POST"])
 def del_command(command_id):
 	"""
 	Функція видалення команди
@@ -249,7 +252,11 @@ def del_command(command_id):
 		db.del_command(command_id)
 		return redirect(url_for('home'))
 
-	abort(404)	# якщо користувач прописав шлях сам
+	# при натисненні "НІ" у діалоговому вікні
+	if request.method == 'POST':
+		return redirect(url_for('settings_command', command_id=command_id))
+
+	abort(404) # якщо користувач прописав шлях сам
 
 
 @app.route('/command/<command_id>/task')
