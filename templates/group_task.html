@@ -41,7 +41,12 @@
 					<span>{{ col.name }}</span>
 					<div class="drop-zone" data-coll="{{ col.col_id }}">
 						{% for task in col.tasks %}
-							<div class="task drag-item" draggable="true" data-task="{{ task.task_id }}">
+							{% if user.user_id in [task.performer_id, task.owner_id] %}
+								<div class="task drag-item" draggable="true" data-task="{{ task.task_id }}">
+							{% else  %}
+								<div class="task" draggable="false">
+							{% endif %}
+
 								<a href="" draggable="false">
 									<span class="task__doc"></span>
 									<p>
@@ -63,7 +68,12 @@
 										{% endif %}
 									</p>
 								</a>
-								<a class="task__submit {% if task.done %} task__submit_done {% endif %}" href=""></a>
+
+								{% if task.done %}
+									<a class="task__submit task__submit_done" href=""></a>
+								{% elif user.user_id in [task.performer_id, task.owner_id] %}
+									<a class="task__submit" href=""></a>
+								{% endif %}
 							</div>
 						{% endfor %}
 					</div>
