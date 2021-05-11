@@ -127,14 +127,14 @@ class db_work():
 		return False
 
 
-	def get_command_name(self, command_id):
+	def get_command_info(self, command_id):
 		"""
 		Функція що дістає команду.
 
-		Повертає {command_id, name}
+		Повертає {command_id, name, owner_id}
 		"""
 
-		return self.__cur.execute(f'''SELECT command_id, name
+		return self.__cur.execute(f'''SELECT command_id, name, owner_id
 									FROM v_command
 									WHERE command_id = "{command_id}"''').fetchone()
 
@@ -147,7 +147,7 @@ class db_work():
 		'''
 
 		self.__cur.execute('INSERT INTO commands VALUES(NULL, ?, ?, NULL)', (name, owner_id))
-		command_id = self.__cur.execute("SELECT last_insert_rowid() from commands").fetchone()[0]
+		command_id = self.__cur.execute('SELECT last_insert_rowid() from commands').fetchone()[0]
 		self.__cur.execute('INSERT INTO commands_user VALUES(?, ?)', (owner_id, command_id))
 		return True
 
@@ -161,8 +161,8 @@ class db_work():
 		повертає False
 		'''
 
-		result = self.__cur.execute(f'''SELECT owner_id FROM commands
-									WHERE command_id = {command_id}''').fetchall()[0]
+		result = self.__cur.execute(f'''SELECT owner_id FROM v_commands
+									WHERE command_id = {command_id}''').fetchone()
 		if result['owner_id'] == user_id:
 			return True
 		else: return False
@@ -175,7 +175,7 @@ class db_work():
 		Повертає True після виконання операції
 		'''
 
-		self.__cur.execute(f"UPDATE commands SET name = '{name}' WHERE command_id = {command_id}")
+		self.__cur.execute(f'UPDATE commands SET name = "{name}" WHERE command_id = {command_id}')
 		return True
 
 
