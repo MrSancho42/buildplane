@@ -204,13 +204,16 @@ def settings_command(command_id):
 
 	user = db.get_user()
 	user_id = user['user_id']
+	command = db.get_command_name(command_id)
+
 	if db.get_edit_command_rights(command_id, user_id):
 		name = db.get_command_name(command_id)['name']
 		form = wtf.edit_command_form(name=name)
 		form_dialog = wtf.del_dialog_form()
 
 		return render_template('edit_command.html', user=user, command_id=command_id,
-								form=form, form_dialog=form_dialog, name=name)
+								form=form, form_dialog=form_dialog, name=name,
+								command=command)
 	else: abort(404)
 
 

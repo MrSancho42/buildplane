@@ -1,5 +1,9 @@
 {% extends "setting.html" %}
 
+{% block top_bar %}
+<a class="bar__item top-bar__home" href="/home/task"></a>
+{% endblock %}
+
 {% block work_area %}
 	<form action="", method="POST" class="form-settings">
 		{{ form.hidden_tag() }}

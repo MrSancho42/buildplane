@@ -1,5 +1,10 @@
 {% extends "setting.html" %}
 
+{% block top_bar %}
+<a class="bar__item top-bar__home" href="/home/task"></a>
+<a class="bar__item" href="{{ url_for('command_task', command_id=command_id) }}">{{ command.name }}</a>
+{% endblock %}
+
 {% block work_area %}
 	<form action="{{ url_for('edit_command', command_id=command_id) }}" method="POST" class="form-settings">
 		{{ form.hidden_tag() }}
