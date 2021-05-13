@@ -257,6 +257,16 @@ class db_work():
 									WHERE "command_id" = {command_id} and "task_id" = {task}) = 1''')
 
 
+	#Спільне для команд та груп
+	def set_task_status(self, status, task, element, element_id):
+		self.__cur.execute(f'''UPDATE tasks
+								SET done = {int(status)}
+								WHERE task_id = {task} and
+									(SELECT count("task_id")
+									FROM {element}s_task
+									WHERE {element}_id = {element_id} and task_id = {task}) = 1''')
+
+
 	#Групи////////////////////////////////////////////////////////////////////
 	def get_groups(self, command_id):
 		"""
