@@ -338,5 +338,14 @@ def group_task_dnd(group_id):
 	return make_response(jsonify({}, 200))
 
 
+@app.route('/group/<group_id>/task/task_status', methods=["POST"])
+def group_task_status(group_id):
+	data = request.get_json()
+
+	db.set_task_status(data['status'], data['task'], 'group', group_id)
+
+	return make_response(jsonify({}, 200))
+
+
 if __name__ == '__main__':
 	app.run(host=config.HOST, debug=config.DEBUG)
