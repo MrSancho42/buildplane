@@ -284,6 +284,15 @@ def command_task_dnd(command_id):
 	return make_response(jsonify({}, 200))
 
 
+@app.route('/command/<command_id>/task/task_status', methods=["POST"])
+def command_task_status(command_id):
+	data = request.get_json()
+
+	db.set_task_status(data['status'], data['task'], 'command', command_id)
+
+	return make_response(jsonify({}, 200))
+
+
 #Групи////////////////////////////////////////////////////////////////////////
 def groups_ownership(command_id):
 	"""
