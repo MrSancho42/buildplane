@@ -211,6 +211,14 @@ h1,h2,h3,h4,h5,h6{font-size:inherit;font-weight: 400;}
     border: none;
     border-radius: 30px;
 }
+.form-settings__group-color::-moz-color-swatch-wrapper {
+    padding: 0;	
+}
+.form-settings__group-color::-moz-color-swatch {
+	border: none;
+    border-radius: 30px;
+}
+
 .form-settings__color-picker-img{
 	width: 50px;
 	position: absolute;
