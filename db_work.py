@@ -71,6 +71,7 @@ class db_work():
 
 		Повертає {user_id, name}
 		"""
+
 		return self.__cur.execute(f'''SELECT *
 									FROM v_users
 									WHERE user_id = "{self.__user}"''').fetchone()
@@ -259,6 +260,12 @@ class db_work():
 
 	#Спільне для команд та груп///////////////////////////////////////////////
 	def set_task_status(self, status, task, element, element_id):
+		"""
+		Функція що змінює статус виконання завдання.
+
+		Якщо дані невірні, то нічого не відбувається.
+		"""
+
 		self.__cur.execute(f'''UPDATE tasks
 								SET done = {int(status)}
 								WHERE task_id = {task} and
@@ -268,6 +275,12 @@ class db_work():
 
 
 	def get_membership(self, element, element_id):
+		"""
+		Функція що перевіряє належність користувача до групи, або команди.
+
+		Повертає True, або False
+		"""
+
 		res = self.__cur.execute(f'''SELECT count(*)
 									FROM {element}s_user
 									WHERE {element}_id = {element_id} and
