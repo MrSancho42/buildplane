@@ -118,16 +118,6 @@ class db_work():
 
 
 	#Команди//////////////////////////////////////////////////////////////////
-	def get_membership(self, element, element_id):
-		res = self.__cur.execute(f'''SELECT count(*)
-									FROM {element}s_user
-									WHERE {element}_id = {element_id} and
-										user_id = {self.__user}''').fetchone()
-		
-		print(res[0])
-		return bool(res[0])
-
-
 	def get_commands(self):
 		"""
 		Функція що дістає команди до яких належить користувач.
@@ -267,7 +257,7 @@ class db_work():
 									WHERE "command_id" = {command_id} and "task_id" = {task}) = 1''')
 
 
-	#Спільне для команд та груп
+	#Спільне для команд та груп///////////////////////////////////////////////
 	def set_task_status(self, status, task, element, element_id):
 		self.__cur.execute(f'''UPDATE tasks
 								SET done = {int(status)}
@@ -275,6 +265,15 @@ class db_work():
 									(SELECT count("task_id")
 									FROM {element}s_task
 									WHERE {element}_id = {element_id} and task_id = {task}) = 1''')
+
+
+	def get_membership(self, element, element_id):
+		res = self.__cur.execute(f'''SELECT count(*)
+									FROM {element}s_user
+									WHERE {element}_id = {element_id} and
+										user_id = {self.__user}''').fetchone()
+
+		return bool(res[0])
 
 
 	#Групи////////////////////////////////////////////////////////////////////
