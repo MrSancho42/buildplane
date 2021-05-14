@@ -146,6 +146,23 @@ class db_work():
 									WHERE command_id = "{command_id}"''').fetchone()
 
 
+	def get_users_in_command(self, command_id):
+		'''
+		Дістає користувачів у команді
+
+		Повертає [(user_id, login)]
+		'''
+
+		users_id = self.__cur.execute(f'''SELECT user_id FROM commands_user
+									WHERE command_id = {command_id}''').fetchall()
+		users = []
+		for i in users_id:
+			login = self.__cur.execute(f'''SELECT login FROM users
+									WHERE user_id = {i['user_id']}''').fetchone()
+			users.append((i['user_id'], login['login']))
+		return users
+
+
 	def add_command(self, name, owner_id):
 		"""
 		Функція додання нової команди.
@@ -381,6 +398,19 @@ class db_work():
 									(SELECT count("task_id")
 									FROM "groups_task"
 									WHERE "group_id" = {group_id} and "task_id" = {task}) = 1''')
+
+
+	def add_group(self, name, color, command_id, owner_id, blocked):
+		'''
+		Функція додання нової групи
+
+		Повертає id щойно створеної групи
+		'''
+
+		self.__cur.execute(f'''INSERT INTO groups VALUES(NULL, '{name}', '{color}', {command_id}, {owner_id}, {blocked}, NULL)''')
+		group_id = self.__cur.execute("SELECT last_insert_rowid() from groups").fetchone()[0]
+		self.__cur.execute(f'INSERT INTO groups_user VALUES({owner_id}, {group_id})')
+		return group_id
 
 
 	#Колонки//////////////////////////////////////////////////////////////////

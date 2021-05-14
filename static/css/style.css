@@ -50,6 +50,7 @@ h1,h2,h3,h4,h5,h6{font-size:inherit;font-weight: 400;}
 	--settings-label-color: #696969;
 	--settings-submit-color: #9bf5c0;
 	--settings-delete-color: #fd8880;
+	--settings-example-color: #bccbff; /*також необхідно змінити значення у ф-ції add_group в main.py*/
 }
 
 /* Шрифт */
@@ -165,7 +166,7 @@ h1,h2,h3,h4,h5,h6{font-size:inherit;font-weight: 400;}
 	cursor: pointer;
 }
 .form-settings label {
-	padding-left: 30px;
+	padding-left: 15px;
 	color: var(--settings-label-color);
 }
 .form-settings span{
@@ -174,6 +175,80 @@ h1,h2,h3,h4,h5,h6{font-size:inherit;font-weight: 400;}
 	font-size: 16px;
 	color: var(--danger)
 }
+.form-settings select{
+	background-color: var(--light-accent-color);
+	height: 40px;
+	max-width: 1000px;
+	padding-left: 10px;
+	padding-right: 20px;
+	margin-bottom: 20px;
+	border-radius: 20px;
+	box-shadow: inset 0 0 var(--shadow);
+}
+.form-settings select:hover{
+	cursor: pointer;
+}
+	/*стилі для чекбокса */
+.form-settings__checkbox{
+	margin-left: 15px;
+}
+	/* Стилі інпуту для вибору кольору */
+.form-settings__group-color{
+    border-radius: 30px;
+    height: 60px;
+    width: 60px;
+    border: none;
+    outline: none;
+    -webkit-appearance: none;
+}
+.form-settings__group-color:hover{
+	cursor: pointer;
+}
+.form-settings__group-color::-webkit-color-swatch-wrapper {
+    padding: 0;	
+}
+.form-settings__group-color::-webkit-color-swatch {
+    border: none;
+    border-radius: 30px;
+}
+.form-settings__group-color::-moz-color-swatch-wrapper {
+    padding: 0;	
+}
+.form-settings__group-color::-moz-color-swatch {
+	border: none;
+    border-radius: 30px;
+}
+
+.form-settings__color-picker-img{
+	width: 50px;
+	position: absolute;
+	top: 4px;
+	left: 4px;
+}
+.form-settings__color-picker-img:hover{
+	cursor: pointer;
+}
+	/* Стилі демонстрації кольору на прикладі кнопки */
+.form-settings__example{
+	padding-top: 7px;
+	padding-left: 10px;
+	display: flex;
+	flex-direction: row;
+	gap: 30px; 
+}
+.form-settings__group-color-example{
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	background-color: var(--settings-example-color);
+	white-space: nowrap;
+	width: 300px;
+	height: 60px;
+	border-radius: 30px;
+	padding: 0 20px;
+	box-shadow: 0 0 var(--shadow);
+}
+	/* Кнопки вкінці форми */
 .form-settings__button-box{
 	display: flex;
 	flex-direction: row;

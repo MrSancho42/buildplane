@@ -384,6 +384,32 @@ def group_task_dnd(group_id):
 	return make_response(jsonify({}, 200))
 
 
+@app.route('/group/add', methods=["POST", "GET"])
+def add_group():
+	"""
+	Сторінка створення нової групи
+	"""
+	command_id = request.args.get('command_id')
+	command = db.get_command_name(command_id)
+	user = db.get_user()
+	list_owners = db.get_users_in_command(command_id) # для випадаючого списку вибору власника
+	form = wtf.add_group_form()
+	form.owner.choices = list_owners
+
+	if not form.color.data: # встановлення кольору за замовчуванням
+		form.color.data = "#bccbff"
+
+	if form.validate_on_submit():
+		name = form.name.data
+		color = form.color.data
+		owner = form.owner.data
+		blocked = form.blocked.data
+
+		group_id = db.add_group(name, color, command_id, owner, blocked)
+		return redirect(url_for('group_task', group_id=group_id))
+
+	return render_template('add_group.html', form=form, user=user,
+						command=command)
 @app.route('/group/<group_id>/task/task_status', methods=["POST"])
 def group_task_status(group_id):
 	"""

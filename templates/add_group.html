@@ -1,0 +1,45 @@
+{% extends "setting.html" %}
+
+{% block top_bar %}
+<a class="bar__item top-bar__home" href="/home/task"></a>
+<a class="bar__item" href="{{ url_for('command_task', command_id=command.command_id) }}">{{ command.name }}</a>
+{% endblock %}
+
+{% block work_area %}
+	<form action="", method="POST" class="form-settings">
+		{{ form.hidden_tag() }}
+		{% for field in form if field.name not in ['csrf_token', 'submit', 'color', 'blocked'] %}
+			{{ field.label() }} {{ field() }}
+
+			{% if field.errors %}
+				<span>
+					{% for error in field.errors %}
+						{{ error }}
+					{% endfor %}
+				</span>
+			{% endif %}
+		{% endfor %}
+
+		{% for message in get_flashed_messages() %}
+			<span>{{ message }}</span>
+		{% endfor %}
+
+		<div style="padding-bottom: 14px;">
+			{{ form.blocked.label() }}
+			{{ form.blocked(class="form-settings__checkbox") }}
+		</div>
+
+		{{ form.color.label() }}
+		<div class="form-settings__example">
+			<div>
+				{{ form.color(class="form-settings__group-color") }}
+				<img src="../static/ico/color_picker.svg" alt="" class="form-settings__color-picker-img">
+			</div>
+			<div class="form-settings__group-color-example">Приклад назви групи</div>
+		</div>
+		{{ form.submit(class="button") }}
+	</form>
+
+	<script type="text/javascript" src="{{url_for('static', filename='script/group_color_picker.js')}}"
+	charset="utf-8"></script>
+{% endblock %}
