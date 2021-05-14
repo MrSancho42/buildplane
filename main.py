@@ -71,6 +71,16 @@ def before_request():
 	global db
 	db = db_work(g.link_db.cursor(), session.get('user'))
 
+	#Перевірка належності до команди
+	if research('/command/', request.path):
+		if not db.get_membership('command', request.path.split('/')[2]):
+			abort(404)
+
+	#Перевірка належності до групи
+	if research('/group/', request.path):
+		if not db.get_membership('group', request.path.split('/')[2]):
+			abort(404)
+
 
 @app.teardown_appcontext
 def close_db(error):
@@ -172,9 +182,26 @@ def home():
 
 @app.route('/home/task/dnd', methods=["POST"])
 def home_dnd():
+	"""
+	Функція яка отримує дані при перетягуванні персональних завдань.
+	"""
+
 	data = request.get_json()
 
 	db.set_personal_task_col(data['coll'], data['task'])
+
+	return make_response(jsonify({}, 200))
+
+
+@app.route('/home/task/task_status', methods=["POST"])
+def home_task_status():
+	"""
+	Функція що отримує дані при зміні стану персонального завдання.
+	"""
+
+	data = request.get_json()
+
+	db.set_personal_task_status(data['status'], data['task'])
 
 	return make_response(jsonify({}, 200))
 
@@ -185,6 +212,7 @@ def add_command():
 	"""
 	Сторінка створення нової команди
 	"""
+
 	user = db.get_user()
 	user_id = user['user_id']
 	form = wtf.add_command_form()
@@ -261,8 +289,12 @@ def del_command(command_id):
 
 @app.route('/command/<command_id>/task')
 def command_task(command_id):
+	"""
+	Сторінка завдань команди.
+	"""
+
 	user = db.get_user()
-	command = db.get_command_name(command_id)
+	command = db.get_command_info(command_id)
 
 	groups = groups_ownership(command_id)
 
@@ -276,9 +308,26 @@ def command_task(command_id):
 
 @app.route('/command/<command_id>/task/dnd', methods=["POST"])
 def command_task_dnd(command_id):
+	"""
+	Функція яка отримує дані при перетягуванні завдань команди.
+	"""
+
 	data = request.get_json()
 
 	db.set_command_task_col(data['coll'], data['task'], command_id)
+	return make_response(jsonify({}, 200))
+
+
+@app.route('/command/<command_id>/task/task_status', methods=["POST"])
+def command_task_status(command_id):
+	"""
+	Функція що отримує дані при зміні стану завдання команди.
+	"""
+
+	data = request.get_json()
+
+	db.set_task_status(data['status'], data['task'], 'command', command_id)
+
 	return make_response(jsonify({}, 200))
 
 
@@ -303,10 +352,14 @@ def groups_ownership(command_id):
 
 @app.route('/group/<group_id>/task')
 def group_task(group_id):
+	"""
+	Сторінка завдань групи.
+	"""
+
 	user = db.get_user()
 	current_group = db.get_group_info(group_id)
 
-	command = db.get_command_name(current_group['command_id'])
+	command = db.get_command_info(current_group['command_id'])
 
 	groups = groups_ownership(current_group['command_id'])
 
@@ -321,6 +374,10 @@ def group_task(group_id):
 
 @app.route('/group/<group_id>/task/dnd', methods=["POST"])
 def group_task_dnd(group_id):
+	"""
+	Функція яка отримує дані при перетягуванні завдань групи.
+	"""
+
 	data = request.get_json()
 
 	db.set_group_task_col(data['coll'], data['task'], group_id)
@@ -353,6 +410,17 @@ def add_group():
 
 	return render_template('add_group.html', form=form, user=user,
 						command=command)
+@app.route('/group/<group_id>/task/task_status', methods=["POST"])
+def group_task_status(group_id):
+	"""
+	Функція що отримує дані при зміні стану завдання групи.
+	"""
+
+	data = request.get_json()
+
+	db.set_task_status(data['status'], data['task'], 'group', group_id)
+
+	return make_response(jsonify({}, 200))
 
 
 if __name__ == '__main__':
