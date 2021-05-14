@@ -340,7 +340,7 @@ def add_group():
 	form.owner.choices = list_owners
 
 	if not form.color.data: # встановлення кольору за замовчуванням
-		form.color.data = "#44a7c8"
+		form.color.data = "#bccbff"
 
 	if form.validate_on_submit():
 		name = form.name.data
