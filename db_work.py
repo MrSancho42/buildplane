@@ -146,11 +146,11 @@ class db_work():
 
 
 	def add_command(self, name, owner_id):
-		'''
+		"""
 		Функція додання нової команди.
 
 		Повертає True після виконання операції
-		'''
+		"""
 
 		self.__cur.execute('INSERT INTO commands VALUES(NULL, ?, ?, NULL)', (name, owner_id))
 		command_id = self.__cur.execute('SELECT last_insert_rowid() from commands').fetchone()[0]
@@ -159,13 +159,13 @@ class db_work():
 
 
 	def get_edit_command_rights(self, command_id, user_id):
-		'''
+		"""
 		Перевіряє, чи в користувача є права на редагування команди.
 
 		Якщо є - повертає True
 		якщо нема
 		повертає False
-		'''
+		"""
 
 		result = self.__cur.execute(f'''SELECT owner_id FROM v_commands
 									WHERE command_id = {command_id}''').fetchone()
@@ -175,21 +175,21 @@ class db_work():
 
 
 	def edit_command(self, command_id, name):
-		'''
+		"""
 		Функція редагування команди
 
 		Повертає True після виконання операції
-		'''
+		"""
 
 		self.__cur.execute(f'UPDATE commands SET name = "{name}" WHERE command_id = {command_id}')
 		return True
 
 
 	def del_command(self, command_id):
-		'''
+		"""
 		Функція видалення команди.
 
-		'''
+		"""
 
 		# перебір груп
 		groups = self.__cur.execute(f'''SELECT group_id FROM v_group
@@ -400,12 +400,12 @@ class db_work():
 
 
 	def del_col(self, element, element_id, col_id):
-		'''
+		"""
 		Видаляє одну колонку
 
 		Приймає ім'я та id елемента (команди, групи, користувача)
 		та id колонки
-		'''
+		"""
 
 		tasks = self.__cur.execute(f'''SELECT task_id FROM v_{element}_tasks
 							WHERE {element}_id = {element_id}''').fetchall()
@@ -419,9 +419,9 @@ class db_work():
 
 	#Події////////////////////////////////////////////////////////////////////
 	def del_event(self, event_id):
-		'''
+		"""
 		Видаляє одну подію
-		'''
+		"""
 
 		self.__cur.execute(f'DELETE FROM events WHERE event_id = {event_id}')
 
