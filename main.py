@@ -71,6 +71,14 @@ def before_request():
 	global db
 	db = db_work(g.link_db.cursor(), session.get('user'))
 
+	if research('/command/', request.path):
+		if not db.get_membership('command', request.path.split('/')[2]):
+			abort(404)
+
+	if research('/group/', request.path):
+		if not db.get_membership('group', request.path.split('/')[2]):
+			abort(404)
+
 
 @app.teardown_appcontext
 def close_db(error):
