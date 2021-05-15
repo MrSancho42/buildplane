@@ -1,6 +1,5 @@
 from hashlib import sha256 as sha256
 import sqlite3 as sqlite3
-import _pickle as cpickle
 from datetime import datetime
 
 
