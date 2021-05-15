@@ -95,14 +95,24 @@ def close_db(error):
 
 
 #Тимчасові сторінки///////////////////////////////////////////////////////////
-@app.route('/clear')
-def clear():
+@app.route('/session', methods=["POST", "GET"])
+def get_session():
 	"""
-	Тимчасова функція для очищення сесії.
+	Сторінка сесій.
 	"""
 
-	session.clear()
-	return redirect(url_for('main'))
+	user = db.get_user()
+	if not user:
+		flash('Авторизованих користувачів немає...')
+		return render_template('session.html')
+
+	permanent = session['_permanent']
+
+	if request.method == 'POST':
+		session.clear()
+		return render_template('session.html')
+
+	return render_template('session.html', user=user, permanent=permanent)
 
 
 @app.route('/date', methods=["POST", "GET"])
@@ -132,8 +142,6 @@ def main():
 	Головна сторінка.
 	"""
 
-	print('Користувач', session.get('user'))
-	print(session.keys(), session.values())
 	return render_template('main.html')
 
 
@@ -149,7 +157,6 @@ def login():
 		keys = [key for key in session if key != 'csrf_token']
 		for key in keys:
 			session.pop(key)
-		print(session)
 
 		res = db.login(form.login.data, form.psw.data)
 		if res['status']:

@@ -1,0 +1,20 @@
+{% if get_flashed_messages() %}
+
+	{% for msg in get_flashed_messages() %}
+		<p>{{ msg }}</p>
+	{% endfor %}
+
+{% else %}
+
+	Користувач: {{ user.name }}
+	<br>
+	ID: {{ user.user_id }}
+	<br>
+	Запам'ятовування сеансу: {{ permanent }}
+
+{% endif %}
+
+<br>
+<form method="POST" action="/session">
+	<input type="submit" value="Видалити сесію">
+</form>
