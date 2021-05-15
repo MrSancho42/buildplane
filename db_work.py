@@ -48,6 +48,27 @@ class db_work():
 		return datetime.fromtimestamp(int(value)).strftime('%d.%m.%Y')
 
 
+	def convert_date(self, col):
+		"""
+		Функція для конвертування дат завдань.
+
+		Приймає цілу колонку.
+
+		Повертає її змінений варіант. 
+		"""
+
+		col = [dict(task) for task in col]
+
+		for task in col:
+			if task['start_date']:
+				task['start_date'] = self.from_timestamp(task['start_date'])
+
+			if task['end_date']:
+				task['end_date'] = self.from_timestamp(task['end_date'])
+
+		return col
+
+
 	def login(self, login, password):
 		"""
 		Функція для авторизації користувача.
@@ -114,7 +135,7 @@ class db_work():
 			res = self.__cur.execute(f'''SELECT *
 										FROM v_personal_tasks
 										WHERE col_id = {col['col_id']}''').fetchall()
-			col['tasks'] = res
+			col['tasks'] = self.convert_date(res)
 
 		return cols
 
@@ -274,7 +295,7 @@ class db_work():
 			res = self.__cur.execute(f'''SELECT *
 										FROM v_command_tasks
 										WHERE col_id = {col['col_id']}''').fetchall()
-			col['tasks'] = res
+			col['tasks'] = self.convert_date(res)
 
 		return cols
 
@@ -399,7 +420,7 @@ class db_work():
 			res = self.__cur.execute(f'''SELECT *
 										FROM v_group_tasks
 										WHERE col_id = {col['col_id']}''').fetchall()
-			col['tasks'] = res
+			col['tasks'] = self.convert_date(res)
 
 		return cols
 
