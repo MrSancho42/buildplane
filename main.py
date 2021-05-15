@@ -94,6 +94,7 @@ def close_db(error):
 		g.link_db.close()
 
 
+#Тимчасові сторінки///////////////////////////////////////////////////////////
 @app.route('/clear')
 def clear():
 	"""
@@ -104,6 +105,27 @@ def clear():
 	return redirect(url_for('main'))
 
 
+@app.route('/date', methods=["POST", "GET"])
+def date():
+	if request.method == 'POST':
+		date = request.form['date']
+
+		if not date:
+			flash(f'Ну і чому нічого не послав?')
+			return render_template('date.html')
+
+		flash(f'input date: {date}')
+
+		date = db.to_timestamp(date)
+		flash(f'timestamp: {date}')
+
+		date = db.from_timestamp(date)
+		flash(f'output date: {date}')
+
+	return render_template('date.html')
+
+
+#Перші сторінки///////////////////////////////////////////////////////////////
 @app.route('/')
 def main():
 	"""

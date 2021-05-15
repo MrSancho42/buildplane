@@ -1,6 +1,7 @@
 from hashlib import sha256 as sha256
 import sqlite3 as sqlite3
 import _pickle as cpickle
+from datetime import datetime
 
 
 """
@@ -26,6 +27,26 @@ class db_work():
 		"""
 
 		return sha256(str(value).encode('utf-8')).hexdigest()
+
+	@staticmethod
+	def to_timestamp(value):
+		"""
+		Приймає дату у форматі yyyy-mm-dd.
+		
+		Повертає timestamp
+		"""
+
+		return datetime.strptime(value, '%Y-%m-%d').strftime('%s')
+
+	@staticmethod
+	def from_timestamp(value):
+		"""
+		Приймає timestamp.
+
+		Повертає дату у форматі dd.mm.yyyy
+		"""
+
+		return datetime.fromtimestamp(int(value)).strftime('%d.%m.%Y')
 
 
 	def login(self, login, password):
