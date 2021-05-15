@@ -77,8 +77,8 @@ CREATE TABLE IF NOT EXISTS "cols" (
 CREATE TABLE IF NOT EXISTS "personal_tasks" (
 	"task_id" INTEGER PRIMARY KEY AUTOINCREMENT,
 	"description" TEXT NOT NULL,
-	"start_date" TEXT,
-	"end_date" TEXT,
+	"start_date" INTEGER,
+	"end_date" INTEGER,
 	"done" INTEGER DEFAULT 0 NOT NULL,
 	"user_id" INTEGER NOT NULL,
 	"col_id" INTEGER NOT NULL,
@@ -92,8 +92,8 @@ CREATE TABLE IF NOT EXISTS "personal_tasks" (
 CREATE TABLE IF NOT EXISTS "tasks" (
 	"task_id" INTEGER PRIMARY KEY AUTOINCREMENT,
 	"description" TEXT NOT NULL,
-	"start_date" TEXT,
-	"end_date" TEXT,
+	"start_date" INTEGER,
+	"end_date" INTEGER,
 	"done" INTEGER DEFAULT 0 NOT NULL,
 	"performer_id" INTEGER NOT NULL,
 	"col_id" INTEGER NOT NULL,
@@ -123,7 +123,7 @@ CREATE TABLE IF NOT EXISTS "groups_task" (
 CREATE TABLE IF NOT EXISTS "personal_events" (
 	"event_id" INTEGER PRIMARY KEY AUTOINCREMENT,
 	"description" TEXT NOT NULL,
-	"date" TEXT,
+	"date" INTEGER,
 	"done" INTEGER DEFAULT 0 NOT NULL,
 	"user_id" INTEGER NOT NULL,
 	FOREIGN KEY ("user_id") REFERENCES "users" ("user_id")
@@ -135,7 +135,7 @@ CREATE TABLE IF NOT EXISTS "personal_events" (
 CREATE TABLE IF NOT EXISTS "events" (
 	"event_id" INTEGER PRIMARY KEY AUTOINCREMENT,
 	"description" TEXT NOT NULL,
-	"date" TEXT
+	"date" INTEGER
 );
 
 /* Призначені користувачам події */
