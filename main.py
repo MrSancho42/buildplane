@@ -77,6 +77,8 @@ def before_request():
 
 	#Перевірка належності до групи
 	if research('/group/', request.path):
+		if research('/group/add', request.path):
+			return
 		if not db.get_membership('group', request.path.split('/')[2]):
 			abort(404)
 
@@ -260,10 +262,10 @@ def settings_command(command_id):
 
 	user = db.get_user()
 	user_id = user['user_id']
-	command = db.get_command_name(command_id)
+	command = db.get_command_info(command_id)
 
 	if db.get_edit_command_rights(command_id, user_id):
-		name = db.get_command_name(command_id)['name']
+		name = db.get_command_info(command_id)['name']
 		form = wtf.edit_command_form(name=name)
 		form_dialog = wtf.del_dialog_form()
 
@@ -279,7 +281,7 @@ def edit_command(command_id):
 	Функція редагування команди
 	"""
 
-	name = db.get_command_name(command_id)['name']
+	name = db.get_command_info(command_id)['name']
 	form = wtf.edit_command_form(name=name)
 	form_dialog = wtf.del_dialog_form()
 
@@ -298,7 +300,7 @@ def del_command(command_id):
 	"""
 
 	try:
-		name = db.get_command_name(command_id)['name']
+		name = db.get_command_info(command_id)['name']
 		form = wtf.edit_command_form(name=name)
 		form_dialog = wtf.del_dialog_form()
 	except TypeError: #якщо команда уже видалена
@@ -418,7 +420,7 @@ def add_group():
 	Сторінка створення нової групи
 	"""
 	command_id = request.args.get('command_id')
-	command = db.get_command_name(command_id)
+	command = db.get_command_info(command_id)
 	user = db.get_user()
 	list_owners = db.get_users_in_command(command_id) # для випадаючого списку вибору власника
 	form = wtf.add_group_form()
