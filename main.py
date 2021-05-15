@@ -62,8 +62,7 @@ def before_request():
 
 	exceptions = ['/', '/login', '/registration']
 	if 'user' not in session and request.path not in exceptions:
-		#return redirect(url_for('login'))
-		pass
+		return redirect(url_for('login'))
 
 	if not hasattr(g, 'link_db'):
 		g.link_db = sqlite3.connect(get_path(config.DATABASE))
