@@ -324,6 +324,8 @@ def command_task(command_id):
 	"""
 
 	user = db.get_user()
+	is_owner = db.get_owner_rights(command_id, user['user_id'], 'command')
+
 	command = db.get_command_info(command_id)
 
 	groups = groups_ownership(command_id)
@@ -331,6 +333,7 @@ def command_task(command_id):
 	cols = db.get_command_tasks(command_id)
 	return render_template('command_task.html',
 							user=user,
+							is_owner=is_owner,
 							command=command,
 							groups=groups,
 							cols=cols)
