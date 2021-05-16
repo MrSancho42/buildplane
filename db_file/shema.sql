@@ -105,8 +105,10 @@ CREATE TABLE IF NOT EXISTS "tasks" (
 CREATE TABLE IF NOT EXISTS "commands_task" (
 	"task_id" INTEGER NOT NULL,
 	"command_id" INTEGER NOT NULL,
+	"group_id" INTEGER NOT NULL,
 	FOREIGN KEY ("task_id") REFERENCES "tasks" ("task_id") ON DELETE CASCADE,
-	FOREIGN KEY ("command_id") REFERENCES "commands" ("command_id")
+	FOREIGN KEY ("command_id") REFERENCES "commands" ("command_id"),
+	FOREIGN KEY ("group_id") REFERENCES "groups" ("group_id")
 );
 
 /* Завдання груп */
