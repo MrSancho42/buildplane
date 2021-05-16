@@ -24,6 +24,16 @@ ON "tasks"."performer_id" = "users"."user_id"
 INNER JOIN "commands"
 ON "commands_task"."command_id" = "commands"."command_id";
 
+CREATE VIEW "v_command_tasks_group" AS
+SELECT "tasks"."task_id", "description", "start_date", "end_date", "done", "performer_id",  "commands_task"."group_id", "commands_task"."command_id", "users"."name", "commands"."owner_id"
+FROM "tasks"
+INNER JOIN "commands_task"
+ON "tasks"."task_id" = "commands_task"."task_id"
+INNER JOIN "users"
+ON "tasks"."performer_id" = "users"."user_id"
+INNER JOIN "commands"
+ON "commands_task"."command_id" = "commands"."command_id";
+
 CREATE VIEW "v_group" AS
 SELECT "groups"."group_id", "groups"."name", "color", "groups"."command_id",
         "groups"."owner_id", "user_id", "commands"."owner_id" as "command_owner_id"
