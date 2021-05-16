@@ -72,6 +72,8 @@ def before_request():
 
 	#Перевірка належності до команди
 	if research('/command/', request.path):
+		if research('/command/add', request.path):
+			return
 		if not db.get_membership('command', request.path.split('/')[2]):
 			abort(404)
 
