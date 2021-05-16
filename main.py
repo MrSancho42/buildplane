@@ -264,7 +264,7 @@ def settings_command(command_id):
 	user_id = user['user_id']
 	command = db.get_command_info(command_id)
 
-	if db.get_edit_command_rights(command_id, user_id):
+	if db.get_owner_rights(command_id, user_id, 'command'):
 		name = db.get_command_info(command_id)['name']
 		form = wtf.edit_command_form(name=name)
 		form_dialog = wtf.del_dialog_form()
