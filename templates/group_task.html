@@ -10,6 +10,7 @@
 	{% if groups %}
 		{% for item in groups %}
 			<div class="bar__item">
+				<div style="background-color: {{ item.color }};" class="bar__item-color"></div>
 				<a class="bar__item-name" href="/group/{{ item.group_id }}/task">
 					<span>{{ item.name }}</span>
 				</a>
