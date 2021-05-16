@@ -217,22 +217,6 @@ class db_work():
 		return True
 
 
-	def get_edit_command_rights(self, command_id, user_id):
-		"""
-		Перевіряє, чи в користувача є права на редагування команди.
-
-		Якщо є - повертає True
-		якщо нема
-		повертає False
-		"""
-
-		result = self.__cur.execute(f'''SELECT owner_id FROM v_commands
-									WHERE command_id = {command_id}''').fetchone()
-		if result['owner_id'] == user_id:
-			return True
-		else: return False
-
-
 	def edit_command(self, command_id, name):
 		"""
 		Функція редагування команди
@@ -347,6 +331,22 @@ class db_work():
 		return bool(res[0])
 
 
+	def get_owner_rights(self, element_id, user_id, element):
+		"""
+		Перевіряє, чи є користувач власником об'єкту (команди чи групи).
+
+		Якщо є - повертає True
+		якщо нема
+		повертає False
+		"""
+
+		result = self.__cur.execute(f'''SELECT owner_id FROM v_{element}
+									WHERE {element}_id = {element_id}''').fetchone()
+		if result['owner_id'] == user_id:
+			return True
+		else: return False
+
+	
 	#Групи////////////////////////////////////////////////////////////////////
 	def get_groups(self, command_id):
 		"""
