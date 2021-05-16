@@ -22,8 +22,8 @@ INSERT INTO "personal_tasks" VALUES (2,'Завдання 2',NULL,NULL,0,1,1);
 INSERT INTO "personal_tasks" VALUES (3,'Поїсти',NULL,NULL,0,1,2);
 INSERT INTO "tasks" VALUES (1,'1 завдання 1 команди',NULL,NULL,0,1,3);
 INSERT INTO "tasks" VALUES (2,'2 завдання 2 команди',NULL,NULL,0,2,4);
-INSERT INTO "commands_task" VALUES (1,1);
-INSERT INTO "commands_task" VALUES (2,1);
+INSERT INTO "commands_task" VALUES (1,1,1);
+INSERT INTO "commands_task" VALUES (2,1,1);
 
 /*для тесту видалення команди*/
 INSERT INTO "commands" VALUES (3,'Command 4 del',1,'5,6');
@@ -34,10 +34,10 @@ INSERT INTO "tasks" VALUES (3,'huyask1',NULL,NULL,0,2,5);
 INSERT INTO "tasks" VALUES (4,'huyask2',NULL,NULL,0,2,5);
 INSERT INTO "tasks" VALUES (5,'huyask3',NULL,NULL,0,2,6);
 INSERT INTO "tasks" VALUES (6,'huyask4',NULL,NULL,0,2,6);
-INSERT INTO "commands_task" VALUES (3,3);
-INSERT INTO "commands_task" VALUES (4,3);
-INSERT INTO "commands_task" VALUES (5,3);
-INSERT INTO "commands_task" VALUES (6,3);
+INSERT INTO "commands_task" VALUES (3,3,3);
+INSERT INTO "commands_task" VALUES (4,3,3);
+INSERT INTO "commands_task" VALUES (5,3,3);
+INSERT INTO "commands_task" VALUES (6,3,3);
 INSERT INTO "events" VALUES (1,'event1',454545454545);
 INSERT INTO "events" VALUES (2,'event2',454545454545);
 INSERT INTO "commands_event" VALUES (1,3);
