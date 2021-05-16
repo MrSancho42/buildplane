@@ -25,7 +25,7 @@ INNER JOIN "commands"
 ON "commands_task"."command_id" = "commands"."command_id";
 
 CREATE VIEW "v_command_tasks_group" AS
-SELECT "tasks"."task_id", "description", "start_date", "end_date", "done", "performer_id",  "commands_task"."group_id", "commands_task"."command_id", "users"."name", "commands"."owner_id"
+SELECT "tasks"."task_id", "description", "start_date", "end_date", "done", "performer_id",  "commands_task"."group_id", "users"."name", "commands"."owner_id"
 FROM "tasks"
 INNER JOIN "commands_task"
 ON "tasks"."task_id" = "commands_task"."task_id"
