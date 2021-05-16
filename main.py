@@ -425,6 +425,9 @@ def add_group():
 	command_id = request.args.get('command_id')
 	command = db.get_command_info(command_id)
 	user = db.get_user()
+	if not db.get_owner_rights(command_id, user['user_id'], 'command'):
+		abort(403)
+
 	list_owners = db.get_users_in_command(command_id) # для випадаючого списку вибору власника
 	form = wtf.add_group_form()
 	form.owner.choices = list_owners
