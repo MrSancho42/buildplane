@@ -266,7 +266,7 @@ def settings_command(command_id):
 	user_id = user['user_id']
 	command = db.get_command_info(command_id)
 
-	if db.get_edit_command_rights(command_id, user_id):
+	if db.get_owner_rights(command_id, user_id, 'command'):
 		name = db.get_command_info(command_id)['name']
 		form = wtf.edit_command_form(name=name)
 		form_dialog = wtf.del_dialog_form()
@@ -326,6 +326,8 @@ def command_task(command_id):
 	"""
 
 	user = db.get_user()
+	is_owner = db.get_owner_rights(command_id, user['user_id'], 'command')
+
 	command = db.get_command_info(command_id)
 
 	groups = groups_ownership(command_id)
@@ -333,6 +335,7 @@ def command_task(command_id):
 	cols = db.get_command_tasks(command_id)
 	return render_template('command_task.html',
 							user=user,
+							is_owner=is_owner,
 							command=command,
 							groups=groups,
 							cols=cols)
@@ -424,6 +427,9 @@ def add_group():
 	command_id = request.args.get('command_id')
 	command = db.get_command_info(command_id)
 	user = db.get_user()
+	if not db.get_owner_rights(command_id, user['user_id'], 'command'):
+		abort(403)
+
 	list_owners = db.get_users_in_command(command_id) # для випадаючого списку вибору власника
 	form = wtf.add_group_form()
 	form.owner.choices = list_owners

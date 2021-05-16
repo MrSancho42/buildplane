@@ -21,10 +21,13 @@
 	{% else %}
 		Груп немає...
 	{% endif %}
-	<a href="{{ url_for('add_group', command_id=command.command_id) }}" class="add-button add-button_minimize left-bar__add-button">
-		<span>Додати групу</span>
-		<span></span>
-	</a>
+
+	{% if is_owner %}
+		<a href="{{ url_for('add_group', command_id=command.command_id) }}" class="add-button add-button_minimize left-bar__add-button">
+			<span>Додати групу</span>
+			<span></span>
+		</a>
+	{% endif %}
 {% endblock %}
 
 {% block work_area %}
