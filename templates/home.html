@@ -4,11 +4,11 @@
 	{% if commands %}
 		{% for item in commands %}
 			<div class="bar__item">
-				<a href="/command/{{ item.command_id }}/task">
+				<a class="bar__item-name" href="/command/{{ item.command_id }}/task">
 					<span>{{ item.name }}</span>
 				</a>
 				{% if item.ownership %}
-					<a href="/command/{{ item.command_id }}/settings"></a>
+					<a class="bar__item-setting" href="/command/{{ item.command_id }}/settings"></a>
 				{% endif %}
 			</div>
 		{% endfor %}

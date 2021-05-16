@@ -419,7 +419,6 @@ h1,h2,h3,h4,h5,h6{font-size:inherit;font-weight: 400;}
 .bar__item{
 	display: flex;
 	align-items: center;
-	justify-content: space-between;
 	white-space: nowrap;
 	width: 100%;
 	height: 60px;
@@ -427,13 +426,21 @@ h1,h2,h3,h4,h5,h6{font-size:inherit;font-weight: 400;}
 	padding: 0 20px;
 	background-color: var(--light-color);
 	box-shadow: 0 0 var(--shadow);
+	overflow: hidden;
 }
 .bar__item:hover,
 .add-button:hover{
 	transition: transform 0.09s ease-in;
 	transform: scale(1.02);
 }
-.bar__item > a:nth-child(1){
+.bar__item-color{
+	min-width: 30px;
+	margin-left: -20px;
+	margin-right: 10px;
+	height: 100%;
+	background-color: red;
+}
+.bar__item-name{
 	display: flex;
 	align-items: center;
 	overflow: hidden;
@@ -445,14 +452,14 @@ h1,h2,h3,h4,h5,h6{font-size:inherit;font-weight: 400;}
 	overflow: hidden;
 	text-overflow: ellipsis;
 }
-.bar__item > a:nth-child(2){
+.bar__item-setting{
 	content: url(../ico/seting.svg);
 	height: inherit;
 	padding: 16px 26px;
 	margin-right: -20px;
 	opacity: 1;
 }
-.bar__item > a:nth-child(2):hover{opacity: 0.6;}
+.bar__item-setting:hover{opacity: 0.6;}
 
 /* Стандартні кнопки які приймають найменший розмір */
 .bar__item_small{width: min-content !important;}
