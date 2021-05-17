@@ -38,6 +38,7 @@
 			</div>
 			<div class="form-settings__group-color-example">Приклад назви групи</div>
 		</div>
+
         <div class="form-settings__button-box">
             <div class="form-settings__delete-button">Видалити</div>
             {{ form.submit(class="button") }}
@@ -47,7 +48,7 @@
     <dialog class="dialog-box">
         <form  action="{{ url_for('del_group', group_id=group_id) }}" method="POST">
             {{ form_dialog.hidden_tag() }}
-            <div>Ви справді хочете видалити команду? Ця дія є незворотньою.</div>
+            <div>Ви справді хочете видалити групу? Ця дія є незворотньою.</div>
             <div class="form-settings__button-box">
                 <button class="dialog-box__button dialog-box__green-button">Ні</button>
                 {{ form_dialog.submit(class="dialog-box__button dialog-box__red-button") }}

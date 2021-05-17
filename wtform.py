@@ -71,6 +71,6 @@ class edit_group_form(FlaskForm):
 										message='Довжина назви повинна бути до 30 символів'),
 						DataRequired(message='Заповніть це поле')])	
 	color = StringField('КОЛІР ГРУПИ:', widget=ColorInput())
-	owner = SelectField('ВЛАСНИК ГРУПИ:')
+	owner = SelectField('ВЛАСНИК ГРУПИ:', choices=[], coerce=int, validate_choice=False)
 	blocked = BooleanField('ЗАБОРОНИТИ РУХ ЗАВДАНЬ У КОЛОНКАХ:')
 	submit = SubmitField('Підтвердити')

@@ -464,7 +464,8 @@ def settings_group(group_id):
 		form = wtf.edit_group_form(request.form)
 
 		# формування списку для призначення власника
-		form.owner.choices = list_owners
+		form.owner.choices = list_owners # це список [(user_id, user_name)]
+		# визначення власника в списку за замовчуванням - того, що є зараз власником
 		default_owner = 0
 		for i in list_owners:
 			if i[1] == user['login']:
@@ -476,7 +477,6 @@ def settings_group(group_id):
 		form.color.data = group['color']
 		form.name.data = group['name']
 		form.blocked.data = group['blocked']
-
 		form_dialog = wtf.del_dialog_form()
 
 		return render_template('edit_group.html', user=user, group_id=group_id, command=command,
@@ -484,21 +484,17 @@ def settings_group(group_id):
 	else: abort(403)
 
 
-@app.route('/group/<int:group_id>/edit', methods=["POST"])
+@app.route('/group/<int:group_id>/edit', methods=["POST", "GET"])
 def edit_group(group_id):
 	"""
 	Функція редагування групи
 	"""
 
 	form = wtf.edit_group_form(request.form)
-	#form_dialog = wtf.del_dialog_form()
 
-	print('daata  --  ', form.name.data, form.color.data, form.owner.data, form.blocked.data, form.submit.data)
-
-	#print('val  --  ', form.name.validate())
 	if form.validate_on_submit():
 		name = form.name.data
-		owner_id = db.get_user_login_by_id(form.owner.data)
+		owner_id = form.owner.data
 		blocked = form.blocked.data
 		color = form.color.data
 
@@ -518,7 +514,6 @@ def del_group(group_id):
 	try:
 		group = db.get_group_info(group_id)
 		command_id = group['command_id']
-		form = wtf.edit_group_form()
 		form_dialog = wtf.del_dialog_form()
 	except TypeError: #якщо команда уже видалена
 		abort(404)
