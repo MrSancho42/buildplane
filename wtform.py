@@ -65,3 +65,10 @@ class add_group_form(FlaskForm):
 	owner = SelectField('ВЛАСНИК ГРУПИ:')
 	blocked = BooleanField('РУХ ЗАВДАНЬ У КОЛОНКАХ:', render_kw={'checked': True})
 	submit = SubmitField('Підтвердити')
+
+class edit_group_form(FlaskForm):
+	name = StringField("НАЗВА ГРУПИ:")	
+	color = StringField('КОЛІР ГРУПИ:', widget=ColorInput())
+	owner = SelectField('ВЛАСНИК ГРУПИ:')
+	blocked = BooleanField('РУХ ЗАВДАНЬ У КОЛОНКАХ:')
+	submit = SubmitField('Підтвердити')

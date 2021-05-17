@@ -118,6 +118,28 @@ class db_work():
 									WHERE user_id = "{self.__user}"''').fetchone()
 
 
+	def get_user_login(self):
+		"""
+		Функція для отримання імені та логіну користувача.
+
+		Повертає {user_id, name, login}
+		"""
+
+		return self.__cur.execute(f'''SELECT *
+									FROM v_users_login
+									WHERE user_id = "{self.__user}"''').fetchone()
+
+	def get_user_login_by_id(self, login):
+		"""
+		Функція для отримання id користувача за логіном.
+
+		Повертає {user_id}
+		"""
+
+		return self.__cur.execute(f'''SELECT user_id
+									FROM v_users_login
+									WHERE login = "{login}"''').fetchone()
+
 	def get_personal_tasks(self):
 		"""
 		Функція що дістає завдання та колонки користувача.
@@ -352,7 +374,7 @@ class db_work():
 		"""
 		Функція що дістає групи команди до яких належить користувач.
 
-		Повертає [{group_id, name, color, command_id, owner_id, user_id, command_owner_id}]
+		Повертає [{group_id, name, color, command_id, owner_id, blocked, user_id, command_owner_id}]
 		"""
 
 		res = self.__cur.execute(f'''SELECT *
@@ -378,6 +400,29 @@ class db_work():
 									WHERE group_id = "{group_id}"''').fetchone()
 
 
+	def get_full_group_info(self, group_id):
+		"""
+		Функція, що дістає майже всі дані про групу.
+
+		Повертає {group_id, name, color, command_id, owner_id, blocked}
+		"""
+
+		return self.__cur.execute(f'''SELECT group_id, name, color, command_id, owner_id, blocked
+									FROM v_group
+									WHERE group_id = "{group_id}"''').fetchone()
+
+
+	def edit_group(self, group_id, name, owner_id, blocked, color):
+		"""
+		Функція редагування групи
+
+		"""
+
+		self.__cur.execute(f'''UPDATE groups SET name = "{name}", owner_id={owner_id},
+							blocked={blocked}, color={color} WHERE group_id = {group_id}''')
+		#рядок на додання нового власника до групи якщо його ще нема
+	
+	
 	def del_group(self, group_id):
 		"""
 		Функція видалення групи

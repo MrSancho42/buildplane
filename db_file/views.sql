@@ -1,5 +1,7 @@
 CREATE VIEW "v_users" AS SELECT "user_id", "name" FROM "users";
 
+CREATE VIEW "v_users_login" AS SELECT "user_id", "name", "login" FROM "users";
+
 CREATE VIEW "v_user_cols" AS SELECT "user_id", "cols_order" FROM "users";
 
 CREATE VIEW "v_personal_tasks" AS
@@ -26,7 +28,7 @@ ON "commands_task"."command_id" = "commands"."command_id";
 
 CREATE VIEW "v_group" AS
 SELECT "groups"."group_id", "groups"."name", "color", "groups"."command_id",
-        "groups"."owner_id", "user_id", "commands"."owner_id" as "command_owner_id"
+        "groups"."owner_id", "blocked", "user_id", "commands"."owner_id" as "command_owner_id"
 FROM "groups"
 INNER JOIN "groups_user"
 ON "groups"."group_id" = "groups_user"."group_id"
