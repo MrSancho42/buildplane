@@ -38,6 +38,21 @@
 			<span>Нове завдання</span>
 			<span></span>
 		</a>
+
+		<label class="bar__item bar__item_small drop-down" for="d-d1">
+			Усі завдання
+			
+			<input type="checkbox" id="d-d1">
+			<div>
+				<a href="{{ url_for('command_task_group', command_id=command.command_id) }}">
+					За групами
+				</a>
+				<a href="">
+					Призначенні мені
+				</a>
+			</div>
+		</label>
+
 		<a href="" class="bar__item bar__item_small">
 			Події
 		</a>
