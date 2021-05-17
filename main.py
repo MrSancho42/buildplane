@@ -355,7 +355,6 @@ def command_task_group(command_id):
 	groups = groups_ownership(command_id)
 
 	cols = db.get_command_tasks_group(command_id)
-	print(cols[0]['color'])
 	return render_template('command_task_group.html',
 							user=user,
 							is_owner=is_owner,

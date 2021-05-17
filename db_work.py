@@ -491,7 +491,7 @@ class db_work():
 												FROM cols 
 												WHERE col_id = {col}''')
 												.fetchone() for col in res]
-			print('Колонки', cols_order)
+
 			cols_order = [dict(col) for col in cols_order]
 
 			return cols_order
