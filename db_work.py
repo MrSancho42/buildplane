@@ -267,7 +267,10 @@ class db_work():
 		"""
 		Функція що дістає завдання та колонки команди.
 
-		Повертає [{col_id, name, tasks: [{task_id, description, start_date, end_date, done, performer_id, col_id, command_id, name, owner_id}]}]
+		Повертає [{col_id, name, tasks: [{task_id, description, start_date,
+										end_date, done, performer_id, col_id,
+										command_id, name, owner_id, color,
+										group_name}]}]
 		або якщо колонок немає False
 		"""
 

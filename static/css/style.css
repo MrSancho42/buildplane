@@ -586,6 +586,8 @@ h1,h2,h3,h4,h5,h6{font-size:inherit;font-weight: 400;}
 	border-radius: 10px;
 	padding: 10px;
 }
+.task_group{border: 2px solid;}
+
 .task:hover{
 	transition: transform 0.09s ease-in;
 	transform: scale(1.01);

@@ -66,9 +66,9 @@
 						{% for task in col.tasks %}
 
 							{% if user.user_id in [task.performer_id, task.owner_id] %}
-								<div class="task drag-item" draggable="true" data-task="{{ task.task_id }}">
+								<div class="task task_group drag-item" style="border-color: {{ task.color }};" draggable="true" data-task="{{ task.task_id }}">
 							{% else  %}
-								<div class="task" draggable="false">
+								<div class="task task_group" style="border-color: {{ task.color }};" draggable="false">
 							{% endif %}
 
 								<a href="" draggable="false">
@@ -78,7 +78,7 @@
 									</p>
 									<span class="task__submit-clone"></span>
 									<p>
-										{{ task.name }}
+										{{ task.name }}  |  {{ task.group_name }}
 									</p>
 									<p>
 										{% if task.start_date %}
