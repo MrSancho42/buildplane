@@ -45,7 +45,7 @@
 	</form>
 
     <dialog class="dialog-box">
-        <form  action="" method="POST">
+        <form  action="{{ url_for('del_group', group_id=group_id) }}" method="POST">
             {{ form_dialog.hidden_tag() }}
             <div>Ви справді хочете видалити команду? Ця дія є незворотньою.</div>
             <div class="form-settings__button-box">

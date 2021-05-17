@@ -461,8 +461,8 @@ def settings_group(group_id):
 		command = db.get_command_info(group['command_id'])
 		list_owners = db.get_users_in_command(group['command_id']) # для випадаючого списку вибору власника
 
-		form = wtf.edit_group_form(blocked=group['blocked'])
-		
+		form = wtf.edit_group_form(request.form)
+
 		# формування списку для призначення власника
 		form.owner.choices = list_owners
 		default_owner = 0
@@ -475,9 +475,7 @@ def settings_group(group_id):
 		form.process() # без цього рядок вище не хоче працювати
 		form.color.data = group['color']
 		form.name.data = group['name']
-
-		print('opa-na  --  ', form.name.data, form.color.data, form.owner.data, form.blocked.data)
-		print('opa-na2  --  ', form.validate())
+		form.blocked.data = group['blocked']
 
 		form_dialog = wtf.del_dialog_form()
 
@@ -486,17 +484,18 @@ def settings_group(group_id):
 	else: abort(403)
 
 
-
-
 @app.route('/group/<int:group_id>/edit', methods=["POST"])
 def edit_group(group_id):
 	"""
 	Функція редагування групи
 	"""
 
-	form = wtf.edit_group_form()
-	form_dialog = wtf.del_dialog_form()
+	form = wtf.edit_group_form(request.form)
+	#form_dialog = wtf.del_dialog_form()
 
+	print('daata  --  ', form.name.data, form.color.data, form.owner.data, form.blocked.data, form.submit.data)
+
+	#print('val  --  ', form.name.validate())
 	if form.validate_on_submit():
 		name = form.name.data
 		owner_id = db.get_user_login_by_id(form.owner.data)
@@ -507,6 +506,32 @@ def edit_group(group_id):
 		return redirect(url_for('settings_group', group_id=group_id))
 
 	abort(403) # якщо користувач прописав шлях сам
+
+
+
+@app.route('/group/<int:group_id>/del', methods=["GET", "POST"])
+def del_group(group_id):
+	"""
+	Функція видалення групи
+	"""
+
+	try:
+		group = db.get_group_info(group_id)
+		command_id = group['command_id']
+		form = wtf.edit_group_form()
+		form_dialog = wtf.del_dialog_form()
+	except TypeError: #якщо команда уже видалена
+		abort(404)
+	
+	if form_dialog.submit.data:
+		db.del_group(group_id)
+		return redirect(url_for('command_task', command_id=command_id))
+
+	# при натисненні "НІ" у діалоговому вікні
+	if request.method == 'POST':
+		return redirect(url_for('settings_group', group_id=group_id))
+
+	abort(404) # якщо користувач прописав шлях сам
 
 
 @app.route('/group/<group_id>/task/task_status', methods=["POST"])
