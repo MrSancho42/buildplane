@@ -329,8 +329,8 @@ h1,h2,h3,h4,h5,h6{font-size:inherit;font-weight: 400;}
 	gap: 10px;
 }
 .top-bar > a{
-	width: min-content;
-	max-width: 200px;
+	width: auto;
+	max-width: 260px;
 }
 .top-bar__home{
 	content: url(../ico/house.svg);

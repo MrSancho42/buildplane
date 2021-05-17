@@ -2,8 +2,12 @@
 
 {% block top_bar %}
 <a class="bar__item top-bar__home" href="/home/task"></a>
-<a class="bar__item" href="/command/{{ command.command_id }}/task">{{ command.name }}</a>
-<a class="bar__item" href="">{{ current_group.name }}</a>
+<a class="bar__item" href="/command/{{ command.command_id }}/task">
+	<span>{{ command.name }}</span>
+</a>
+<a class="bar__item" href="">
+	<span>{{ current_group.name }}</span>
+</a>
 {% endblock %}
 
 {% block left_bar %}
