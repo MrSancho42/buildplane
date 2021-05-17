@@ -341,6 +341,29 @@ def command_task(command_id):
 							cols=cols)
 
 
+@app.route('/command/<command_id>/task-group')
+def command_task_group(command_id):
+	"""
+	Сторінка завдань команди.
+	"""
+
+	user = db.get_user()
+	is_owner = db.get_owner_rights(command_id, user['user_id'], 'command')
+
+	command = db.get_command_info(command_id)
+
+	groups = groups_ownership(command_id)
+
+	cols = db.get_command_tasks_group(command_id)
+	print(cols[0]['color'])
+	return render_template('command_task_group.html',
+							user=user,
+							is_owner=is_owner,
+							command=command,
+							groups=groups,
+							cols=cols)
+
+
 @app.route('/command/<command_id>/task/dnd', methods=["POST"])
 def command_task_dnd(command_id):
 	"""

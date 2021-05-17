@@ -547,8 +547,14 @@ h1,h2,h3,h4,h5,h6{font-size:inherit;font-weight: 400;}
 	border-radius: 8px;
 	overflow: hidden;
 }
-.coll > span{padding: 10px 25px 10px 10px;}
-.coll > div{
+.coll > span{
+	padding: 10px 25px 10px 10px;
+	z-index: 2;
+	border-top-left-radius: 8px;
+	border-top-right-radius: 8px;
+	background-color: var(--light-accent-color);
+}
+.coll > div:last-child{
 	height: auto;
 	min-height: 50px;
 	width: 100%;
@@ -558,6 +564,14 @@ h1,h2,h3,h4,h5,h6{font-size:inherit;font-weight: 400;}
 	overflow-y: auto;
 	gap: 20px;
 	padding: 10px;
+}
+.coll__color{
+	height: 20px;
+	z-index: 1;
+	margin-bottom: -9px;
+	border-top-left-radius: 8px;
+	border-top-right-radius: 8px;
+	box-shadow: inset 0px -10px 4px 0 var(--shadow-color);
 }
 
 /* Блок завдання */

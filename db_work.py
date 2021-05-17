@@ -284,6 +284,23 @@ class db_work():
 		return cols
 
 
+	def get_command_tasks_group(self, command_id):
+		cols = self.__cur.execute(f'''SELECT group_id, name, color
+									FROM v_group
+									WHERE command_id = "{command_id}" and
+										user_id = "{self.__user}"''')
+
+		cols = [dict(col) for col in cols]
+
+		for col in cols:
+			res = self.__cur.execute(f'''SELECT *
+										FROM v_command_tasks_group
+										WHERE group_id = {col['group_id']}''').fetchall()
+			col['tasks'] = self.convert_date(res)
+
+		return cols
+
+
 	def set_command_task_col(self, col, task, command_id):
 		"""
 		Функція що змінює колонку завдання команди.
