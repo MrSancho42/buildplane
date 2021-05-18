@@ -532,7 +532,7 @@ class db_work():
 		self.__cur.execute(f'INSERT INTO groups_user VALUES({owner_id}, {group_id})')
 
 		# перевірка, чи треба додати творця до групи (якщо не є власником)
-		if owner_id != creator_id:
+		if owner_id != str(creator_id):
 			self.__cur.execute(f'INSERT INTO groups_user VALUES({creator_id}, {group_id})')
 		return group_id
 
