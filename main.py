@@ -437,6 +437,9 @@ def group_task(group_id):
 
 	user = db.get_user()
 	current_group = db.get_group_info(group_id)
+	# нижче рядок перевіряє, чи є користувач власником команди
+	# необхідно для кнопки створення групи
+	is_owner = db.get_owner_rights(current_group['command_id'], user['user_id'], 'command')
 
 	command = db.get_command_info(current_group['command_id'])
 
@@ -445,6 +448,7 @@ def group_task(group_id):
 	cols = db.get_group_tasks(group_id)
 	return render_template('group_task.html',
 							user=user,
+							is_owner=is_owner,
 							command=command,
 							current_group=current_group,
 							groups=groups,
@@ -468,7 +472,11 @@ def add_group():
 	"""
 	Сторінка створення нової групи
 	"""
+
 	command_id = request.args.get('command_id')
+	if command_id == None: # якщо самовільний перехід на /group/add
+		abort(404)
+
 	command = db.get_command_info(command_id)
 	user = db.get_user()
 	if not db.get_owner_rights(command_id, user['user_id'], 'command'):
@@ -487,11 +495,99 @@ def add_group():
 		owner = form.owner.data
 		blocked = form.blocked.data
 
-		group_id = db.add_group(name, color, command_id, owner, blocked)
+		group_id = db.add_group(name, color, command_id, owner, user['user_id'], blocked)
+
+		# перевірка, чи той, хто створив, є власником групи
+		if user['user_id'] != int(owner):
+			return redirect(url_for('command_task', command_id=command_id))
+
 		return redirect(url_for('group_task', group_id=group_id))
 
 	return render_template('add_group.html', form=form, user=user,
 						command=command)
+
+
+@app.route('/group/<int:group_id>/settings', methods=["GET", "POST"])
+def settings_group(group_id):
+	"""
+	Сторінка налаштувань групи
+	"""
+
+	user = db.get_user_login()
+	group = db.get_full_group_info(group_id)
+
+	if db.get_owner_rights(group['group_id'], user['user_id'], 'group'):
+		command = db.get_command_info(group['command_id'])
+		list_owners = db.get_users_in_command(group['command_id']) # для випадаючого списку вибору власника
+
+		form = wtf.edit_group_form(request.form)
+
+		# формування списку для призначення власника
+		form.owner.choices = list_owners # це список [(user_id, user_name)]
+		# визначення власника в списку за замовчуванням - того, що є зараз власником
+		default_owner = 0
+		for i in list_owners:
+			if i[1] == user['login']:
+				default_owner = i[0]
+				break
+
+		form.owner.default = default_owner
+		form.process() # без цього рядок вище не хоче працювати
+		form.color.data = group['color']
+		form.name.data = group['name']
+		form.blocked.data = group['blocked']
+		form_dialog = wtf.del_dialog_form()
+
+		return render_template('edit_group.html', user=user, group_id=group_id, command=command,
+								form=form, form_dialog=form_dialog, group=group)
+	else: abort(403)
+
+
+@app.route('/group/<int:group_id>/edit', methods=["POST", "GET"])
+def edit_group(group_id):
+	"""
+	Функція редагування групи
+	"""
+
+	form = wtf.edit_group_form(request.form)
+
+	if form.validate_on_submit():
+		name = form.name.data
+		owner_id = form.owner.data
+		blocked = form.blocked.data
+		color = form.color.data
+
+		db.edit_group(group_id, name, owner_id, blocked, color)
+		return redirect(url_for('settings_group', group_id=group_id))
+
+	abort(403) # якщо користувач прописав шлях сам
+
+
+
+@app.route('/group/<int:group_id>/del', methods=["GET", "POST"])
+def del_group(group_id):
+	"""
+	Функція видалення групи
+	"""
+
+	try:
+		group = db.get_group_info(group_id)
+		command_id = group['command_id']
+		form_dialog = wtf.del_dialog_form()
+	except TypeError: #якщо команда уже видалена
+		abort(404)
+	
+	if form_dialog.submit.data:
+		db.del_group(group_id)
+		return redirect(url_for('command_task', command_id=command_id))
+
+	# при натисненні "НІ" у діалоговому вікні
+	if request.method == 'POST':
+		return redirect(url_for('settings_group', group_id=group_id))
+
+	abort(404) # якщо користувач прописав шлях сам
+
+
 @app.route('/group/<group_id>/task/task_status', methods=["POST"])
 def group_task_status(group_id):
 	"""
