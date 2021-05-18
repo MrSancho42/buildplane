@@ -1,8 +1,8 @@
 {% extends "work_space.html" %}
 
 {% block top_bar %}
-<a class="bar__item top-bar__home" href="/home/task"></a>
-<a class="bar__item" href="/command/{{ command.command_id }}/task">
+<a class="bar__item top-bar__home" href="{{ url_for('home') }}"></a>
+<a class="bar__item" href="{{ url_for('command_task', command_id=command.command_id) }}">
 	<span>{{ command.name }}</span>
 </a>
 <a class="bar__item" href="">
@@ -15,7 +15,7 @@
 		{% for item in groups %}
 			<div class="bar__item">
 				<div style="background-color: {{ item.color }};" class="bar__item-color"></div>
-				<a class="bar__item-name" href="/group/{{ item.group_id }}/task">
+				<a class="bar__item-name" href="{{ url_for('group_task', group_id=item.group_id) }}">
 					<span>{{ item.name }}</span>
 				</a>
 				{% if item.ownership %}
