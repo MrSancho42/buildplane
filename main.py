@@ -516,7 +516,7 @@ def settings_group(group_id):
 	user = db.get_user_login()
 	group = db.get_full_group_info(group_id)
 
-	if db.get_owner_rights(group['group_id'], user['user_id'], 'group'):
+	if db.get_edit_group_rights(user['user_id'], group['group_id']):
 		command = db.get_command_info(group['command_id'])
 		list_owners = db.get_users_in_command(group['command_id']) # для випадаючого списку вибору власника
 
