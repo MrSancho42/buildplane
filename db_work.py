@@ -288,10 +288,9 @@ class db_work():
 
 
 	def get_command_tasks_group(self, command_id):
-		cols = self.__cur.execute(f'''SELECT group_id, name, color
+		cols = self.__cur.execute(f'''SELECT DISTINCT group_id, name, color
 									FROM v_group
-									WHERE command_id = "{command_id}" and
-										user_id = "{self.__user}"''')
+									WHERE command_id = "{command_id}"''')
 
 		cols = [dict(col) for col in cols]
 
