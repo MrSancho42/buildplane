@@ -35,9 +35,12 @@
 		<div class="form-settings__example">
 			<div>
 				{{ form.color(class="form-settings__group-color") }}
-				<img src="../static/ico/color_picker.svg" alt="" class="form-settings__color-picker-img">
+				<img src="{{ url_for('static', filename = 'ico/color_picker.svg') }}" alt="" class="form-settings__color-picker-img">
 			</div>
-			<div class="form-settings__group-color-example">Приклад назви групи</div>
+			<div class="form-settings__group-color-example">
+				<div class="bar__item-color"></div>
+				<div>Приклад назви групи</div>
+			</div>
 		</div>
 		{{ form.submit(class="button") }}
 	</form>
