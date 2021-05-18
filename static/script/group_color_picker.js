@@ -1,4 +1,4 @@
-var groupButtonExample = document.getElementsByClassName("form-settings__group-color-example")[0];
+var groupButtonExample = document.getElementsByClassName("bar__item-color")[0];
 var colorPicker = document.getElementsByClassName("form-settings__group-color")[0];
 var colorPickerImg = document.getElementsByClassName("form-settings__color-picker-img")[0];
 groupButtonExample.style.backgroundColor = colorPicker.value;
