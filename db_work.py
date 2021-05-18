@@ -279,7 +279,10 @@ class db_work():
 		"""
 		Функція що дістає завдання та колонки команди.
 
-		Повертає [{col_id, name, tasks: [{task_id, description, start_date, end_date, done, performer_id, col_id, command_id, name, owner_id}]}]
+		Повертає [{col_id, name, tasks: [{task_id, description, start_date,
+										end_date, done, performer_id, col_id,
+										command_id, name, owner_id, color,
+										group_name}]}]
 		або якщо колонок немає False
 		"""
 
@@ -291,6 +294,47 @@ class db_work():
 			res = self.__cur.execute(f'''SELECT *
 										FROM v_command_tasks
 										WHERE col_id = {col['col_id']}''').fetchall()
+			col['tasks'] = self.convert_date(res)
+
+		return cols
+
+
+	def get_command_tasks_group(self, command_id):
+		cols = self.__cur.execute(f'''SELECT DISTINCT group_id, name, color
+									FROM v_group
+									WHERE command_id = "{command_id}"''')
+
+		cols = [dict(col) for col in cols]
+
+		for col in cols:
+			res = self.__cur.execute(f'''SELECT *
+										FROM v_command_tasks_group
+										WHERE group_id = {col['group_id']}''').fetchall()
+			col['tasks'] = self.convert_date(res)
+
+		return cols
+
+
+	def get_command_tasks_user(self, command_id):
+		"""
+		Функція що дістає завдання призначені користувачу та колонки команди.
+
+		Повертає [{col_id, name, tasks: [{task_id, description, start_date,
+										end_date, done, performer_id, col_id,
+										command_id, name, owner_id, color,
+										group_name}]}]
+		або якщо колонок немає False
+		"""
+
+		cols = self.get_cols('command', command_id)
+		if not cols:
+			return False
+
+		for col in cols:
+			res = self.__cur.execute(f'''SELECT *
+										FROM v_command_tasks
+										WHERE col_id = {col['col_id']} and
+										performer_id = {self.__user}''').fetchall()
 			col['tasks'] = self.convert_date(res)
 
 		return cols
@@ -513,7 +557,7 @@ class db_work():
 												FROM cols 
 												WHERE col_id = {col}''')
 												.fetchone() for col in res]
-			print('Колонки', cols_order)
+
 			cols_order = [dict(col) for col in cols_order]
 
 			return cols_order

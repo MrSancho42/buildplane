@@ -328,8 +328,8 @@ h1,h2,h3,h4,h5,h6{font-size:inherit;font-weight: 400;}
 	gap: 10px;
 }
 .top-bar > a{
-	width: min-content;
-	max-width: 200px;
+	width: auto;
+	max-width: 260px;
 }
 .top-bar__home{
 	content: url(../ico/house.svg);
@@ -418,7 +418,6 @@ h1,h2,h3,h4,h5,h6{font-size:inherit;font-weight: 400;}
 .bar__item{
 	display: flex;
 	align-items: center;
-	justify-content: space-between;
 	white-space: nowrap;
 	width: 100%;
 	height: 60px;
@@ -426,13 +425,21 @@ h1,h2,h3,h4,h5,h6{font-size:inherit;font-weight: 400;}
 	padding: 0 20px;
 	background-color: var(--light-color);
 	box-shadow: 0 0 var(--shadow);
+	overflow: hidden;
 }
 .bar__item:hover,
 .add-button:hover{
 	transition: transform 0.09s ease-in;
 	transform: scale(1.02);
 }
-.bar__item > a:nth-child(1){
+.bar__item-color{
+	min-width: 30px;
+	margin-left: -20px;
+	margin-right: 10px;
+	height: 100%;
+	background-color: red;
+}
+.bar__item-name{
 	display: flex;
 	align-items: center;
 	overflow: hidden;
@@ -444,14 +451,14 @@ h1,h2,h3,h4,h5,h6{font-size:inherit;font-weight: 400;}
 	overflow: hidden;
 	text-overflow: ellipsis;
 }
-.bar__item > a:nth-child(2){
+.bar__item-setting{
 	content: url(../ico/seting.svg);
 	height: inherit;
 	padding: 16px 26px;
 	margin-right: -20px;
 	opacity: 1;
 }
-.bar__item > a:nth-child(2):hover{opacity: 0.6;}
+.bar__item-setting:hover{opacity: 0.6;}
 
 /* Стандартні кнопки які приймають найменший розмір */
 .bar__item_small{width: min-content !important;}
@@ -506,6 +513,7 @@ h1,h2,h3,h4,h5,h6{font-size:inherit;font-weight: 400;}
 	align-items: center;
 	position: sticky;
 	right: 0;
+	z-index: 2;
 }
 .work-area__bar .bar__item{
 	justify-content: center;
@@ -524,6 +532,7 @@ h1,h2,h3,h4,h5,h6{font-size:inherit;font-weight: 400;}
 	padding-bottom: 10px !important;
 	overflow-y: hidden;
 	overflow-x: auto;
+	z-index: 1;
 }
 
 /* Колонки із завданнями */
@@ -539,8 +548,14 @@ h1,h2,h3,h4,h5,h6{font-size:inherit;font-weight: 400;}
 	border-radius: 8px;
 	overflow: hidden;
 }
-.coll > span{padding: 10px 25px 10px 10px;}
-.coll > div{
+.coll > span{
+	padding: 10px 25px 10px 10px;
+	z-index: 2;
+	border-top-left-radius: 8px;
+	border-top-right-radius: 8px;
+	background-color: var(--light-accent-color);
+}
+.coll > div:last-child{
 	height: auto;
 	min-height: 50px;
 	width: 100%;
@@ -550,6 +565,14 @@ h1,h2,h3,h4,h5,h6{font-size:inherit;font-weight: 400;}
 	overflow-y: auto;
 	gap: 20px;
 	padding: 10px;
+}
+.coll__color{
+	height: 20px;
+	z-index: 1;
+	margin-bottom: -9px;
+	border-top-left-radius: 8px;
+	border-top-right-radius: 8px;
+	box-shadow: inset 0px -10px 4px 0 var(--shadow-color);
 }
 
 /* Блок завдання */
@@ -562,6 +585,8 @@ h1,h2,h3,h4,h5,h6{font-size:inherit;font-weight: 400;}
 	border-radius: 10px;
 	padding: 10px;
 }
+.task_group{border: 2px solid;}
+
 .task:hover{
 	transition: transform 0.09s ease-in;
 	transform: scale(1.01);
@@ -624,4 +649,44 @@ h1,h2,h3,h4,h5,h6{font-size:inherit;font-weight: 400;}
 .drop-zone_active{
 	opacity: 0.5;
 	background-color: var(--light-accent-color);
+}
+
+/* Випадаюче меню */
+.drop-down{
+	flex-direction: column;
+	overflow: visible;
+	width: 210px !important;
+	z-index: 2;
+}
+.drop-down > input{display: none;}
+
+
+.drop-down > div{
+	width: 210px !important;
+	display: none;
+	flex-direction: column;
+	position: absolute;
+	bottom: -80px;
+	background-color: var(--light-color);
+	border-radius: 20px;
+	padding-top: 40px;
+	z-index: -1;
+	overflow: hidden;
+	box-shadow: 0 0 var(--shadow);
+}
+.drop-down > input:checked ~ div{
+	display: flex;
+}
+.drop-down > div > a{
+	align-items: center;
+	background-color: var(--light-accent-color);
+	height: 40px;
+	display: flex;
+	justify-content: center;
+	padding: 0 20px;
+}
+.drop-down > div > a:first-child{
+	border-top-left-radius: 20px;
+	border-top-right-radius: 20px;
+	box-shadow: 0 -2px var(--shadow);
 }

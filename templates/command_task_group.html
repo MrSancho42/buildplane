@@ -16,7 +16,7 @@
 					<span>{{ item.name }}</span>
 				</a>
 				{% if item.ownership %}
-					<a class="bar__item-setting" href="/group/{{ item.group_id }}/settings"></a>
+					<a class="bar__item-setting" href=""></a>
 				{% endif %}
 			</div>
 		{% endfor %}
@@ -40,12 +40,12 @@
 		</a>
 
 		<label class="bar__item bar__item_small drop-down" for="d-d1">
-			Усі завдання
+			За групами
 			
 			<input type="checkbox" id="d-d1">
 			<div>
-				<a href="{{ url_for('command_task_group', command_id=command.command_id) }}">
-					За групами
+				<a href="{{ url_for('command_task', command_id=command.command_id) }}">
+					Усі завдання
 				</a>
 				<a href="{{ url_for('command_task_user', command_id=command.command_id) }}">
 					Призначенні мені
@@ -61,14 +61,15 @@
 		{% if cols %}
 			{% for col in cols %}
 				<div class="coll">
+					<div style="background-color: {{ col.color }};" class="coll__color"></div>
 					<span>{{ col.name }}</span>
-					<div class="drop-zone" data-coll="{{ col.col_id }}">
+					<div>
 						{% for task in col.tasks %}
 
 							{% if user.user_id in [task.performer_id, task.owner_id] %}
-								<div class="task task_group drag-item" style="border-color: {{ task.color }};" draggable="true" data-task="{{ task.task_id }}">
+								<div class="task"  draggable="false" data-task="{{ task.task_id }}">
 							{% else  %}
-								<div class="task task_group" style="border-color: {{ task.color }};" draggable="false">
+								<div class="task" draggable="false">
 							{% endif %}
 
 								<a href="" draggable="false">
@@ -78,7 +79,7 @@
 									</p>
 									<span class="task__submit-clone"></span>
 									<p>
-										{{ task.name }}  |  {{ task.group_name }}
+										{{ task.name }}
 									</p>
 									<p>
 										{% if task.start_date %}
@@ -110,6 +111,5 @@
 {% endblock %}
 
 {% block script %}
-	<script src="{{ url_for('static', filename='script/dnd.js') }}"></script>
 	<script src="{{ url_for('static', filename='script/task_status.js') }}"></script>
 {% endblock %}
