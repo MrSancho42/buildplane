@@ -363,8 +363,30 @@ def command_task_group(command_id):
 							cols=cols)
 
 
-@app.route('/command/<command_id>/task/dnd', methods=["POST"])
-def command_task_dnd(command_id):
+@app.route('/command/<command_id>/task-user')
+def command_task_user(command_id):
+	"""
+	Сторінка завдань команди із відібраними завданнями  користувача.
+	"""
+
+	user = db.get_user()
+	is_owner = db.get_owner_rights(command_id, user['user_id'], 'command')
+
+	command = db.get_command_info(command_id)
+
+	groups = groups_ownership(command_id)
+
+	cols = db.get_command_tasks_user(command_id)
+	return render_template('command_task_user.html',
+							user=user,
+							is_owner=is_owner,
+							command=command,
+							groups=groups,
+							cols=cols)
+
+
+@app.route('/command/<command_id>/<mod>/dnd', methods=["POST"])
+def command_task_dnd(command_id, mod):
 	"""
 	Функція яка отримує дані при перетягуванні завдань команди.
 	"""

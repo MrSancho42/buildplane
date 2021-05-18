@@ -304,6 +304,31 @@ class db_work():
 		return cols
 
 
+	def get_command_tasks_user(self, command_id):
+		"""
+		Функція що дістає завдання призначені користувачу та колонки команди.
+
+		Повертає [{col_id, name, tasks: [{task_id, description, start_date,
+										end_date, done, performer_id, col_id,
+										command_id, name, owner_id, color,
+										group_name}]}]
+		або якщо колонок немає False
+		"""
+
+		cols = self.get_cols('command', command_id)
+		if not cols:
+			return False
+
+		for col in cols:
+			res = self.__cur.execute(f'''SELECT *
+										FROM v_command_tasks
+										WHERE col_id = {col['col_id']} and
+										performer_id = {self.__user}''').fetchall()
+			col['tasks'] = self.convert_date(res)
+
+		return cols
+
+
 	def set_command_task_col(self, col, task, command_id):
 		"""
 		Функція що змінює колонку завдання команди.

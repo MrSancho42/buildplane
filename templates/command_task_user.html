@@ -40,15 +40,15 @@
 		</a>
 
 		<label class="bar__item bar__item_small drop-down" for="d-d1">
-			Усі завдання
+			Призначенні мені
 			
 			<input type="checkbox" id="d-d1">
 			<div>
+				<a href="{{ url_for('command_task', command_id=command.command_id) }}">
+					Усі завдання
+				</a>
 				<a href="{{ url_for('command_task_group', command_id=command.command_id) }}">
 					За групами
-				</a>
-				<a href="{{ url_for('command_task_user', command_id=command.command_id) }}">
-					Призначенні мені
 				</a>
 			</div>
 		</label>
