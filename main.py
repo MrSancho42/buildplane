@@ -422,7 +422,11 @@ def add_group():
 	"""
 	Сторінка створення нової групи
 	"""
+	
 	command_id = request.args.get('command_id')
+	if command_id == None: # якщо самовільний перехід на /group/add
+		abort(404)
+
 	command = db.get_command_info(command_id)
 	user = db.get_user()
 	if not db.get_owner_rights(command_id, user['user_id'], 'command'):
