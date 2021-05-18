@@ -397,8 +397,8 @@ def command_task_dnd(command_id, mod):
 	return make_response(jsonify({}, 200))
 
 
-@app.route('/command/<command_id>/task/task_status', methods=["POST"])
-def command_task_status(command_id):
+@app.route('/command/<command_id>/<mod>/task_status', methods=["POST"])
+def command_task_status(command_id, mod):
 	"""
 	Функція що отримує дані при зміні стану завдання команди.
 	"""
