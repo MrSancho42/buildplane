@@ -373,7 +373,10 @@ h1,h2,h3,h4,h5,h6{font-size:inherit;font-weight: 400;}
 	overflow-x: hidden;
 	overflow-y: auto;
 }
-.left-bar .bar__item{max-width: 330px;}
+.left-bar .bar__item{
+	max-width: 330px;
+	flex-shrink: 0;
+}
 
 /* Кнопочка що згортає ліве меню */
 #left-bar__minimize{display: none;}
@@ -585,6 +588,7 @@ h1,h2,h3,h4,h5,h6{font-size:inherit;font-weight: 400;}
 	width: 100%;
 	border-radius: 10px;
 	padding: 10px;
+	flex-shrink: 0;
 }
 .task_group{border: 2px solid;}
 
