@@ -449,7 +449,12 @@ def add_group():
 		owner = form.owner.data
 		blocked = form.blocked.data
 
-		group_id = db.add_group(name, color, command_id, owner, blocked)
+		group_id = db.add_group(name, color, command_id, owner, user['user_id'], blocked)
+
+		# перевірка, чи той, хто створив, є власником групи
+		if user['user_id'] != int(owner):
+			return redirect(url_for('command_task', command_id=command_id))
+
 		return redirect(url_for('group_task', group_id=group_id))
 
 	return render_template('add_group.html', form=form, user=user,

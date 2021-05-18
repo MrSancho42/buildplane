@@ -476,7 +476,7 @@ class db_work():
 									WHERE "group_id" = {group_id} and "task_id" = {task}) = 1''')
 
 
-	def add_group(self, name, color, command_id, owner_id, blocked):
+	def add_group(self, name, color, command_id, owner_id, creator_id, blocked):
 		'''
 		Функція додання нової групи
 
@@ -486,6 +486,10 @@ class db_work():
 		self.__cur.execute(f'''INSERT INTO groups VALUES(NULL, '{name}', '{color}', {command_id}, {owner_id}, {blocked}, NULL)''')
 		group_id = self.__cur.execute("SELECT last_insert_rowid() from groups").fetchone()[0]
 		self.__cur.execute(f'INSERT INTO groups_user VALUES({owner_id}, {group_id})')
+
+		# перевірка, чи треба додати творця до групи (якщо не є власником)
+		if owner_id != creator_id:
+			self.__cur.execute(f'INSERT INTO groups_user VALUES({creator_id}, {group_id})')
 		return group_id
 
 
