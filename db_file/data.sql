@@ -31,6 +31,7 @@ INSERT INTO "groups_user" VALUES (2,4);
 INSERT INTO "groups_user" VALUES (3,4);
 INSERT INTO "groups_user" VALUES (1,5);
 INSERT INTO "groups_user" VALUES (2,5);
+INSERT INTO "groups_user" VALUES (1,6);
 INSERT INTO "groups_user" VALUES (2,6);
 INSERT INTO "cols" VALUES (1,'Planned mrs');
 INSERT INTO "cols" VALUES (2,'In work mrs');
