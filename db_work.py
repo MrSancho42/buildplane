@@ -403,7 +403,27 @@ class db_work():
 
 		return bool(res[0])
 
-	
+
+	def get_edit_group_rights(self, user_id, group_id):
+		"""
+		Перевіряє, чи має користувач права редагування групи
+
+		Він має права на редагування, якщо є власником команди, якій належить
+		група, або керівником цієї групи 
+		Якщо є - повертає True
+		якщо нема
+		повертає False
+		"""
+
+		result1 = self.__cur.execute(f'''SELECT owner_id, command_id FROM v_group
+									WHERE group_id = {group_id}''').fetchone()
+		result2 = self.__cur.execute(f'''SELECT owner_id FROM v_command
+									WHERE command_id = {result1['command_id']}''').fetchone()
+		if result1['owner_id'] == user_id or result2['owner_id'] == user_id:
+			return True
+		return False
+
+
 	#Групи////////////////////////////////////////////////////////////////////
 	def get_groups(self, command_id):
 		"""
