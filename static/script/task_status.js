@@ -1,4 +1,4 @@
-const button = document.querySelectorAll('.task__submit');
+const button = document.querySelectorAll('.task__js-submit');
 
 button.forEach(button => {
     button.addEventListener('click', foo);
