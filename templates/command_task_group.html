@@ -34,10 +34,12 @@
 
 {% block work_area %}
 	<div class="work-area__bar">
-		<a href="" class="add-button">
-			<span>Нове завдання</span>
-			<span></span>
-		</a>
+		{% if is_owner %}
+			<a href="" class="add-button">
+				<span>Нове завдання</span>
+				<span></span>
+			</a>
+		{% endif %}
 
 		<label class="bar__item bar__item_small drop-down" for="d-d1">
 			За групами

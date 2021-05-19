@@ -38,10 +38,13 @@
 
 {% block work_area %}
 	<div class="work-area__bar">
-		<a href="" class="add-button">
-			<span>Нове завдання</span>
-			<span></span>
-		</a>
+		{% if is_group_owner %}
+			<a href="" class="add-button">
+				<span>Нове завдання</span>
+				<span></span>
+			</a>
+		{% endif %}
+
 		<a href="" class="bar__item bar__item_small">
 			Події
 		</a>
