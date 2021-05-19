@@ -58,9 +58,9 @@
 									</p>
 								</a>
 								{% if task.done %}
-									<a class="task__submit task__submit_done" data-status="true"></a>
+									<a class="task__submit task__js-submit task__submit_done" data-status="true"></a>
 								{% else %}
-									<a class="task__submit" data-status="false"></a>
+									<a class="task__submit task__js-submit" data-status="false"></a>
 								{% endif %}
 							</div>
 						{% endfor %}
