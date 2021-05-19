@@ -90,7 +90,7 @@
 						{% else %}
 
 							{% for task in col.tasks %}
-								{% if user.user_id task.performer_id %}
+								{% if user.user_id == task.performer_id %}
 									<div class="task drag-item" draggable="true" data-task="{{ task.task_id }}">
 								{% else  %}
 									<div class="task" draggable="false">
