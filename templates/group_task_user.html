@@ -1,0 +1,106 @@
+{% extends "work_space.html" %}
+
+{% block top_bar %}
+<a class="bar__item top-bar__home" href="{{ url_for('home') }}"></a>
+<a class="bar__item" href="{{ url_for('command_task', command_id=command.command_id) }}">
+	<span>{{ command.name }}</span>
+</a>
+<a class="bar__item" href="">
+	<span>{{ current_group.name }}</span>
+</a>
+{% endblock %}
+
+{% block left_bar %}
+	{% if groups %}
+		{% for item in groups %}
+			<div class="bar__item">
+				<div style="background-color: {{ item.color }};" class="bar__item-color"></div>
+				<a class="bar__item-name" href="{{ url_for('group_task', group_id=item.group_id) }}">
+					<span>{{ item.name }}</span>
+				</a>
+				{% if item.ownership %}
+					<a class="bar__item-setting" href="/group/{{ item.group_id }}/settings"></a>
+				{% endif %}
+			</div>
+		{% endfor %}
+	{% else %}
+		Груп немає, і це мене лякає...
+	{% endif %}
+
+	{% if is_owner %}
+		<a href="{{ url_for('add_group', command_id=command.command_id) }}" class="add-button add-button_minimize left-bar__add-button">
+			<span>Додати групу</span>
+			<span></span>
+		</a>
+	{% endif %}
+
+{% endblock %}
+
+{% block work_area %}
+	<div class="work-area__bar">
+		{% if is_group_owner %}
+			<a href="" class="add-button">
+				<span>Нове завдання</span>
+				<span></span>
+			</a>
+		{% endif %}
+
+		<a href="{{ url_for('group_task', group_id=current_group.group_id) }}" class="bar__item bar__item_small">
+			Усі завдання
+		</a>
+		<a href="" class="bar__item bar__item_small">
+			Події
+		</a>
+	</div>
+
+	<div class="work-area__board">
+		{% if cols %}
+			{% for col in cols %}
+				<div class="coll">
+					<span>{{ col.name }}</span>
+					<div class="drop-zone" data-coll="{{ col.col_id }}">
+						{% for task in col.tasks %}
+							<div class="task drag-item" draggable="true" data-task="{{ task.task_id }}">
+								<a href="" draggable="false">
+									<span class="task__doc"></span>
+									<p>
+										{{ task.description }}
+									</p>
+									<span class="task__submit-clone"></span>
+									<p>
+										{{ task.name }}
+									</p>
+									<p>
+										{% if task.start_date %}
+											{% if task.end_date %}
+												{{ task.start_date }} - {{ task.end_date }}
+											{% else %}
+												Почати з {{ task.start_date }}
+											{% endif %}
+										{% elif task.end_date %}
+											Закінчити до {{ task.end_date }}
+										{% endif %}
+									</p>
+								</a>
+
+								{% if task.done %}
+									<a class="task__submit task__js-submit task__submit_done" data-status="true"></a>
+								{% else %}
+									<a class="task__submit task__js-submit" data-status="false"></a>
+								{% endif %}
+
+							</div>
+						{% endfor %}
+					</div>
+				</div>
+			{% endfor %}
+		{% else %}
+			Колонок немає...
+		{% endif %}
+	</div>
+{% endblock %}
+
+{% block script %}
+	<script src="{{ url_for('static', filename='script/dnd.js') }}"></script>
+	<script src="{{ url_for('static', filename='script/task_status.js') }}"></script>
+{% endblock %}

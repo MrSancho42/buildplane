@@ -456,6 +456,34 @@ def group_task(group_id):
 							cols=cols)
 
 
+@app.route('/group/<group_id>/task-user')
+def group_task_user(group_id):
+	"""
+	Сторінка завдань користувача у групі.
+	"""
+
+	user = db.get_user()
+	current_group = db.get_group_info(group_id)
+	# нижче рядок перевіряє, чи є користувач власником команди
+	# необхідно для кнопки створення групи
+	is_owner = db.get_owner_rights(current_group['command_id'], 'command')
+	is_group_owner = db.get_owner_rights(group_id, 'group')
+
+	command = db.get_command_info(current_group['command_id'])
+
+	groups = groups_ownership(current_group['command_id'])
+
+	cols = db.get_group_tasks_user(group_id)
+	return render_template('group_task_user.html',
+							user=user,
+							is_owner=is_owner,
+							is_group_owner=is_group_owner,
+							command=command,
+							current_group=current_group,
+							groups=groups,
+							cols=cols)
+
+
 @app.route('/group/<group_id>/task/dnd', methods=["POST"])
 def group_task_dnd(group_id):
 	"""
