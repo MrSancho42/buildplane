@@ -484,8 +484,8 @@ def group_task_user(group_id):
 							cols=cols)
 
 
-@app.route('/group/<group_id>/task/dnd', methods=["POST"])
-def group_task_dnd(group_id):
+@app.route('/group/<group_id>/<mod>/dnd', methods=["POST"])
+def group_task_dnd(group_id, mod):
 	"""
 	Функція яка отримує дані при перетягуванні завдань групи.
 	"""
@@ -617,8 +617,8 @@ def del_group(group_id):
 	abort(404) # якщо користувач прописав шлях сам
 
 
-@app.route('/group/<group_id>/task/task_status', methods=["POST"])
-def group_task_status(group_id):
+@app.route('/group/<group_id>/<mod>/task_status', methods=["POST"])
+def group_task_status(group_id, mod):
 	"""
 	Функція що отримує дані при зміні стану завдання групи.
 	"""
