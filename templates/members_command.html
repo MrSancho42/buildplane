@@ -1,0 +1,12 @@
+{% extends "setting.html" %}
+
+{% block top_bar %}
+<a class="bar__item top-bar__home" href="{{ url_for('home') }}"></a>
+<a class="bar__item" href="{{ url_for('command_task', command_id=command.command_id) }}">
+	<span>{{ command.name }}</span>
+</a>
+{% endblock %}
+
+{% block work_area %}
+
+{% endblock %}

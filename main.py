@@ -409,6 +409,20 @@ def command_task_status(command_id, mod):
 	return make_response(jsonify({}, 200))
 
 
+@app.route('/command/<command_id>/members', methods=["POST", "GET"])
+def command_memders(command_id):
+	"""
+	Сторінка додавання, перегляду та вилучення користувачів із команди
+	"""
+
+	if db.get_owner_rights(command_id, 'command'):
+		user = db.get_user()
+		command = db.get_command_info(command_id)
+
+		return render_template('members_command.html', user=user, command=command)
+	else: abort(403)
+
+
 #Групи////////////////////////////////////////////////////////////////////////
 def groups_ownership(command_id):
 	"""
