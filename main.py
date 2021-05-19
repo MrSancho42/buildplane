@@ -439,6 +439,7 @@ def group_task(group_id):
 	# нижче рядок перевіряє, чи є користувач власником команди
 	# необхідно для кнопки створення групи
 	is_owner = db.get_owner_rights(current_group['command_id'], 'command')
+	is_group_owner = db.get_owner_rights(group_id, 'group')
 
 	command = db.get_command_info(current_group['command_id'])
 
@@ -448,6 +449,7 @@ def group_task(group_id):
 	return render_template('group_task.html',
 							user=user,
 							is_owner=is_owner,
+							is_group_owner=is_group_owner,
 							command=command,
 							current_group=current_group,
 							groups=groups,

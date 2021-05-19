@@ -53,7 +53,7 @@ CREATE VIEW "v_group_cols" AS SELECT "group_id", "cols_order" FROM "groups";
 
 CREATE VIEW "v_group_tasks" AS
 SELECT "tasks"."task_id", "description", "start_date", "end_date", "done", "performer_id",
-        "col_id", "groups_task"."group_id", "users"."name", "groups"."owner_id"
+        "col_id", "groups_task"."group_id", "users"."name"
 FROM "tasks"
 INNER JOIN "groups_task"
 ON "tasks"."task_id" = "groups_task"."task_id"
