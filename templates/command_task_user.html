@@ -34,10 +34,12 @@
 
 {% block work_area %}
 	<div class="work-area__bar">
-		<a href="" class="add-button">
-			<span>Нове завдання</span>
-			<span></span>
-		</a>
+		{% if is_owner %}
+			<a href="" class="add-button">
+				<span>Нове завдання</span>
+				<span></span>
+			</a>
+		{% endif %}
 
 		<label class="bar__item bar__item_small drop-down" for="d-d1">
 			Призначенні мені
@@ -64,12 +66,7 @@
 					<span>{{ col.name }}</span>
 					<div class="drop-zone" data-coll="{{ col.col_id }}">
 						{% for task in col.tasks %}
-
-							{% if user.user_id in [task.performer_id, task.owner_id] %}
-								<div class="task task_group drag-item" style="border-color: {{ task.color }};" draggable="true" data-task="{{ task.task_id }}">
-							{% else  %}
-								<div class="task task_group" style="border-color: {{ task.color }};" draggable="false">
-							{% endif %}
+							<div class="task task_group drag-item" style="border-color: {{ task.color }};" draggable="true" data-task="{{ task.task_id }}">
 
 								<a href="" draggable="false">
 									<span class="task__doc"></span>
@@ -78,7 +75,7 @@
 									</p>
 									<span class="task__submit-clone"></span>
 									<p>
-										{{ task.name }}  |  {{ task.group_name }}
+										{{ task.group_name }}
 									</p>
 									<p>
 										{% if task.start_date %}
@@ -94,10 +91,11 @@
 								</a>
 
 								{% if task.done %}
-									<a class="task__submit task__submit_done" data-status="true"></a>
-								{% elif user.user_id in [task.performer_id, task.owner_id] %}
-									<a class="task__submit" data-status="false"></a>
+									<a class="task__submit task__js-submit task__submit_done" data-status="true"></a>
+								{% else %}
+									<a class="task__submit task__js-submit" data-status="false"></a>
 								{% endif %}
+
 							</div>
 						{% endfor %}
 					</div>

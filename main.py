@@ -453,6 +453,7 @@ def group_task(group_id):
 	# нижче рядок перевіряє, чи є користувач власником команди
 	# необхідно для кнопки створення групи
 	is_owner = db.get_owner_rights(current_group['command_id'], 'command')
+	is_group_owner = db.get_owner_rights(group_id, 'group')
 
 	command = db.get_command_info(current_group['command_id'])
 
@@ -462,14 +463,43 @@ def group_task(group_id):
 	return render_template('group_task.html',
 							user=user,
 							is_owner=is_owner,
+							is_group_owner=is_group_owner,
 							command=command,
 							current_group=current_group,
 							groups=groups,
 							cols=cols)
 
 
-@app.route('/group/<group_id>/task/dnd', methods=["POST"])
-def group_task_dnd(group_id):
+@app.route('/group/<group_id>/task-user')
+def group_task_user(group_id):
+	"""
+	Сторінка завдань користувача у групі.
+	"""
+
+	user = db.get_user()
+	current_group = db.get_group_info(group_id)
+	# нижче рядок перевіряє, чи є користувач власником команди
+	# необхідно для кнопки створення групи
+	is_owner = db.get_owner_rights(current_group['command_id'], 'command')
+	is_group_owner = db.get_owner_rights(group_id, 'group')
+
+	command = db.get_command_info(current_group['command_id'])
+
+	groups = groups_ownership(current_group['command_id'])
+
+	cols = db.get_group_tasks_user(group_id)
+	return render_template('group_task_user.html',
+							user=user,
+							is_owner=is_owner,
+							is_group_owner=is_group_owner,
+							command=command,
+							current_group=current_group,
+							groups=groups,
+							cols=cols)
+
+
+@app.route('/group/<group_id>/<mod>/dnd', methods=["POST"])
+def group_task_dnd(group_id, mod):
 	"""
 	Функція яка отримує дані при перетягуванні завдань групи.
 	"""
@@ -601,8 +631,8 @@ def del_group(group_id):
 	abort(404) # якщо користувач прописав шлях сам
 
 
-@app.route('/group/<group_id>/task/task_status', methods=["POST"])
-def group_task_status(group_id):
+@app.route('/group/<group_id>/<mod>/task_status', methods=["POST"])
+def group_task_status(group_id, mod):
 	"""
 	Функція що отримує дані при зміні стану завдання групи.
 	"""

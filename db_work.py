@@ -525,6 +525,28 @@ class db_work():
 		return cols
 
 
+	def get_group_tasks_user(self, group_id):
+		"""
+		Функція що дістає завдання користувача та колонки команди.
+
+		Повертає [{col_id, name, tasks: [{task_id, description, start_date, end_date, done, performer_id, col_id, group_id, name}]}]
+		або якщо колонок немає False
+		"""
+
+		cols = self.get_cols('group', group_id)
+		if not cols:
+			return False
+
+		for col in cols:
+			res = self.__cur.execute(f'''SELECT *
+										FROM v_group_tasks
+										WHERE col_id = {col['col_id']} and
+											performer_id = {self.__user}''').fetchall()
+			col['tasks'] = self.convert_date(res)
+
+		return cols
+
+
 	def set_group_task_col(self, col, task, group_id):
 		"""
 		Функція що змінює колонку завдання команди.
