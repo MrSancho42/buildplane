@@ -440,7 +440,6 @@ h1,h2,h3,h4,h5,h6{font-size:inherit;font-weight: 400;}
 	margin-left: -20px;
 	margin-right: 10px;
 	height: 100%;
-	background-color: red;
 }
 .bar__item-name{
 	display: flex;
@@ -695,4 +694,56 @@ h1,h2,h3,h4,h5,h6{font-size:inherit;font-weight: 400;}
 	border-top-left-radius: 20px;
 	border-top-right-radius: 20px;
 	box-shadow: 0 -2px var(--shadow);
+}
+
+/* Список учасників */
+.members{
+	display: flex;
+	flex-direction: column;
+	align-self: center;
+	align-items: center;
+	max-width: 600px;
+	width: 100%;
+}
+.member-item{
+	width: 100%;
+	height: auto;
+	background-color: var(--light-accent-color);
+	border-radius: 20px;
+	padding: 10px;
+	box-shadow: 0 0 var(--shadow);
+}
+.member-item__top-row{
+	display: flex;
+	justify-content: space-between;
+	flex-direction: row;
+}
+.member-item__delete{
+	display: flex;
+	align-self: right;
+	width: auto;
+	height: 24px;
+	align-items: center;
+	padding: 0 10px;
+	border-radius: 12px;
+	background-color: var(--settings-delete-color);
+	font-size: 15px;
+}
+.member-item__groups{
+	display: flex;
+	flex-wrap: wrap;
+	gap: 15px;
+	padding-top: 25px;
+}
+.member-item__groups > div{
+	padding: 3px 10px;
+	max-width: 200px;
+	height: 30px;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	font-size: 15px;
+	border: #2f3d5a solid 3px;
+	border-radius: 15px;
+	box-shadow: 0 0 var(--shadow);
 }
