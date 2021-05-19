@@ -171,6 +171,36 @@ class db_work():
 								WHERE task_id = {task} and user_id = {self.__user}''')
 
 
+	def get_command_members(self, command_id):
+		"""
+		Дістає інформацію для формуання списку учасників команди
+
+		Поверає [{user_id, name, login}, {name, color}]
+		"""
+		
+		result = []
+		users = self.__cur.execute(f'''SELECT user_id FROM v_command
+										WHERE command_id = {command_id}''').fetchall()
+		i = 0
+		while i < len(users):
+			result.append(self.__cur.execute(f'''SELECT * FROM v_users_login
+										WHERE user_id = {users[i]['user_id']}''').fetchall())
+			result[i].append(self.__cur.execute(f'''SELECT name, color FROM v_group
+										WHERE user_id = {users[i]['user_id']} AND command_id = {command_id}''').fetchall())
+			i += 1
+
+		# цей пречудовий цикл для перевірки всіх даних
+		for i in result:
+			print(i[0]['user_id'], i[0]['login'], i[0]['name'])
+			j = 0
+			print('num groups', len(i[1]))
+			while j < len(i[1]):
+				print(i[1][j]['name'], i[1][j]['color'])
+				j += 1	
+
+		return result
+
+
 	#Команди//////////////////////////////////////////////////////////////////
 	def get_commands(self):
 		"""

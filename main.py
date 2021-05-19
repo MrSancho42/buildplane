@@ -419,7 +419,10 @@ def command_memders(command_id):
 		user = db.get_user()
 		command = db.get_command_info(command_id)
 
-		return render_template('members_command.html', user=user, command=command)
+		members = db.get_command_members(command_id)
+
+		return render_template('members_command.html', user=user, command=command,
+								members=members)
 	else: abort(403)
 
 
