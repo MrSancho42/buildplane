@@ -263,10 +263,9 @@ def settings_command(command_id):
 	"""
 
 	user = db.get_user()
-	user_id = user['user_id']
 	command = db.get_command_info(command_id)
 
-	if db.get_owner_rights(command_id, user_id, 'command'):
+	if db.get_owner_rights(command_id, 'command'):
 		name = db.get_command_info(command_id)['name']
 		form = wtf.edit_command_form(name=name)
 		form_dialog = wtf.del_dialog_form()
@@ -326,7 +325,7 @@ def command_task(command_id):
 	"""
 
 	user = db.get_user()
-	is_owner = db.get_owner_rights(command_id, user['user_id'], 'command')
+	is_owner = db.get_owner_rights(command_id, 'command')
 
 	command = db.get_command_info(command_id)
 
@@ -348,7 +347,7 @@ def command_task_group(command_id):
 	"""
 
 	user = db.get_user()
-	is_owner = db.get_owner_rights(command_id, user['user_id'], 'command')
+	is_owner = db.get_owner_rights(command_id, 'command')
 
 	command = db.get_command_info(command_id)
 
@@ -370,7 +369,7 @@ def command_task_user(command_id):
 	"""
 
 	user = db.get_user()
-	is_owner = db.get_owner_rights(command_id, user['user_id'], 'command')
+	is_owner = db.get_owner_rights(command_id, 'command')
 
 	command = db.get_command_info(command_id)
 
@@ -439,7 +438,7 @@ def group_task(group_id):
 	current_group = db.get_group_info(group_id)
 	# нижче рядок перевіряє, чи є користувач власником команди
 	# необхідно для кнопки створення групи
-	is_owner = db.get_owner_rights(current_group['command_id'], user['user_id'], 'command')
+	is_owner = db.get_owner_rights(current_group['command_id'], 'command')
 
 	command = db.get_command_info(current_group['command_id'])
 
@@ -479,7 +478,7 @@ def add_group():
 
 	command = db.get_command_info(command_id)
 	user = db.get_user()
-	if not db.get_owner_rights(command_id, user['user_id'], 'command'):
+	if not db.get_owner_rights(command_id, 'command'):
 		abort(403)
 
 	list_owners = db.get_users_in_command(command_id) # для випадаючого списку вибору власника
@@ -516,7 +515,7 @@ def settings_group(group_id):
 	user = db.get_user_login()
 	group = db.get_full_group_info(group_id)
 
-	if db.get_owner_rights(group['group_id'], user['user_id'], 'group'):
+	if db.get_owner_rights(group['group_id'], 'group'):
 		command = db.get_command_info(group['command_id'])
 		list_owners = db.get_users_in_command(group['command_id']) # для випадаючого списку вибору власника
 

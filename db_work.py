@@ -387,7 +387,7 @@ class db_work():
 		return bool(res[0])
 
 
-	def get_owner_rights(self, element_id, user_id, element):
+	def get_owner_rights(self, element_id, element):
 		"""
 		Перевіряє, чи є користувач власником об'єкту (команди чи групи).
 
@@ -396,11 +396,12 @@ class db_work():
 		повертає False
 		"""
 
-		result = self.__cur.execute(f'''SELECT owner_id FROM v_{element}
-									WHERE {element}_id = {element_id}''').fetchone()
-		if result['owner_id'] == user_id:
-			return True
-		else: return False
+		res = self.__cur.execute(f'''SELECT count(*)
+									FROM v_{element}
+									WHERE {element}_id = {element_id} and
+										owner_id = {self.__user}''').fetchone()
+
+		return bool(res[0])
 
 	
 	#Групи////////////////////////////////////////////////////////////////////
