@@ -175,7 +175,7 @@ class db_work():
 		"""
 		Дістає інформацію для формуання списку учасників команди
 
-		Поверає [{user_id, name, login}, {name, color}]
+		Поверає [{user_id, name, login}, [{name, color}]]
 		"""
 		
 		result = []

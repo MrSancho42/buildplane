@@ -8,51 +8,23 @@
 {% endblock %}
 
 {% block work_area %}
-    <div class="form-settings"><input></div>
-
     <div class="members">
-        <div class="member-item">
-            <div class="member-item__top-row">
-                Валерій Наковальний | Nagibator123
-                <a class="member-item__delete" href="">Вилучити</a>
-            </div>
-            <div class="member-item__groups">
-                <span>Керує:</span>
-                <div>Група 1</div>
-                <div>Група із тридцяти знаків, 1, 2</div>
-            </div>
 
-        </div>
+        {% for item in members %}
         <div class="member-item">
             <div class="member-item__top-row">
-                Степан Бандера | nіаshi
+                {{ item.0.name }} | {{ item.0.login }}
                 <a class="member-item__delete" href="">Вилучити</a>
             </div>
-            <div class="member-item__groups">
-                <span>Керує:</span>
-                <div>Група 2</div>                
-            </div>
+            {% if item.1.0.name %} <!-- протестити і відредагувати умову на нормальну -->
+                <div class="member-item__groups">
+                    <span>Керує:</span>
+                    {% for group in item.1 %}
+                        <div style="border-color:{{ group.color }};">{{ group.name }}</div>
+                    {% endfor %}
+                </div>
+            {% endif %}
         </div>
-        <div class="member-item">
-            <div class="member-item__top-row">
-                Просто Тетяна | v_dupu_ipana
-                <a class="member-item__delete" href="">Вилучити</a>
-            </div>
-            
-            <div class="member-item__groups">
-                <span>Керує:</span>
-                <div>Я заїбалась цим займатись</div>
-                <div>Група 2</div>
-                <div>Довга назва групи</div>
-                <div>Група 1</div>
-                <div>Група 2</div>
-                <div>Група 3</div>
-            </div>
-        </div>
-        <div class="member-item">
-            <div class="member-item__top-row">
-                Филимонівна Марія Вікторівна | charitsa69pussy
-                <a class="member-item__delete" href="">Вилучити</a>
-        </div>
+        {% endfor %}
     </div>
     {% endblock %}
