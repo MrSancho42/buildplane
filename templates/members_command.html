@@ -16,7 +16,7 @@
                 {{ item.0.name }} | {{ item.0.login }}
                 <a class="member-item__delete" href="">Вилучити</a>
             </div>
-            {% if item.1.0.name %} <!-- протестити і відредагувати умову на нормальну -->
+            {% if item.1.0 %} <!-- протестити і відредагувати умову на нормальну -->
                 <div class="member-item__groups">
                     <span>Керує:</span>
                     {% for group in item.1 %}

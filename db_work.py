@@ -185,11 +185,11 @@ class db_work():
 		while i < len(users):
 			result.append(self.__cur.execute(f'''SELECT * FROM v_users_login
 										WHERE user_id = {users[i]['user_id']}''').fetchall())
-			result[i].append(self.__cur.execute(f'''SELECT name, color FROM v_group
-										WHERE user_id = {users[i]['user_id']} AND command_id = {command_id}''').fetchall())
+			result[i].append(self.__cur.execute(f'''SELECT name, color FROM v_group_owner
+										WHERE owner_id = {users[i]['user_id']} AND command_id = {command_id}''').fetchall())
 			i += 1
 
-		# цей пречудовий цикл для перевірки всіх даних
+		# це пречудовий цикл для перевірки всіх даних
 		for i in result:
 			print(i[0]['user_id'], i[0]['login'], i[0]['name'])
 			j = 0

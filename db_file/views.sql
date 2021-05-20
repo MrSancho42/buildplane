@@ -49,6 +49,12 @@ ON "groups"."group_id" = "groups_user"."group_id"
 INNER JOIN "commands"
 ON "groups"."command_id" = "commands"."command_id";
 
+CREATE VIEW "v_group_owner" AS
+SELECT "groups"."name", "color", "groups"."command_id", "groups"."owner_id"
+FROM "groups"
+INNER JOIN "commands"
+ON "groups"."command_id" = "commands"."command_id";
+
 CREATE VIEW "v_group_cols" AS SELECT "group_id", "cols_order" FROM "groups";
 
 CREATE VIEW "v_group_tasks" AS
