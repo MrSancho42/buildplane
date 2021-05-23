@@ -69,6 +69,50 @@ class db_work():
 		return col
 
 
+	def convert_event_date(self, events):
+		"""
+		Функція для конвертування дат подій.
+		"""
+
+		for event in events:
+			if event['date']:
+				event['date'] = self.from_timestamp(event['date'])
+
+		return events
+
+
+	def event_order(self, events):
+		"""
+		Функція для конвертування дат подій.
+		"""
+
+		events = self.convert_event_date(events)
+
+		now = datetime.fromtimestamp(datetime.now().timestamp())
+		order = [[] for i in range(5)]
+
+		for event in events:
+			if event['date']:
+				date = datetime.strptime(event['date'], '%d.%m.%Y')
+				print(date, type(date))
+				if now.strftime('%Y') <= date.strftime('%Y'):
+					if int(now.strftime('%V')) == int(date.strftime('%V')) + 1:
+						order[1].append(event)
+
+					elif now.strftime('%d.%m.%Y') == date.strftime('%d.%m.%Y'):
+						order[2].append(event)
+
+					elif now.strftime('%V') == date.strftime('%V') and now.strftime('%d.%m.%Y') < date.strftime('%d.%m.%Y'):
+						order[3].append(event)
+
+					elif now.strftime('%V') < date.strftime('%V'):
+						order[4].append(event)
+
+			else: order[0].append(event)
+
+		return order
+
+
 	def login(self, login, password):
 		"""
 		Функція для авторизації користувача.
