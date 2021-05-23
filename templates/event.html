@@ -1,0 +1,19 @@
+{% extends "work_space.html" %}
+
+{% block work_area %}
+	<div class="work-area__bar">
+		<a href="" class="add-button">
+			<span>Нова подія</span>
+			<span></span>
+		</a>
+		{% block bar %}
+		{% endblock %}
+		<a href=" {% block event_url %}{% endblock %} " class="bar__item bar__item_small">
+			Завдання
+		</a>
+	</div>
+	<div class="work-area__board work-area__board_event">
+		{% block board %}
+		{% endblock %}
+	</div>
+{% endblock %}

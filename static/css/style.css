@@ -696,3 +696,74 @@ h1,h2,h3,h4,h5,h6{font-size:inherit;font-weight: 400;}
 	border-top-right-radius: 20px;
 	box-shadow: 0 -2px var(--shadow);
 }
+
+/* Події */
+.work-area__board_event{
+	padding-top: 4px !important;
+	flex-direction: column;
+	overflow: hidden;
+	overflow-y: auto;
+}
+.event{
+	display: block;
+	min-height: 88px;
+	background-color: var(--light-color);
+	box-shadow: 0 0 var(--shadow);
+	width: 100%;
+	max-width: 1000px;
+	border-radius: 10px;
+	padding: 10px;
+	flex-shrink: 0;
+	margin: 0 auto;
+}
+.event:hover{
+	transition: transform 0.09s ease-in;
+	transform: scale(1.01);
+}
+.event_group{border: 2px solid;}
+
+.event > a{
+	display: block;
+	height: 100%;
+	width: inherit;
+	user-select: none;
+	z-index: 1;
+}
+.event p:first-of-type{margin-bottom: 10px;}
+.event p:not(:first-of-type){font-size: 18px;}
+
+.event__doc{
+	content: url(../ico/document-clip.svg);
+	float: right;
+	height: 34px;
+	margin-left: 10px;
+}
+.event__submit-clone,
+.event__submit{
+	height: 24px !important;
+	width: 54px !important;
+}
+.event__submit-clone{
+	margin-top: 10px;
+	float: right;
+}
+.event__submit{
+	content: url(../ico/check-dark.svg);
+	position: absolute;
+	bottom: 10px;
+	right: 10px;
+	border: 1px solid var(--shadow-color);
+	border-radius: 12px;
+	box-shadow: 0 0 var(--shadow);
+	padding: 3px;
+	z-index: 2;
+}
+.event__submit_done{
+	content: url(../ico/check.svg);
+	background-color: var(--success);
+}
+.event__submit_done[data-status]:hover{background-color: var(--warning);}
+.event__js-submit:hover{
+	transition: transform 0.09s ease-in;
+	transform: scale(1.05);
+}
