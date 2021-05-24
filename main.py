@@ -418,11 +418,12 @@ def command_memders(command_id):
 	if db.get_owner_rights(command_id, 'command'):
 		user = db.get_user()
 		command = db.get_command_info(command_id)
+		form = wtf.add_member_form()
 
 		members = db.get_command_members(command_id)
 
 		return render_template('members_command.html', user=user, command=command,
-								members=members)
+								form=form, members=members)
 	else: abort(403)
 
 

@@ -8,15 +8,24 @@
 {% endblock %}
 
 {% block work_area %}
-    <div class="members">
+    <form action="", method="POST" class="form-members">
+        {{ form.hidden_tag() }}
+        {{ form.name.label() }}
+        <div class="form-members__row">
+            {{ form.name() }}
+            {{ form.submit(class="button") }}
+        </div>
+    </form>
 
+    <div class="members">
+        <div style="margin-right: auto; padding-left: 20px;">Учасники:</div>
         {% for item in members %}
         <div class="member-item">
             <div class="member-item__top-row">
                 {{ item.0.name }} | {{ item.0.login }}
                 <a class="member-item__delete" href="">Вилучити</a>
             </div>
-            {% if item.1.0 %} <!-- протестити і відредагувати умову на нормальну -->
+            {% if item.1.0 %}
                 <div class="member-item__groups">
                     <span>Керує:</span>
                     {% for group in item.1 %}

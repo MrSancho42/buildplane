@@ -270,6 +270,44 @@ h1,h2,h3,h4,h5,h6{font-size:inherit;font-weight: 400;}
 	cursor: pointer;
 }
 
+/* Форма для додання нових учасників */
+.form-members{
+	align-self: center;
+	display: flex;
+	flex-direction: column;
+	max-width: 700px;
+	width: 100%;
+	gap: 5px !important;	
+}
+.form-members__row{
+	display: flex;
+	justify-content: space-between;
+}
+.form-members label {
+	padding-left: 15px;
+	color: var(--settings-label-color);
+}
+.form-members input[type=text] {
+	background-color: var(--light-accent-color);
+	height: 40px;
+	width: 550px;
+	padding-left: 10px;
+	margin-bottom: 20px;
+	border-radius: 20px;
+	box-shadow: inset 0 0 var(--shadow);
+}
+.form-members input[type=submit] {
+	background-color: var(--settings-submit-color);
+	height: 40px;
+	width: 140px;
+	border-radius: 10px;
+}
+.form-members input[type=submit]:hover{
+	transition: transform 0.09s ease-in;
+	transform: scale(1.02);
+	cursor: pointer;
+}
+
 /* Діалогове вікно */
 .dialog-box{
 	background-color: var(--light-color);
@@ -700,9 +738,11 @@ h1,h2,h3,h4,h5,h6{font-size:inherit;font-weight: 400;}
 .members{
 	display: flex;
 	flex-direction: column;
+	gap: 30px !important;
+	margin-top: 10px;
 	align-self: center;
 	align-items: center;
-	max-width: 600px;
+	max-width: 700px;
 	width: 100%;
 }
 .member-item{
@@ -725,7 +765,7 @@ h1,h2,h3,h4,h5,h6{font-size:inherit;font-weight: 400;}
 	height: 24px;
 	align-items: center;
 	padding: 0 10px;
-	border-radius: 12px;
+	border-radius: 8px;
 	background-color: var(--settings-delete-color);
 	font-size: 15px;
 }
