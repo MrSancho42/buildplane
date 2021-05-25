@@ -94,19 +94,18 @@ class db_work():
 		for event in events:
 			if event['date']:
 				date = datetime.strptime(event['date'], '%d.%m.%Y')
-				print(date, type(date))
-				if now.strftime('%Y') <= date.strftime('%Y'):
-					if int(now.strftime('%V')) == int(date.strftime('%V')) + 1:
-						order[1].append(event)
 
-					elif now.strftime('%d.%m.%Y') == date.strftime('%d.%m.%Y'):
-						order[2].append(event)
+				if now.strftime('%d.%m.%Y') == date.strftime('%d.%m.%Y'):
+					order[2].append(event)
 
-					elif now.strftime('%V') == date.strftime('%V') and now.strftime('%d.%m.%Y') < date.strftime('%d.%m.%Y'):
-						order[3].append(event)
+				elif now.strftime('%V') == date.strftime('%V') and now.strftime('%s') < date.strftime('%s'):
+					order[3].append(event)
 
-					elif now.strftime('%V') < date.strftime('%V'):
-						order[4].append(event)
+				elif now.strftime('%V') < date.strftime('%V'):
+					order[4].append(event)
+
+				else:
+					order[1].append(event)
 
 			else: order[0].append(event)
 
@@ -498,10 +497,10 @@ class db_work():
 		"""
 		Функція що дістає групи команди до яких належить користувач.
 
-		Повертає {group_id, name, command_id}
+		Повертає {group_id, name, command_id, blocked}
 		"""
 
-		return self.__cur.execute(f'''SELECT group_id, name, command_id
+		return self.__cur.execute(f'''SELECT group_id, name, command_id, blocked
 									FROM v_group
 									WHERE group_id = "{group_id}"''').fetchone()
 
