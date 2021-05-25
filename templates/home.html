@@ -12,13 +12,13 @@
 				{% endif %}
 			</div>
 		{% endfor %}
-		<a href="{{ url_for('add_command') }}" class="add-button add-button_minimize left-bar__add-button">
-			<span>Додати команду</span>
-			<span></span>
-		</a>
 	{% else %}
 		Команд немає...
 	{% endif %}
+	<a href="{{ url_for('add_command') }}" class="add-button add-button_minimize left-bar__add-button">
+		<span>Додати команду</span>
+		<span></span>
+	</a>
 {% endblock %}
 
 {% block work_area %}
