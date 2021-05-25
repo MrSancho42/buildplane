@@ -61,3 +61,8 @@ INNER JOIN "users"
 ON "tasks"."performer_id" = "users"."user_id"
 INNER JOIN "groups"
 ON "groups_task"."group_id" = "groups"."group_id";
+
+CREATE VIEW "v_personal_events" AS
+SELECT *
+FROM "personal_events"
+ORDER BY "personal_events"."date";

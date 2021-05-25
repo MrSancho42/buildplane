@@ -212,6 +212,28 @@ def home():
 							cols=cols)
 
 
+@app.route('/home/event')
+def personal_event():
+	"""
+	Головна сторінка користувача
+	"""
+
+	user = db.get_user()
+
+	commands = db.get_commands()
+	if commands:
+		for i in commands:
+			i['ownership'] = i['owner_id'] == session['user']
+			i.pop('owner_id')
+
+	events = db.get_personal_event()
+
+	return render_template('personal_event.html',
+							user=user,
+							commands=commands,
+							events=events)
+
+
 @app.route('/home/task/dnd', methods=["POST"])
 def home_dnd():
 	"""

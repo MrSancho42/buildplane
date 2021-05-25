@@ -215,6 +215,13 @@ class db_work():
 								WHERE task_id = {task} and user_id = {self.__user}''')
 
 
+	def get_personal_event(self):
+		res = self.__cur.execute(f'''SELECT * FROM v_personal_events
+									WHERE user_id = {self.__user}''')
+
+		return self.event_order([dict(item) for item in res])
+
+
 	#Команди//////////////////////////////////////////////////////////////////
 	def get_commands(self):
 		"""
