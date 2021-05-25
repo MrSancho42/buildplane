@@ -148,6 +148,8 @@
 {% endblock %}
 
 {% block script %}
-	<script src="{{ url_for('static', filename='script/dnd.js') }}"></script>
+	{% if is_group_owner or not current_group.blocked %}
+		<script src="{{ url_for('static', filename='script/dnd.js') }}"></script>
+	{% endif %}
 	<script src="{{ url_for('static', filename='script/task_status.js') }}"></script>
 {% endblock %}
