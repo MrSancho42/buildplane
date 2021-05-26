@@ -60,7 +60,11 @@
 					<span>{{ col.name }}</span>
 					<div class="drop-zone" data-coll="{{ col.col_id }}">
 						{% for task in col.tasks %}
-							<div class="task drag-item" draggable="true" data-task="{{ task.task_id }}">
+							{% if is_group_owner or not current_group.blocked %}
+								<div class="task drag-item" draggable="true" data-task="{{ task.task_id }}">
+							{% else %}
+								<div class="task drag-item" draggable="false" data-task="{{ task.task_id }}">
+							{% endif %}
 								<a href="" draggable="false">
 									<span class="task__doc"></span>
 									<p>

@@ -97,7 +97,11 @@
 
 							{% for task in col.tasks %}
 								{% if user.user_id == task.performer_id %}
-									<div class="task drag-item" draggable="true" data-task="{{ task.task_id }}">
+									{% if not current_group.blocked %}
+										<div class="task drag-item" draggable="true" data-task="{{ task.task_id }}">
+									{% else %}
+										<div class="task drag-item" draggable="false" data-task="{{ task.task_id }}">
+									{% endif %}
 								{% else  %}
 									<div class="task" draggable="false">
 								{% endif %}
