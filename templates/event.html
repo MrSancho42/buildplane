@@ -1,5 +1,7 @@
 {% extends "work_space.html" %}
 
+{% set tab_name = ['Без дати', 'Термін пройшов', 'Сьогодні', 'Цей тиждень', 'Пізніше'] %}
+
 {% block work_area %}
 	<div class="work-area__bar">
 		<a href="" class="add-button">
@@ -13,7 +15,32 @@
 		</a>
 	</div>
 	<div class="work-area__board work-area__board_event">
-		{% block tab %}
-		{% endblock %}
+
+		{% for i in range(5) %}
+			<div class="event-tab">
+				
+				{% if events[i][0] %}
+					<label for="tab{{ i }}" class="event-tab__drop-down">
+				{% else %}
+					<label for="tab{{ i }}">
+				{% endif %}
+
+					<span>{{ tab_name[i] }}</span>
+					<div></div>
+				</label>
+				<input type="checkbox" id="tab{{ i }}">
+
+				<div>
+					{% for event in events[i] %}
+						<div class="event">
+							{% block tab scoped %}
+							{% endblock %}
+						</div>
+					{% endfor %}
+				</div>
+
+			</div>
+		{% endfor %}
+
 	</div>
 {% endblock %}
