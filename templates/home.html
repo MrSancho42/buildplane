@@ -1,6 +1,23 @@
 {% extends "work_space.html" %}
 
 {% block left_bar %}
+
+	<div class="invitation">
+		<div class="invitation__text">Вам прийшло запрошення до команди Команда1</div>
+		<div class="invitation__button-box">
+			<button class="invitation__button dialog-box__green-button">Прийняти</button>
+			<button class="invitation__button dialog-box__red-button">Відхилити</button>
+		</div>
+	</div>
+
+	<div class="invitation">
+		<div class="invitation__text">Вам прийшло запрошення до команди Команда2</div>
+		<div class="invitation__button-box">
+			<button class="invitation__button dialog-box__green-button">Прийняти</button>
+			<button class="invitation__button dialog-box__red-button">Відхилити</button>
+		</div>
+	</div>
+
 	{% if commands %}
 		{% for item in commands %}
 			<div class="bar__item">
@@ -76,4 +93,5 @@
 {% block script %}
 	<script src="{{ url_for('static', filename='script/dnd.js') }}"></script>
 	<script src="{{ url_for('static', filename='script/task_status.js') }}"></script>
+	<script src="{{ url_for('static', filename='script/invitation.js') }}"></script>
 {% endblock %}
