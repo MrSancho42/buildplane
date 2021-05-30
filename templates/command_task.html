@@ -1,10 +1,10 @@
 {% extends "work_space.html" %}
 
 {% block top_bar %}
-<a class="bar__item top-bar__home" href="{{ url_for('home') }}"></a>
-<a class="bar__item" href="">
-	<span>{{ command.name }}</span>
-</a>
+	<a class="bar__item top-bar__home" href="{{ url_for('home') }}"></a>
+	<a class="bar__item" href="">
+		<span>{{ command.name }}</span>
+	</a>
 {% endblock %}
 
 {% block left_bar %}
@@ -40,120 +40,27 @@
 				<span></span>
 			</a>
 		{% endif %}
-
+		
 		<label class="bar__item bar__item_small drop-down" for="d-d1">
-			Усі завдання
-			
-			<input type="checkbox" id="d-d1">
-			<div>
-				<a href="{{ url_for('command_task_group', command_id=command.command_id) }}">
-					За групами
-				</a>
-				<a href="{{ url_for('command_task_user', command_id=command.command_id) }}">
-					Призначенні мені
-				</a>
-			</div>
+			{% block bar %}
+			{% endblock %}
 		</label>
 
 		<a href="" class="bar__item bar__item_small">
 			Події
 		</a>
 	</div>
+
 	<div class="work-area__board">
 		{% if cols %}
 			{% for col in cols %}
 				<div class="coll">
-					<span>{{ col.name }}</span>
-					<div class="drop-zone" data-coll="{{ col.col_id }}">
-						{% if is_owner %}
-
-							{% for task in col.tasks %}
-								<div class="task task_group drag-item" style="border-color: {{ task.color }};" draggable="true" data-task="{{ task.task_id }}">
-									<a href="" draggable="false">
-										<span class="task__doc"></span>
-										<p>
-											{{ task.description }}
-										</p>
-										<span class="task__submit-clone"></span>
-										<p>
-											{{ task.name }} | {{ task.group_name }}
-										</p>
-										<p>
-											{% if task.start_date %}
-												{% if task.end_date %}
-													{{ task.start_date }} - {{ task.end_date }}
-												{% else %}
-													Почати з {{ task.start_date }}
-												{% endif %}
-											{% elif task.end_date %}
-												Закінчити до {{ task.end_date }}
-											{% endif %}
-										</p>
-									</a>
-
-									{% if task.done %}
-										<a class="task__submit task__js-submit task__submit_done" data-status="true"></a>
-									{% else %}
-										<a class="task__submit task__js-submit" data-status="false"></a>
-									{% endif %}
-								</div>
-							{% endfor %}
-
-						{% else %}
-
-							{% for task in col.tasks %}
-								{% if user.user_id == task.performer_id %}
-									<div class="task task_group drag-item" style="border-color: {{ task.color }};" draggable="true" data-task="{{ task.task_id }}">
-								{% else  %}
-									<div class="task task_group" style="border-color: {{ task.color }};" draggable="false">
-								{% endif %}
-
-									<a href="" draggable="false">
-										<span class="task__doc"></span>
-										<p>
-											{{ task.description }}
-										</p>
-										<span class="task__submit-clone"></span>
-										<p>
-											{{ task.name }} | {{ task.group_name }}
-										</p>
-										<p>
-											{% if task.start_date %}
-												{% if task.end_date %}
-													{{ task.start_date }} - {{ task.end_date }}
-												{% else %}
-													Почати з {{ task.start_date }}
-												{% endif %}
-											{% elif task.end_date %}
-												Закінчити до {{ task.end_date }}
-											{% endif %}
-										</p>
-									</a>
-
-									{% if user.user_id == task.performer_id%}
-										{% if task.done %}
-											<a class="task__submit task__js-submit task__submit_done" data-status="true"></a>
-										{% else %}
-											<a class="task__submit task__js-submit" data-status="false"></a>
-										{% endif %}
-									{% elif task.done %}
-										<a class="task__submit task__submit_done""></a>
-									{% endif %}
-
-								</div>
-							{% endfor %}
-
-						{% endif %}
-					</div>
+					{% block board scoped %}
+					{% endblock %}
 				</div>
 			{% endfor %}
 		{% else %}
 			Колонок немає...
 		{% endif %}
 	</div>
-{% endblock %}
-
-{% block script %}
-	<script src="{{ url_for('static', filename='script/dnd.js') }}"></script>
-	<script src="{{ url_for('static', filename='script/task_status.js') }}"></script>
 {% endblock %}
