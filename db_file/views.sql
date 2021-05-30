@@ -66,3 +66,11 @@ CREATE VIEW "v_personal_events" AS
 SELECT *
 FROM "personal_events"
 ORDER BY "personal_events"."date";
+
+CREATE VIEW "v_command_events" AS
+SELECT "events".*, "commands_event"."command_id", "users_event"."user_id", "users_event"."done"
+FROM "events"
+INNER JOIN "commands_event"
+ON "commands_event"."event_id" = "events"."event_id"
+INNER JOIN "users_event"
+ON "users_event"."event_id" = "events"."event_id";
