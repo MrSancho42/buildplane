@@ -10,9 +10,9 @@
 {% block work_area %}
     <form action="", method="POST" class="form-members">
         {{ form.hidden_tag() }}
-        {{ form.name.label() }}
+        {{ form.login.label() }}
         <div class="form-members__row">
-            {{ form.name() }}
+            {{ form.login() }}
             {{ form.submit(class="button") }}
         </div>
     </form>

@@ -130,6 +130,23 @@ class db_work():
 									WHERE user_id = "{self.__user}"''').fetchone()
 
 
+	def check_user_login(self, login):
+		"""
+		Перевіряє, чи існує користувач з таким логіном
+
+		Повертає id користувача якщо є
+		Повертає False якщо нема
+		"""
+		
+		res = self.__cur.execute(f'''SELECT *
+									FROM v_users_login
+									WHERE login = "{login}"''').fetchone()
+		if res:
+			return res[0]
+		else:
+			return False
+
+
 	def get_personal_tasks(self):
 		"""
 		Функція що дістає завдання та колонки користувача.
@@ -187,19 +204,31 @@ class db_work():
 										WHERE user_id = {users[i]['user_id']}''').fetchall())
 			result[i].append(self.__cur.execute(f'''SELECT name, color FROM v_group_owner
 										WHERE owner_id = {users[i]['user_id']} AND command_id = {command_id}''').fetchall())
-			i += 1
-
-		# це пречудовий цикл для перевірки всіх даних
-		for i in result:
-			print(i[0]['user_id'], i[0]['login'], i[0]['name'])
-			j = 0
-			print('num groups', len(i[1]))
-			while j < len(i[1]):
-				print(i[1][j]['name'], i[1][j]['color'])
-				j += 1	
+			i += 1	
 
 		return result
 
+
+	def send_invitation(self, user_id, command_id):
+		'''
+		Надсилає запрошення користувачеві
+		'''
+
+		self.__cur.execute(f'INSERT INTO invite VALUES({user_id}, {command_id}, 1)')
+
+
+	def check_invitation(self, user_id, command_id):
+		"""
+		Перевіряє, чи користувачеві уже надіслано запрошення
+
+		Повертає True або False
+		"""
+
+		if 	self.__cur.execute(f'''SELECT * FROM invite
+								WHERE user_id = "{user_id}" and command_id = "{command_id}"''').fetchall():
+			return True
+		else:
+			return False
 
 	#Команди//////////////////////////////////////////////////////////////////
 	def get_commands(self):

@@ -76,6 +76,6 @@ class edit_group_form(FlaskForm):
 	submit = SubmitField('Підтвердити')
 
 class add_member_form(FlaskForm):
-	name = StringField("НАДІСЛАТИ ЗАПРОШЕННЯ:", render_kw={"placeholder": "логін користувача"},
+	login = StringField("НАДІСЛАТИ ЗАПРОШЕННЯ:", render_kw={"placeholder": "логін користувача"},
 						validators=[DataRequired(message='Заповніть це поле')])
 	submit = SubmitField('Надіслати')

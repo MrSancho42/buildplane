@@ -422,6 +422,30 @@ def command_memders(command_id):
 
 		members = db.get_command_members(command_id)
 
+		if form.validate_on_submit():
+			login = form.login.data
+			invited_user_id = db.check_user_login(login)
+
+			# перевірка, чи можна надіслати користувачу запрошення
+			if not db.check_invitation(invited_user_id, command_id):
+
+				if invited_user_id:
+					user_avaliability = True # змінна для визначення, чи користувач є в команді
+					for member in members:
+						if member[0]['user_id'] == invited_user_id:
+							user_avaliability = False
+							break
+
+					if user_avaliability:
+						db.send_invitation(invited_user_id, command_id)
+						print('готово')
+					else:
+						print('користувач уже є в команді')
+				else:
+					print('такого користувача нема')
+			else:
+				print('користувачу уже надіслано запрошення')
+
 		return render_template('members_command.html', user=user, command=command,
 								form=form, members=members)
 	else: abort(403)
