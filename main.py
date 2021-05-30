@@ -431,6 +431,29 @@ def command_task_status(command_id, mod):
 	return make_response(jsonify({}, 200))
 
 
+@app.route('/command/<command_id>/event')
+def command_event(command_id):
+	"""
+	Події команди
+	"""
+
+	user = db.get_user()
+	is_owner = db.get_owner_rights(command_id, 'command')
+
+	command = db.get_command_info(command_id)
+
+	groups = groups_ownership(command_id)
+
+	events = db.get_events(command_id, 'command', is_owner)
+
+	return render_template('command_event.html',
+							user=user,
+							is_owner=is_owner,
+							command=command,
+							groups=groups,
+							events=events)
+
+
 #Групи////////////////////////////////////////////////////////////////////////
 def groups_ownership(command_id):
 	"""
