@@ -45,9 +45,9 @@
 			</a>
 		{% endif %}
 
-		<a href="{{ url_for('group_task_user', group_id=current_group.group_id) }}" class="bar__item bar__item_small">
-			Призначені мені
-		</a>
+		{% block bar %}
+		{% endblock %}
+
 		<a href="" class="bar__item bar__item_small">
 			Події
 		</a>
@@ -59,89 +59,8 @@
 				<div class="coll">
 					<span>{{ col.name }}</span>
 					<div class="drop-zone" data-coll="{{ col.col_id }}">
-						{% if is_group_owner %}
-
-							{% for task in col.tasks %}
-								<div class="task drag-item" draggable="true" data-task="{{ task.task_id }}">
-									<a href="" draggable="false">
-										<span class="task__doc"></span>
-										<p>
-											{{ task.description }}
-										</p>
-										<span class="task__submit-clone"></span>
-										<p>
-											{{ task.name }}
-										</p>
-										<p>
-											{% if task.start_date %}
-												{% if task.end_date %}
-													{{ task.start_date }} - {{ task.end_date }}
-												{% else %}
-													Почати з {{ task.start_date }}
-												{% endif %}
-											{% elif task.end_date %}
-												Закінчити до {{ task.end_date }}
-											{% endif %}
-										</p>
-									</a>
-
-									{% if task.done %}
-										<a class="task__submit task__js-submit task__submit_done" data-status="true"></a>
-									{% else %}
-										<a class="task__submit task__js-submit" data-status="false"></a>
-									{% endif %}
-								</div>
-							{% endfor %}
-
-						{% else %}
-
-							{% for task in col.tasks %}
-								{% if user.user_id == task.performer_id %}
-									{% if not current_group.blocked %}
-										<div class="task drag-item" draggable="true" data-task="{{ task.task_id }}">
-									{% else %}
-										<div class="task drag-item" draggable="false" data-task="{{ task.task_id }}">
-									{% endif %}
-								{% else  %}
-									<div class="task" draggable="false">
-								{% endif %}
-
-									<a href="" draggable="false">
-										<span class="task__doc"></span>
-										<p>
-											{{ task.description }}
-										</p>
-										<span class="task__submit-clone"></span>
-										<p>
-											{{ task.name }}
-										</p>
-										<p>
-											{% if task.start_date %}
-												{% if task.end_date %}
-													{{ task.start_date }} - {{ task.end_date }}
-												{% else %}
-													Почати з {{ task.start_date }}
-												{% endif %}
-											{% elif task.end_date %}
-												Закінчити до {{ task.end_date }}
-											{% endif %}
-										</p>
-									</a>
-
-									{% if user.user_id == task.performer_id%}
-										{% if task.done %}
-											<a class="task__submit task__js-submit task__submit_done" data-status="true"></a>
-										{% else %}
-											<a class="task__submit task__js-submit" data-status="false"></a>
-										{% endif %}
-									{% elif task.done %}
-										<a class="task__submit task__submit_done""></a>
-									{% endif %}
-
-								</div>
-							{% endfor %}
-
-						{% endif %}
+						{% block board scoped %}
+						{% endblock %}
 					</div>
 				</div>
 			{% endfor %}

@@ -491,7 +491,7 @@ def group_task(group_id):
 	groups = groups_ownership(current_group['command_id'])
 
 	cols = db.get_group_tasks(group_id)
-	return render_template('group_task.html',
+	return render_template('group_task_all.html',
 							user=user,
 							is_owner=is_owner,
 							is_group_owner=is_group_owner,
