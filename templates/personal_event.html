@@ -21,8 +21,14 @@
 	</a>
 {% endblock %}
 
-{% block event_url %}
-	{{ url_for('home') }}
+{% block bar %}
+	<a href="" class="add-button">
+		<span>Нова подія</span>
+		<span></span>
+	</a>
+	<a href=" {{ url_for('home') }} " class="bar__item bar__item_small">
+		Завдання
+	</a>
 {% endblock %}
 
 {% block tab %}

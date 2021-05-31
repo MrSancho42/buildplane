@@ -32,8 +32,16 @@
 	{% endif %}
 {% endblock %}
 
-{% block event_url %}
-	{{ url_for('command_task', command_id=command.command_id) }}
+{% block bar %}
+	{% if is_owner %}
+		<a href="" class="add-button">
+			<span>Нова подія</span>
+			<span></span>
+		</a>
+	{% endif %}
+	<a href=" {{ url_for('command_task', command_id=command.command_id) }} " class="bar__item bar__item_small">
+		Завдання
+	</a>
 {% endblock %}
 
 {% block tab %}
