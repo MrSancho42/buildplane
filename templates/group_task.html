@@ -48,7 +48,7 @@
 		{% block bar %}
 		{% endblock %}
 
-		<a href="" class="bar__item bar__item_small">
+		<a href=" {{ url_for('group_event', group_id=current_group.group_id) }} " class="bar__item bar__item_small">
 			Події
 		</a>
 	</div>
