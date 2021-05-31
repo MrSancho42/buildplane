@@ -101,7 +101,7 @@ class db_work():
 				elif now.strftime('%V') == date.strftime('%V') and now.strftime('%s') < date.strftime('%s'):
 					order[3].append(event)
 
-				elif now.strftime('%V') < date.strftime('%V'):
+				elif now.strftime('%s') < date.strftime('%s'):
 					order[4].append(event)
 
 				else:
