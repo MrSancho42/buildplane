@@ -675,5 +675,33 @@ def group_task_status(group_id, mod):
 	return make_response(jsonify({}, 200))
 
 
+@app.route('/group/<group_id>/event')
+def group_event(group_id):
+	"""
+	Події груп
+	"""
+
+	user = db.get_user()
+	current_group = db.get_group_info(group_id)
+
+	is_owner = db.get_owner_rights(current_group['command_id'], 'command')
+	is_group_owner = db.get_owner_rights(group_id, 'group')
+
+	command = db.get_command_info(current_group['command_id'])
+
+	groups = groups_ownership(current_group['command_id'])
+
+	events = db.get_events(group_id, 'group', is_owner or is_group_owner)
+
+	return render_template('group_event.html',
+							user=user,
+							is_owner=is_owner,
+							is_group_owner=is_group_owner,
+							command=command,
+							current_group=current_group,
+							groups=groups,
+							events=events)
+
+
 if __name__ == '__main__':
 	app.run(host=config.HOST, debug=config.DEBUG)

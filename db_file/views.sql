@@ -74,3 +74,11 @@ INNER JOIN "commands_event"
 ON "commands_event"."event_id" = "events"."event_id"
 INNER JOIN "users_event"
 ON "users_event"."event_id" = "events"."event_id";
+
+CREATE VIEW "v_group_events" AS
+SELECT "events".*, "groups_event"."group_id", "users_event"."user_id", "users_event"."done"
+FROM "events"
+INNER JOIN "groups_event"
+ON "groups_event"."event_id" = "events"."event_id"
+INNER JOIN "users_event"
+ON "users_event"."event_id" = "events"."event_id";
