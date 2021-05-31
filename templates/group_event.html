@@ -61,11 +61,11 @@
 		</p>
 	</a>
 
-	{% if event.done and is_owner or is_group_owner %}
+	{% if event.done and (is_owner or is_group_owner) %}
 		<a class="event__submit event__submit_done"></a>
 	{% elif event.done %}
 		<a class="event__submit event__submit_done"></a>
-	{% elif not is_owner or is_group_owner %}
+	{% elif not is_owner and not is_group_owner %}
 		<a class="event__submit"></a>
 	{% endif %}
 
