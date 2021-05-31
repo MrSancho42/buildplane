@@ -215,7 +215,7 @@ def home():
 @app.route('/home/event')
 def personal_event():
 	"""
-	Головна сторінка користувача
+	Cторінка подій користувача
 	"""
 
 	user = db.get_user()
@@ -232,6 +232,20 @@ def personal_event():
 							user=user,
 							commands=commands,
 							events=events)
+
+
+@app.route('/home/event/event_status', methods=["POST"])
+def personal_event_status():
+	"""
+	Функція що отримує дані при зміні стану персональної події.
+	"""
+
+	data = request.get_json()
+
+	print(data['status'], data['event'])
+	db.set_personal_event_status(data['status'], data['event'])
+
+	return make_response(jsonify({}, 200))
 
 
 @app.route('/home/task/dnd', methods=["POST"])

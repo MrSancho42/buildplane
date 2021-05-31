@@ -221,6 +221,12 @@ class db_work():
 		return self.event_order([dict(item) for item in res])
 
 
+	def set_personal_event_status(self, status, event):
+		self.__cur.execute(f'''UPDATE personal_events
+								SET done = {int(status)}
+								WHERE event_id = {event} and user_id = {self.__user}''')
+
+
 	#Команди//////////////////////////////////////////////////////////////////
 	def get_commands(self):
 		"""

@@ -45,8 +45,8 @@
 		</p>
 	</a>
 	{% if event.done %}
-		<a class="event__submit event__submit_done"></a>
+		<a class="event__submit event__js-submit event__submit_done" data-status="true" data-event=" {{ event.event_id }} "></a>
 	{% else %}
-		<a class="event__submit"></a>
+		<a class="event__submit event__js-submit" data-status="false" data-event=" {{ event.event_id }} "></a>
 	{% endif %}
 {% endblock %}
