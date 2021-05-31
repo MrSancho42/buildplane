@@ -1,5 +1,12 @@
 {% extends "event.html" %}
 
+{% block top_bar %}
+	<a class="bar__item top-bar__home" href="{{ url_for('home') }}"></a>
+	<a class="bar__item" href="">
+		<span>{{ command.name }}</span>
+	</a>
+{% endblock %}
+
 {% block left_bar %}
 	{% if groups %}
 		{% for item in groups %}
