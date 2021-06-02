@@ -418,17 +418,21 @@ class db_work():
 									WHERE {element}_id = {element_id} and task_id = {task}) = 1''')
 
 
-	def get_membership(self, element, element_id):
+	def get_membership(self, element, element_id, user_id=0):
 		"""
-		Функція що перевіряє належність користувача до групи, або команди.
+		Функція що перевіряє належність користувача до групи або команди.
 
 		Повертає True, або False
 		"""
 
+		#якщо user_id не передано - береться id користувача із сесії
+		if user_id == 0:
+			user_id = self.__user
+
 		res = self.__cur.execute(f'''SELECT count(*)
 									FROM {element}s_user
 									WHERE {element}_id = {element_id} and
-										user_id = {self.__user}''').fetchone()
+										user_id = {user_id}''').fetchone()
 
 		return bool(res[0])
 
@@ -684,26 +688,35 @@ class db_work():
 
 
 	#Запрошення//////////////////////////////////////////////////////////////
-	def send_invitation(self, user_id, command_id):
-		'''
-		Надсилає запрошення користувачеві
-		'''
-
-		self.__cur.execute(f'INSERT INTO invite VALUES({user_id}, {command_id}, 1)')
-
-
-	def check_invitation(self, user_id, command_id):
+	def check_send_nice_invitation(self, login, command_id):
 		"""
-		Перевіряє, чи користувачеві уже надіслано запрошення
+		Крутезний метод надсилання запрошення
 
-		Повертає True або False
+		Повертає {status, message}
 		"""
 
-		if 	self.__cur.execute(f'''SELECT * FROM invite
+		user_id = self.check_user_login(login)
+		# перевірка чи існує користувач із таким логіном
+		if user_id:
+			
+			# перевіряє, чи користувачеві вже надіслано запрошення
+			if not self.__cur.execute(f'''SELECT * FROM invite
 								WHERE user_id = "{user_id}" and command_id = "{command_id}"''').fetchall():
-			return True
+				
+				#перевірка, чи такий користувач уже є в команді
+				if self.get_membership('command', command_id, user_id):
+					return {'status': False, 'message': 'Користувач уже є в цій команді'}
+
+				else:
+					# надсилання запрошення
+					self.__cur.execute(f'INSERT INTO invite VALUES({user_id}, {command_id}, 1)')
+					return {'status': True, 'message': 'Запрошення надіслано'}
+			
+			else:
+				return {'status': False, 'message': 'Користувачеві вже надіслано запрошення'}
+
 		else:
-			return False
+			return {'status': False, 'message': 'Користувача з таким логіном не існує'}
 
 
 	def get_incoming_invitation(self):
@@ -744,6 +757,7 @@ class db_work():
 			self.__cur.execute(f'''UPDATE invite
 								SET status = 1
 								WHERE user_id = {self.__user} and command_id = {command_id}''')
+
 
 	def del_invitation(self, command_id):
 		"""
