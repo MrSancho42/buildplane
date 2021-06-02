@@ -15,7 +15,20 @@
             {{ form.login() }}
             {{ form.submit(class="button") }}
         </div>
+        
+        {% for message in get_flashed_messages() %}
+            {% if message.status == False %}
+                <span class="invitation__flash" style="color: var(--danger);">
+                    {{ message.message }}
+                </span>
+            {% else %}
+                <span class="invitation__flash" style="color: var(--success);">
+                    {{ message.message }}
+                </span>
+            {% endif %}
+        {% endfor %}
     </form>
+    
 
     <div class="members">
         <div style="margin-right: auto; padding-left: 20px;">Учасники:</div>

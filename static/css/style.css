@@ -822,3 +822,7 @@ h1,h2,h3,h4,h5,h6{font-size:inherit;font-weight: 400;}
 	transition: transform 0.09s ease-in;
 	transform: scale(1.05);
 }
+.invitation__flash{
+	padding-left: 20px;
+	margin-top: -15px;
+}

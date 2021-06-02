@@ -238,10 +238,10 @@ def home_invitation():
 	print(data)
 	if data['status']: # якщо натиснута кнопка "прийняти"
 		db.add_user_to_command(data['command'])
-		#return redirect(url_for('home'))
 
 	else: # якщо натиснута кнопка "відхилити"
 		db.change_invitation_status(data['command'])
+
 	return redirect(url_for('home'))
 
 
@@ -444,7 +444,8 @@ def command_members(command_id):
 
 		if form.validate_on_submit():
 			login = form.login.data
-			result = db.check_send_nice_invitation(login, command_id)
+			result=db.check_send_nice_invitation(login, command_id)
+			flash(result)
 
 		return render_template('members_command.html', user=user, command=command,
 								form=form, members=members)
