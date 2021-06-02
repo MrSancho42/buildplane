@@ -206,10 +206,13 @@ def home():
 
 	cols = db.get_personal_tasks()
 
+	invitations = db.get_incoming_invitation()
+
 	return render_template('home.html',
 							user=user,
 							commands=commands,
-							cols=cols)
+							cols=cols,
+							invitations=invitations)
 
 
 @app.route('/home/task/dnd', methods=["POST"])
@@ -223,6 +226,23 @@ def home_dnd():
 	db.set_personal_task_col(data['coll'], data['task'])
 
 	return make_response(jsonify({}, 200))
+
+
+@app.route('/home/task/invitation', methods=["POST"])
+def home_invitation():
+	"""
+	Обробник надходжених запрошень на вступ до команди
+	"""
+
+	data = request.get_json()
+	print(data)
+	if data['status']: # якщо натиснута кнопка "прийняти"
+		db.add_user_to_command(data['command'])
+		#return redirect(url_for('home'))
+
+	else: # якщо натиснута кнопка "відхилити"
+		db.change_invitation_status(data['command'])
+	return redirect(url_for('home'))
 
 
 @app.route('/home/task/task_status', methods=["POST"])
@@ -410,7 +430,7 @@ def command_task_status(command_id, mod):
 
 
 @app.route('/command/<command_id>/members', methods=["POST", "GET"])
-def command_memders(command_id):
+def command_members(command_id):
 	"""
 	Сторінка додавання, перегляду та вилучення користувачів із команди
 	"""

@@ -208,28 +208,6 @@ class db_work():
 
 		return result
 
-
-	def send_invitation(self, user_id, command_id):
-		'''
-		Надсилає запрошення користувачеві
-		'''
-
-		self.__cur.execute(f'INSERT INTO invite VALUES({user_id}, {command_id}, 1)')
-
-
-	def check_invitation(self, user_id, command_id):
-		"""
-		Перевіряє, чи користувачеві уже надіслано запрошення
-
-		Повертає True або False
-		"""
-
-		if 	self.__cur.execute(f'''SELECT * FROM invite
-								WHERE user_id = "{user_id}" and command_id = "{command_id}"''').fetchall():
-			return True
-		else:
-			return False
-
 	#Команди//////////////////////////////////////////////////////////////////
 	def get_commands(self):
 		"""
@@ -413,6 +391,15 @@ class db_work():
 									(SELECT count("task_id")
 									FROM "commands_task"
 									WHERE "command_id" = {command_id} and "task_id" = {task}) = 1''')
+
+
+	def add_user_to_command(self, command_id):
+		"""
+		Додає користувача до команди
+		"""
+
+		self.__cur.execute(f'INSERT INTO commands_user VALUES({self.__user}, {command_id})')
+		self.del_invitation(command_id)
 
 
 	#Спільне для команд та груп///////////////////////////////////////////////
@@ -693,6 +680,77 @@ class db_work():
 		"""
 
 		self.__cur.execute(f'DELETE FROM events WHERE event_id = {event_id}')
+
+
+
+	#Запрошення//////////////////////////////////////////////////////////////
+	def send_invitation(self, user_id, command_id):
+		'''
+		Надсилає запрошення користувачеві
+		'''
+
+		self.__cur.execute(f'INSERT INTO invite VALUES({user_id}, {command_id}, 1)')
+
+
+	def check_invitation(self, user_id, command_id):
+		"""
+		Перевіряє, чи користувачеві уже надіслано запрошення
+
+		Повертає True або False
+		"""
+
+		if 	self.__cur.execute(f'''SELECT * FROM invite
+								WHERE user_id = "{user_id}" and command_id = "{command_id}"''').fetchall():
+			return True
+		else:
+			return False
+
+
+	def get_incoming_invitation(self):
+		"""
+		Перевіряє, чи є запрошення, які прийшли користувачеві
+
+		Повертає [{command_id, name}] - якщо запрошення є
+		False - якщо запрошень нема
+		"""
+
+		invitations = self.__cur.execute(f'''SELECT command_id FROM invite
+								WHERE user_id = {self.__user} and status = 1''').fetchall()
+		if invitations:
+			result = []
+			for invitation in invitations:
+				result.append(self.get_command_info(invitation[0]))
+			return result
+		else: return False
+
+	
+	def change_invitation_status(self, command_id):
+		"""
+		Змінює статус запрошення
+
+		З 0 стає 1
+		З 1 стає 0
+		"""
+		status = self.__cur.execute(f'''SELECT status FROM invite
+								WHERE user_id = {self.__user} and command_id = {command_id}''').fetchone()[0]
+		print('status ', status)
+		if status == 1:
+			print(1)
+			self.__cur.execute(f'''UPDATE invite
+								SET status = 0
+								WHERE user_id = {self.__user} and command_id = {command_id}''')
+		else:
+			print(0)
+			self.__cur.execute(f'''UPDATE invite
+								SET status = 1
+								WHERE user_id = {self.__user} and command_id = {command_id}''')
+
+	def del_invitation(self, command_id):
+		"""
+		Видаляє запрошення
+		"""
+
+		self.__cur.execute(f'DELETE FROM invite WHERE user_id = {self.__user} and command_id = {command_id}')
 
 
 if __name__ == '__main__':

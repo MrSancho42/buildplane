@@ -1,10 +1,28 @@
-var invitation = document.querySelectorAll(".invitation");
+const submit = document.querySelectorAll(".invitation__js-submit");
+const deny = document.querySelectorAll(".invitation__js-deny");
 
-invitation.forEach(invitation => { 
-  var redButton = invitation.querySelector(".dialog-box__red-button");
-    console.log(redButton);
-    
-    redButton.addEventListener('click', function (e) {
-      invitation.remove();
-      });
+submit.forEach(submit => {
+	submit.addEventListener('click', () => {send(true, submit)});
 });
+
+deny.forEach(deny => {
+	deny.addEventListener('click', () => {send(false, deny)});
+});
+
+function send(status, hui) {
+	
+	var dict = {
+        status: status,
+		command: hui.parentElement.dataset.command
+	};
+
+	fetch(`${location.pathname}/invitation`, {
+        method: "POST",
+        credentials: "include",
+        body: JSON.stringify(dict),
+        cache: "no-cache",
+        headers: new Headers({
+            "content-type": "application/json"
+        })
+    })
+}

@@ -760,12 +760,11 @@ h1,h2,h3,h4,h5,h6{font-size:inherit;font-weight: 400;}
 }
 .member-item__delete{
 	display: flex;
-	align-self: right;
 	width: auto;
 	height: 24px;
 	align-items: center;
 	padding: 0 10px;
-	border-radius: 8 px;
+	border-radius: 8px;
 	background-color: var(--settings-delete-color);
 	font-size: 15px;
 }
@@ -811,10 +810,15 @@ h1,h2,h3,h4,h5,h6{font-size:inherit;font-weight: 400;}
 	margin-bottom: 5px;
 	padding: 0 30px;
 }
-.invitation__button{
+.invitation__button-box > a{
 	text-align: center;
 	height: 35px;
 	width: 120px;
 	border-radius: 10px;
 	margin-top: 10px;
+	padding-top: 5px;
+}
+.invitation__button-box > a:hover{
+	transition: transform 0.09s ease-in;
+	transform: scale(1.05);
 }
