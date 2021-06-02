@@ -17,7 +17,7 @@
 					<span>{{ item.name }}</span>
 				</a>
 				{% if item.ownership %}
-					<a class="bar__item-setting" href="/group/{{ item.group_id }}/settings"></a>
+					<a class="bar__item-setting" href="{{ url_for('settings_group', group_id=item.group_id) }}"></a>
 				{% endif %}
 			</div>
 		{% endfor %}
