@@ -447,6 +447,7 @@ def command_members(command_id):
 		if form.validate_on_submit():
 			login = form.login.data
 			flash(db.check_send_nice_invitation(login, command_id))
+			return redirect(url_for('command_members', command_id=command_id))
 
 		return render_template('members_command.html', user=user, command=command,
 								form=form, rejected_invitations=rejected_invitations,
@@ -471,7 +472,7 @@ def invitation_resend():
 @app.route('/invitation_del', methods=["POST", "GET"])
 def invitation_del():
 	"""
-	Функція повторного видалення запрошення
+	Функція видалення запрошення
 
 	Використовується на сторінці /command/<command_id>/members
 	"""
