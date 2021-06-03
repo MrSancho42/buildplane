@@ -1,4 +1,4 @@
-{% extends "work_space.html" %}
+{% extends "event.html" %}
 
 {% block top_bar %}
 	<a class="bar__item top-bar__home" href="{{ url_for('home') }}"></a>
@@ -32,35 +32,38 @@
 	{% endif %}
 {% endblock %}
 
-{% block work_area %}
-	<div class="work-area__bar">
-		{% if is_owner %}
-			<a href="" class="add-button">
-				<span>Нове завдання</span>
-				<span></span>
-			</a>
-		{% endif %}
-		
-		<label class="bar__item bar__item_small drop-down" for="d-d1">
-			{% block bar %}
-			{% endblock %}
-		</label>
-
-		<a href="{{ url_for('command_event', command_id=command.command_id) }}" class="bar__item bar__item_small">
-			Події
+{% block bar %}
+	{% if is_owner %}
+		<a href="" class="add-button">
+			<span>Нова подія</span>
+			<span></span>
 		</a>
-	</div>
+	{% endif %}
+	<a href=" {{ url_for('command_task', command_id=command.command_id) }} " class="bar__item bar__item_small">
+		Завдання
+	</a>
+{% endblock %}
 
-	<div class="work-area__board">
-		{% if cols %}
-			{% for col in cols %}
-				<div class="coll">
-					{% block board scoped %}
-					{% endblock %}
-				</div>
-			{% endfor %}
-		{% else %}
-			Колонок немає...
-		{% endif %}
-	</div>
+{% block tab %}
+	<a href="">
+		<span class="event__doc"></span>
+		<p>
+			{{ event.description }}
+		</p>
+		<span class="event__submit-clone"></span>
+		<p>
+			{% if event.date %}
+				{{ event.date }}
+			{% endif %}
+		</p>
+	</a>
+
+	{% if event.done and is_owner %}
+		<a class="event__submit event__submit_done"></a>
+	{% elif event.done %}
+		<a class="event__submit event__submit_done"></a>
+	{% elif not is_owner %}
+		<a class="event__submit"></a>
+	{% endif %}
+
 {% endblock %}

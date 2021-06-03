@@ -58,7 +58,7 @@ class del_dialog_form(FlaskForm):
 
 
 class add_group_form(FlaskForm):
-	name = StringField("НАЗВА ГРУПИ:", validators=[Length(min=1, max=30,
+	name = StringField("НАЗВА ГРУПИ:", validators=[Length(min=1, max=130,
 										message='Довжина назви повинна бути до 30 символів'),
 						DataRequired(message='Заповніть це поле')])	
 	color = StringField('КОЛІР ГРУПИ:', widget=ColorInput())
@@ -67,7 +67,7 @@ class add_group_form(FlaskForm):
 	submit = SubmitField('Підтвердити')
 
 class edit_group_form(FlaskForm):
-	name = StringField("НАЗВА ГРУПИ:", validators=[Length(min=1, max=30,
+	name = StringField("НАЗВА ГРУПИ:", validators=[Length(min=1, max=130,
 										message='Довжина назви повинна бути до 30 символів'),
 						DataRequired(message='Заповніть це поле')])	
 	color = StringField('КОЛІР ГРУПИ:', widget=ColorInput())

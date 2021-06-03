@@ -1,0 +1,72 @@
+{% extends "event.html" %}
+
+{% block top_bar %}
+	<a class="bar__item top-bar__home" href="{{ url_for('home') }}"></a>
+	<a class="bar__item" href="{{ url_for('command_task', command_id=command.command_id) }}">
+		<span>{{ command.name }}</span>
+	</a>
+	<a class="bar__item" href="">
+		<span>{{ current_group.name }}</span>
+	</a>
+{% endblock %}
+
+{% block left_bar %}
+	{% if groups %}
+		{% for item in groups %}
+			<div class="bar__item">
+				<div style="background-color: {{ item.color }};" class="bar__item-color"></div>
+				<a class="bar__item-name" href="{{ url_for('group_task', group_id=item.group_id) }}">
+					<span>{{ item.name }}</span>
+				</a>
+				{% if item.ownership %}
+					<a class="bar__item-setting" href="{{ url_for('settings_group', group_id=item.group_id) }}"></a>
+				{% endif %}
+			</div>
+		{% endfor %}
+	{% else %}
+		Груп немає...
+	{% endif %}
+
+	{% if is_owner %}
+		<a href="{{ url_for('add_group', command_id=command.command_id) }}" class="add-button add-button_minimize left-bar__add-button">
+			<span>Додати групу</span>
+			<span></span>
+		</a>
+	{% endif %}
+{% endblock %}
+
+{% block bar %}
+	{% if is_group_owner %}
+		<a href="" class="add-button">
+			<span>Нова подія</span>
+			<span></span>
+		</a>
+	{% endif %}
+	<a href=" {{ url_for('group_task', group_id=current_group.group_id) }} " class="bar__item bar__item_small">
+		Завдання
+	</a>
+{% endblock %}
+
+{% block tab %}
+	<a href="">
+		<span class="event__doc"></span>
+		<p>
+			{{ event.description }}
+		</p>
+		<span class="event__submit-clone"></span>
+		<p>
+			{% if event.date %}
+				{{ event.date }}
+			{% endif %}
+		</p>
+	</a>
+
+	{% if event.done and (is_owner or is_group_owner) %}
+		<a class="event__submit event__submit_done"></a>
+	{% elif event.done %}
+		<a class="event__submit event__submit_done"></a>
+	{% elif not is_owner and not is_group_owner %}
+		<a class="event__submit"></a>
+	{% endif %}
+
+{% endblock %}

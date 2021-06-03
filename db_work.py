@@ -37,6 +37,7 @@ class db_work():
 
 		return datetime.strptime(value, '%Y-%m-%d').strftime('%s')
 
+
 	@staticmethod
 	def from_timestamp(value):
 		"""
@@ -48,7 +49,7 @@ class db_work():
 		return datetime.fromtimestamp(int(value)).strftime('%d.%m.%Y')
 
 
-	def convert_date(self, col):
+	def convert_task_date(self, col):
 		"""
 		Функція для конвертування дат завдань.
 
@@ -67,6 +68,44 @@ class db_work():
 				task['end_date'] = self.from_timestamp(task['end_date'])
 
 		return col
+
+
+	def event_order(self, events):
+		"""
+		Функція для сортування подій
+
+		Приймає список подій
+
+		Повертає список із п'ятьох списків які є проміжками часу. Також конвертує дати
+		"""
+
+		#переведення дати
+		for event in events:
+			if event['date']:
+				event['date'] = self.from_timestamp(event['date'])
+
+		now = datetime.fromtimestamp(datetime.now().timestamp())
+		order = [[] for i in range(5)]
+
+		for event in events:
+			if event['date']:
+				date = datetime.strptime(event['date'], '%d.%m.%Y')
+
+				if now.strftime('%d.%m.%Y') == date.strftime('%d.%m.%Y'):
+					order[2].append(event)
+
+				elif now.strftime('%V') == date.strftime('%V') and now.strftime('%s') < date.strftime('%s'):
+					order[3].append(event)
+
+				elif now.strftime('%s') < date.strftime('%s'):
+					order[4].append(event)
+
+				else:
+					order[1].append(event)
+
+			else: order[0].append(event)
+
+		return order
 
 
 	def login(self, login, password):
@@ -147,7 +186,7 @@ class db_work():
 			res = self.__cur.execute(f'''SELECT *
 										FROM v_personal_tasks
 										WHERE col_id = {col['col_id']}''').fetchall()
-			col['tasks'] = self.convert_date(res)
+			col['tasks'] = self.convert_task_date(res)
 
 		return cols
 
@@ -166,9 +205,34 @@ class db_work():
 
 
 	def set_personal_task_status(self, status, task):
+		"""
+		Змінює сататус завдання, якщо користувач співпадає
+		"""
+
 		self.__cur.execute(f'''UPDATE personal_tasks
 								SET done = {int(status)}
 								WHERE task_id = {task} and user_id = {self.__user}''')
+
+
+	def get_personal_event(self):
+		"""
+		Повертає події користувача
+		"""
+
+		res = self.__cur.execute(f'''SELECT * FROM v_personal_events
+									WHERE user_id = {self.__user}''')
+
+		return self.event_order([dict(item) for item in res])
+
+
+	def set_personal_event_status(self, status, event):
+		"""
+		Змінює статус події
+		"""
+
+		self.__cur.execute(f'''UPDATE personal_events
+								SET done = {int(status)}
+								WHERE event_id = {event} and user_id = {self.__user}''')
 
 
 	#Команди//////////////////////////////////////////////////////////////////
@@ -243,7 +307,6 @@ class db_work():
 	def del_command(self, command_id):
 		"""
 		Функція видалення команди.
-
 		"""
 
 		# перебір груп
@@ -294,12 +357,20 @@ class db_work():
 			res = self.__cur.execute(f'''SELECT *
 										FROM v_command_tasks
 										WHERE col_id = {col['col_id']}''').fetchall()
-			col['tasks'] = self.convert_date(res)
+			col['tasks'] = self.convert_task_date(res)
 
 		return cols
 
 
 	def get_command_tasks_group(self, command_id):
+		"""
+		Дістає завдання сортуючи за групами
+
+		Повертає [{group_id, name, color, [{task_id, description, start_date,
+										end_date, done, performer_id,  group_id,
+										users.name, commands.owner_id}]}]
+		"""
+
 		cols = self.__cur.execute(f'''SELECT DISTINCT group_id, name, color
 									FROM v_group
 									WHERE command_id = "{command_id}"''')
@@ -310,7 +381,7 @@ class db_work():
 			res = self.__cur.execute(f'''SELECT *
 										FROM v_command_tasks_group
 										WHERE group_id = {col['group_id']}''').fetchall()
-			col['tasks'] = self.convert_date(res)
+			col['tasks'] = self.convert_task_date(res)
 
 		return cols
 
@@ -335,7 +406,7 @@ class db_work():
 										FROM v_command_tasks
 										WHERE col_id = {col['col_id']} and
 										performer_id = {self.__user}''').fetchall()
-			col['tasks'] = self.convert_date(res)
+			col['tasks'] = self.convert_task_date(res)
 
 		return cols
 
@@ -424,12 +495,35 @@ class db_work():
 		return False
 
 
+	def get_events(self, element_id, element, is_owner):
+		"""
+		Функція що дістає події
+		Повертає {[{event_id, description, date, command_id, done}] * 5}
+		"""
+
+		if is_owner:
+			print(1)
+			res = self.__cur.execute(f'''SELECT *
+										FROM v_{element}_events
+										WHERE {element}_id = {element_id}
+										GROUP BY event_id''')
+		else:
+			print(2)
+			res = self.__cur.execute(f'''SELECT *
+										FROM v_{element}_events
+										WHERE {element}_id = {element_id}
+											and user_id = {self.__user}''')
+		
+		return self.event_order([dict(item) for item in res])
+
+
 	#Групи////////////////////////////////////////////////////////////////////
 	def get_groups(self, command_id):
 		"""
 		Функція що дістає групи команди до яких належить користувач.
 
-		Повертає [{group_id, name, color, command_id, owner_id, blocked, user_id, command_owner_id}]
+		Повертає [{group_id, name, color, command_id, owner_id, blocked,
+				user_id, command_owner_id}]
 		"""
 
 		res = self.__cur.execute(f'''SELECT *
@@ -445,12 +539,12 @@ class db_work():
 
 	def get_group_info(self, group_id):
 		"""
-		Функція що дістає групи команди до яких належить користувач.
+		Функція що дістає дані про групу
 
-		Повертає {group_id, name, command_id}
+		Повертає {group_id, name, command_id, blocked}
 		"""
 
-		return self.__cur.execute(f'''SELECT group_id, name, command_id
+		return self.__cur.execute(f'''SELECT group_id, name, command_id, blocked
 									FROM v_group
 									WHERE group_id = "{group_id}"''').fetchone()
 
@@ -520,7 +614,7 @@ class db_work():
 			res = self.__cur.execute(f'''SELECT *
 										FROM v_group_tasks
 										WHERE col_id = {col['col_id']}''').fetchall()
-			col['tasks'] = self.convert_date(res)
+			col['tasks'] = self.convert_task_date(res)
 
 		return cols
 
@@ -542,14 +636,14 @@ class db_work():
 										FROM v_group_tasks
 										WHERE col_id = {col['col_id']} and
 											performer_id = {self.__user}''').fetchall()
-			col['tasks'] = self.convert_date(res)
+			col['tasks'] = self.convert_task_date(res)
 
 		return cols
 
 
 	def set_group_task_col(self, col, task, group_id):
 		"""
-		Функція що змінює колонку завдання команди.
+		Функція що змінює колонку завдання групи.
 
 		Якщо дані невірні, то нічого не відбувається.
 		"""
