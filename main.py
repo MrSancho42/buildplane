@@ -455,7 +455,7 @@ def command_members(command_id):
 	else: abort(403)
 
 
-@app.route('/invitation_resend', methods=["POST", "GET"])
+@app.route('/invitation_resend', methods=["POST"])
 def invitation_resend():
 	"""
 	Функція повторного надсилання запрошення
@@ -466,10 +466,10 @@ def invitation_resend():
 	data = request.get_json()
 	db.change_invitation_status(data['command'], data['user_id'])
 
-	return redirect(url_for('home'))
+	return redirect(url_for('command_members', command_id=data['command']))
 
 
-@app.route('/invitation_del', methods=["POST", "GET"])
+@app.route('/invitation_del', methods=["POST"])
 def invitation_del():
 	"""
 	Функція видалення запрошення
@@ -480,7 +480,7 @@ def invitation_del():
 	data = request.get_json()
 	db.del_invitation(data['command'], data['user_id'])
 
-	return redirect(url_for('home'))
+	return redirect(url_for('command_members', command_id=data['command']))
 
 
 #Групи////////////////////////////////////////////////////////////////////////
