@@ -37,6 +37,7 @@ class db_work():
 
 		return datetime.strptime(value, '%Y-%m-%d').strftime('%s')
 
+
 	@staticmethod
 	def from_timestamp(value):
 		"""
@@ -204,12 +205,20 @@ class db_work():
 
 
 	def set_personal_task_status(self, status, task):
+		"""
+		Змінює сататус завдання, якщо користувач співпадає
+		"""
+
 		self.__cur.execute(f'''UPDATE personal_tasks
 								SET done = {int(status)}
 								WHERE task_id = {task} and user_id = {self.__user}''')
 
 
 	def get_personal_event(self):
+		"""
+		Повертає події користувача
+		"""
+
 		res = self.__cur.execute(f'''SELECT * FROM v_personal_events
 									WHERE user_id = {self.__user}''')
 
@@ -217,6 +226,10 @@ class db_work():
 
 
 	def set_personal_event_status(self, status, event):
+		"""
+		Змінює статус події
+		"""
+
 		self.__cur.execute(f'''UPDATE personal_events
 								SET done = {int(status)}
 								WHERE event_id = {event} and user_id = {self.__user}''')
@@ -294,7 +307,6 @@ class db_work():
 	def del_command(self, command_id):
 		"""
 		Функція видалення команди.
-
 		"""
 
 		# перебір груп
@@ -351,6 +363,14 @@ class db_work():
 
 
 	def get_command_tasks_group(self, command_id):
+		"""
+		Дістає завдання сортуючи за групами
+
+		Повертає [{group_id, name, color, [{task_id, description, start_date,
+										end_date, done, performer_id,  group_id,
+										users.name, commands.owner_id}]}]
+		"""
+
 		cols = self.__cur.execute(f'''SELECT DISTINCT group_id, name, color
 									FROM v_group
 									WHERE command_id = "{command_id}"''')
@@ -502,7 +522,8 @@ class db_work():
 		"""
 		Функція що дістає групи команди до яких належить користувач.
 
-		Повертає [{group_id, name, color, command_id, owner_id, blocked, user_id, command_owner_id}]
+		Повертає [{group_id, name, color, command_id, owner_id, blocked,
+				user_id, command_owner_id}]
 		"""
 
 		res = self.__cur.execute(f'''SELECT *
@@ -518,7 +539,7 @@ class db_work():
 
 	def get_group_info(self, group_id):
 		"""
-		Функція що дістає групи команди до яких належить користувач.
+		Функція що дістає дані про групу
 
 		Повертає {group_id, name, command_id, blocked}
 		"""
@@ -622,7 +643,7 @@ class db_work():
 
 	def set_group_task_col(self, col, task, group_id):
 		"""
-		Функція що змінює колонку завдання команди.
+		Функція що змінює колонку завдання групи.
 
 		Якщо дані невірні, то нічого не відбувається.
 		"""

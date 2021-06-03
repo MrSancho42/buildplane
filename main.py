@@ -120,6 +120,10 @@ def get_session():
 
 @app.route('/date', methods=["POST", "GET"])
 def date():
+	"""
+	Тимчасова сторінка для переведення дат
+	"""
+
 	if request.method == 'POST':
 		date = request.form['date']
 
@@ -379,7 +383,7 @@ def command_task(command_id):
 @app.route('/command/<command_id>/task-group')
 def command_task_group(command_id):
 	"""
-	Сторінка завдань команди.
+	Сторінка завдань команди посортованих за групами.
 	"""
 
 	user = db.get_user()
@@ -401,7 +405,7 @@ def command_task_group(command_id):
 @app.route('/command/<command_id>/task-user')
 def command_task_user(command_id):
 	"""
-	Сторінка завдань команди із відібраними завданнями  користувача.
+	Сторінка завдань команди із відібраними завданнями користувача.
 	"""
 
 	user = db.get_user()
