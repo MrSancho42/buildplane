@@ -432,7 +432,7 @@ def command_task_status(command_id, mod):
 @app.route('/command/<command_id>/members', methods=["POST", "GET"])
 def command_members(command_id):
 	"""
-	Сторінка додавання, перегляду та вилучення користувачів із команди
+	Сторінка перегляду і запрошення користувачів до команди
 	"""
 
 	if db.get_owner_rights(command_id, 'command'):
@@ -440,16 +440,31 @@ def command_members(command_id):
 		command = db.get_command_info(command_id)
 		form = wtf.add_member_form()
 
+		rejected_invitations = db.get_rejected_invitation(command_id)
 		members = db.get_command_members(command_id)
 
 		if form.validate_on_submit():
 			login = form.login.data
-			result=db.check_send_nice_invitation(login, command_id)
-			flash(result)
+			flash(db.check_send_nice_invitation(login, command_id))
 
 		return render_template('members_command.html', user=user, command=command,
-								form=form, members=members)
+								form=form, rejected_invitations=rejected_invitations,
+								members=members)
 	else: abort(403)
+
+
+@app.route('/invitation_resend', methods=["POST", "GET"])
+def invitation_resend():
+	"""
+	Функція повторного надсилання запрошення
+
+	Використовується на сторінці /command/<command_id>/members
+	"""
+
+	data = request.get_json()
+	db.change_invitation_status(data['command'], data['user_id'])
+
+	return redirect(url_for('home'))
 
 
 #Групи////////////////////////////////////////////////////////////////////////

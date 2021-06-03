@@ -118,16 +118,20 @@ class db_work():
 									WHERE user_id = "{self.__user}"''').fetchone()
 
 
-	def get_user_login(self):
+	def get_user_login(self, user_id=0):
 		"""
 		Функція для отримання імені та логіну користувача.
 
 		Повертає {user_id, name, login}
 		"""
 
+		#якщо не передано user_id, то береться id користувача в сесії
+		if user_id == 0:
+			user_id = self.__user
+
 		return self.__cur.execute(f'''SELECT *
 									FROM v_users_login
-									WHERE user_id = "{self.__user}"''').fetchone()
+									WHERE user_id = "{user_id}"''').fetchone()
 
 
 	def check_user_login(self, login):
@@ -736,27 +740,48 @@ class db_work():
 			return result
 		else: return False
 
-	
-	def change_invitation_status(self, command_id):
+
+	def get_rejected_invitation(self, command_id):
+		"""
+		Перевіряє для власника команди чи є відхилені запрошення
+
+		Повертає [{user_id, name, login}] - якщо запрошення є
+		False - якщо запрошень нема
+		"""
+
+		invitations = self.__cur.execute(f'''SELECT user_id FROM invite
+								WHERE command_id = {command_id} and status = 0''').fetchall()
+		if invitations:
+			result = []
+			for invitation in invitations:
+				result.append(self.get_user_login(invitation[0]))
+			return result
+		else: return False
+
+
+	def change_invitation_status(self, command_id, user_id=0):
 		"""
 		Змінює статус запрошення
 
 		З 0 стає 1
 		З 1 стає 0
 		"""
+
+		#якщо не передано user_id, то береться id користувача в сесії
+		if user_id == 0:
+			user_id = self.__user
+
 		status = self.__cur.execute(f'''SELECT status FROM invite
-								WHERE user_id = {self.__user} and command_id = {command_id}''').fetchone()[0]
-		print('status ', status)
+								WHERE user_id = {user_id} and command_id = {command_id}''').fetchone()[0]
+
 		if status == 1:
-			print(1)
 			self.__cur.execute(f'''UPDATE invite
 								SET status = 0
-								WHERE user_id = {self.__user} and command_id = {command_id}''')
+								WHERE user_id = {user_id} and command_id = {command_id}''')
 		else:
-			print(0)
 			self.__cur.execute(f'''UPDATE invite
 								SET status = 1
-								WHERE user_id = {self.__user} and command_id = {command_id}''')
+								WHERE user_id = {user_id} and command_id = {command_id}''')
 
 
 	def del_invitation(self, command_id):

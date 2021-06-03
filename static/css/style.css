@@ -734,8 +734,9 @@ h1,h2,h3,h4,h5,h6{font-size:inherit;font-weight: 400;}
 	box-shadow: 0 -2px var(--shadow);
 }
 
-/* Список учасників */
-.members{
+/* Списки запрошень та користувачів
+	на сторінці учасників */
+.list-mem-page{
 	display: flex;
 	flex-direction: column;
 	gap: 30px !important;
@@ -744,6 +745,11 @@ h1,h2,h3,h4,h5,h6{font-size:inherit;font-weight: 400;}
 	align-items: center;
 	max-width: 700px;
 	width: 100%;
+}
+.list-mem-page__item{
+	margin-right: auto;
+	margin-bottom: -10px;
+	padding-left: 20px;
 }
 .member-item{
 	width: 100%;
@@ -758,7 +764,7 @@ h1,h2,h3,h4,h5,h6{font-size:inherit;font-weight: 400;}
 	justify-content: space-between;
 	flex-direction: row;
 }
-.member-item__delete{
+.member-item__button{
 	display: flex;
 	width: auto;
 	height: 24px;

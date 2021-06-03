@@ -29,14 +29,33 @@
         {% endfor %}
     </form>
     
+    <div class="list-mem-page">
+        {% if rejected_invitations %}
+            <div class="list-mem-page__item">Відхилені запрошення:</div>
+            
+            {% for item in rejected_invitations %}
+                <div class="member-item">
+                   
+                    <div class="member-item__top-row" data-command={{command.command_id}} data-user_id={{item.user_id}}>
+                        {{ item.name }} | {{ item.login }}
+                        
+                        <a class="member-item__button invitation__js-resend" href="">
+                            Надіслати повторно
+                        </a>
+                    </div>
 
-    <div class="members">
-        <div style="margin-right: auto; padding-left: 20px;">Учасники:</div>
+                </div>
+            {% endfor %}
+        {% endif %}
+    </div>
+
+    <div class="list-mem-page">
+        <div class="list-mem-page__item">Учасники:</div>
         {% for item in members %}
         <div class="member-item">
             <div class="member-item__top-row">
                 {{ item.0.name }} | {{ item.0.login }}
-                <a class="member-item__delete" href="">Вилучити</a>
+                <a class="member-item__button" href="">Вилучити</a>
             </div>
             {% if item.1.0 %}
                 <div class="member-item__groups">
@@ -49,4 +68,8 @@
         </div>
         {% endfor %}
     </div>
-    {% endblock %}
+{% endblock %}
+
+{% block script %}
+	<script src="{{ url_for('static', filename='script/invitation_resend.js') }}"></script>
+{% endblock %}
