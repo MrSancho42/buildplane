@@ -69,24 +69,19 @@ class db_work():
 		return col
 
 
-	def convert_event_date(self, events):
+	def event_order(self, events):
 		"""
-		Функція для конвертування дат подій.
+		Функція для сортування подій
+
+		Приймає список подій
+
+		Повертає список із п'ятьох списків які є проміжками часу. Також конвертує дати
 		"""
 
+		#переведення дати
 		for event in events:
 			if event['date']:
 				event['date'] = self.from_timestamp(event['date'])
-
-		return events
-
-
-	def event_order(self, events):
-		"""
-		Функція для конвертування дат подій.
-		"""
-
-		events = self.convert_event_date(events)
 
 		now = datetime.fromtimestamp(datetime.now().timestamp())
 		order = [[] for i in range(5)]
