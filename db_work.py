@@ -741,16 +741,16 @@ class db_work():
 		else: return False
 
 
-	def get_rejected_invitation(self, command_id):
+	def get_sended_invitation(self, command_id, status):
 		"""
-		Перевіряє для власника команди чи є відхилені запрошення
+		Перевіряє чи є відхилені (status=0) або надіслані (status=1) запрошення
 
 		Повертає [{user_id, name, login}] - якщо запрошення є
 		False - якщо запрошень нема
 		"""
 
 		invitations = self.__cur.execute(f'''SELECT user_id FROM invite
-								WHERE command_id = {command_id} and status = 0''').fetchall()
+								WHERE command_id = {command_id} and status = {status}''').fetchall()
 		if invitations:
 			result = []
 			for invitation in invitations:
@@ -784,12 +784,16 @@ class db_work():
 								WHERE user_id = {user_id} and command_id = {command_id}''')
 
 
-	def del_invitation(self, command_id):
+	def del_invitation(self, command_id, user_id=0):
 		"""
 		Видаляє запрошення
 		"""
 
-		self.__cur.execute(f'DELETE FROM invite WHERE user_id = {self.__user} and command_id = {command_id}')
+		#якщо не передано user_id, то береться id користувача в сесії
+		if user_id == 0:
+			user_id = self.__user
+
+		self.__cur.execute(f'DELETE FROM invite WHERE user_id = {user_id} and command_id = {command_id}')
 
 
 if __name__ == '__main__':

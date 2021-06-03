@@ -440,7 +440,8 @@ def command_members(command_id):
 		command = db.get_command_info(command_id)
 		form = wtf.add_member_form()
 
-		rejected_invitations = db.get_rejected_invitation(command_id)
+		rejected_invitations = db.get_sended_invitation(command_id, 0)
+		sended_invitations = db.get_sended_invitation(command_id, 1)
 		members = db.get_command_members(command_id)
 
 		if form.validate_on_submit():
@@ -449,7 +450,7 @@ def command_members(command_id):
 
 		return render_template('members_command.html', user=user, command=command,
 								form=form, rejected_invitations=rejected_invitations,
-								members=members)
+								sended_invitations=sended_invitations, members=members)
 	else: abort(403)
 
 
@@ -463,6 +464,20 @@ def invitation_resend():
 
 	data = request.get_json()
 	db.change_invitation_status(data['command'], data['user_id'])
+
+	return redirect(url_for('home'))
+
+
+@app.route('/invitation_del', methods=["POST", "GET"])
+def invitation_del():
+	"""
+	Функція повторного видалення запрошення
+
+	Використовується на сторінці /command/<command_id>/members
+	"""
+
+	data = request.get_json()
+	db.del_invitation(data['command'], data['user_id'])
 
 	return redirect(url_for('home'))
 
