@@ -10,17 +10,19 @@
 			</a>
 		</div>
 		<div class="left-bar {{ setting }}">
-			<input type="checkbox" id="left-bar__minimize">
+			<button onclick="hide_left_bar(this)" class="left-bar__minimize" data-status="true">
+				<div></div>
+			</button>
 			<div>
 				{% block left_bar %}
 				{% endblock %}
 				<div style="min-height: 1px;"></div>
 			</div>
-			<label for="left-bar__minimize"></label>
 		</div>
 		<div class="work-area {{ setting }}">
 			{% block work_area %}
 			{% endblock %}
 		</div>
 	</div>
+	<script src="{{ url_for('static', filename='script/hide_left_bar.js') }}"></script>
 {% endblock %}
