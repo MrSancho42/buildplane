@@ -48,7 +48,7 @@ class db_work():
 		return datetime.fromtimestamp(int(value)).strftime('%d.%m.%Y')
 
 
-	def convert_date(self, col):
+	def convert_task_date(self, col):
 		"""
 		Функція для конвертування дат завдань.
 
@@ -190,7 +190,7 @@ class db_work():
 			res = self.__cur.execute(f'''SELECT *
 										FROM v_personal_tasks
 										WHERE col_id = {col['col_id']}''').fetchall()
-			col['tasks'] = self.convert_date(res)
+			col['tasks'] = self.convert_task_date(res)
 
 		return cols
 
@@ -350,7 +350,7 @@ class db_work():
 			res = self.__cur.execute(f'''SELECT *
 										FROM v_command_tasks
 										WHERE col_id = {col['col_id']}''').fetchall()
-			col['tasks'] = self.convert_date(res)
+			col['tasks'] = self.convert_task_date(res)
 
 		return cols
 
@@ -366,7 +366,7 @@ class db_work():
 			res = self.__cur.execute(f'''SELECT *
 										FROM v_command_tasks_group
 										WHERE group_id = {col['group_id']}''').fetchall()
-			col['tasks'] = self.convert_date(res)
+			col['tasks'] = self.convert_task_date(res)
 
 		return cols
 
@@ -391,7 +391,7 @@ class db_work():
 										FROM v_command_tasks
 										WHERE col_id = {col['col_id']} and
 										performer_id = {self.__user}''').fetchall()
-			col['tasks'] = self.convert_date(res)
+			col['tasks'] = self.convert_task_date(res)
 
 		return cols
 
@@ -598,7 +598,7 @@ class db_work():
 			res = self.__cur.execute(f'''SELECT *
 										FROM v_group_tasks
 										WHERE col_id = {col['col_id']}''').fetchall()
-			col['tasks'] = self.convert_date(res)
+			col['tasks'] = self.convert_task_date(res)
 
 		return cols
 
@@ -620,7 +620,7 @@ class db_work():
 										FROM v_group_tasks
 										WHERE col_id = {col['col_id']} and
 											performer_id = {self.__user}''').fetchall()
-			col['tasks'] = self.convert_date(res)
+			col['tasks'] = self.convert_task_date(res)
 
 		return cols
 
