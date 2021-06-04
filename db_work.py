@@ -503,18 +503,18 @@ class db_work():
 	def get_events(self, element_id, element, is_owner):
 		"""
 		Функція що дістає події
-		Повертає {[{event_id, description, date, command_id, done}] * 5}
+		Повертає {[{event_id, description, date, done}] * 5}
 		"""
 
 		if is_owner:
-			print(1)
-			res = self.__cur.execute(f'''SELECT *
+			res = self.__cur.execute(f'''SELECT event_id, description, date,
+												done
 										FROM v_{element}_events
 										WHERE {element}_id = {element_id}
 										GROUP BY event_id''')
 		else:
-			print(2)
-			res = self.__cur.execute(f'''SELECT *
+			res = self.__cur.execute(f'''SELECT event_id, description, date,
+												done
 										FROM v_{element}_events
 										WHERE {element}_id = {element_id}
 											and user_id = {self.__user}''')
