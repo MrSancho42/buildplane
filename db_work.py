@@ -607,7 +607,8 @@ class db_work():
 		"""
 		Функція що дістає завдання та колонки команди.
 
-		Повертає [{col_id, name, tasks: [{task_id, description, start_date, end_date, done, performer_id, col_id, group_id, name}]}]
+		Повертає [{col_id, name, tasks: [{task_id, description, start_date,
+										end_date, done, performer_id, name}]}]
 		або якщо колонок немає False
 		"""
 
@@ -616,7 +617,9 @@ class db_work():
 			return False
 
 		for col in cols:
-			res = self.__cur.execute(f'''SELECT *
+			res = self.__cur.execute(f'''SELECT task_id, description,
+											start_date, end_date, done,
+											performer_id, name
 										FROM v_group_tasks
 										WHERE col_id = {col['col_id']}''').fetchall()
 			col['tasks'] = self.convert_task_date(res)
@@ -628,7 +631,7 @@ class db_work():
 		"""
 		Функція що дістає завдання користувача та колонки команди.
 
-		Повертає [{col_id, name, tasks: [{task_id, description, start_date, end_date, done, performer_id, col_id, group_id, name}]}]
+		Повертає [{col_id, name, tasks: [{task_id, description, start_date, end_date, done, performer_id}]}]
 		або якщо колонок немає False
 		"""
 
@@ -637,7 +640,9 @@ class db_work():
 			return False
 
 		for col in cols:
-			res = self.__cur.execute(f'''SELECT *
+			res = self.__cur.execute(f'''SELECT task_id, description,
+											start_date, end_date, done,
+											performer_id
 										FROM v_group_tasks
 										WHERE col_id = {col['col_id']} and
 											performer_id = {self.__user}''').fetchall()

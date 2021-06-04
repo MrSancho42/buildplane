@@ -49,14 +49,10 @@ CREATE VIEW "v_group_cols" AS SELECT "group_id", "cols_order" FROM "groups";
 
 CREATE VIEW "v_group_tasks" AS
 SELECT "tasks"."task_id", "description", "start_date", "end_date", "done", "performer_id",
-        "col_id", "groups_task"."group_id", "users"."name"
+        "col_id", "users"."name"
 FROM "tasks"
-INNER JOIN "groups_task"
-ON "tasks"."task_id" = "groups_task"."task_id"
 INNER JOIN "users"
-ON "tasks"."performer_id" = "users"."user_id"
-INNER JOIN "groups"
-ON "groups_task"."group_id" = "groups"."group_id";
+ON "tasks"."performer_id" = "users"."user_id";
 
 CREATE VIEW "v_personal_events" AS
 SELECT *
