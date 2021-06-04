@@ -343,9 +343,8 @@ class db_work():
 		Функція що дістає завдання та колонки команди.
 
 		Повертає [{col_id, name, tasks: [{task_id, description, start_date,
-										end_date, done, performer_id, col_id,
-										command_id, name, owner_id, color,
-										group_name}]}]
+										end_date, done, performer_id,
+										name, color, group_name}]}]
 		або якщо колонок немає False
 		"""
 
@@ -354,7 +353,10 @@ class db_work():
 			return False
 
 		for col in cols:
-			res = self.__cur.execute(f'''SELECT *
+			res = self.__cur.execute(f'''SELECT task_id, description,
+											start_date, end_date, done,
+											performer_id, name,
+											color, group_name
 										FROM v_command_tasks
 										WHERE col_id = {col['col_id']}''').fetchall()
 			col['tasks'] = self.convert_task_date(res)
@@ -367,8 +369,7 @@ class db_work():
 		Дістає завдання сортуючи за групами
 
 		Повертає [{group_id, name, color, [{task_id, description, start_date,
-										end_date, done, performer_id,  group_id,
-										users.name, commands.owner_id}]}]
+										end_date, done, performer_id, name}]}]
 		"""
 
 		cols = self.__cur.execute(f'''SELECT DISTINCT group_id, name, color
@@ -378,7 +379,9 @@ class db_work():
 		cols = [dict(col) for col in cols]
 
 		for col in cols:
-			res = self.__cur.execute(f'''SELECT *
+			res = self.__cur.execute(f'''SELECT task_id, description,
+											start_date, end_date, done,
+											performer_id, name
 										FROM v_command_tasks_group
 										WHERE group_id = {col['group_id']}''').fetchall()
 			col['tasks'] = self.convert_task_date(res)
@@ -391,9 +394,8 @@ class db_work():
 		Функція що дістає завдання призначені користувачу та колонки команди.
 
 		Повертає [{col_id, name, tasks: [{task_id, description, start_date,
-										end_date, done, performer_id, col_id,
-										command_id, name, owner_id, color,
-										group_name}]}]
+										end_date, done, performer_id,
+										color, group_name}]}]
 		або якщо колонок немає False
 		"""
 
@@ -402,7 +404,10 @@ class db_work():
 			return False
 
 		for col in cols:
-			res = self.__cur.execute(f'''SELECT *
+			res = self.__cur.execute(f'''SELECT task_id, description,
+											start_date, end_date, done,
+											performer_id,
+											color, group_name
 										FROM v_command_tasks
 										WHERE col_id = {col['col_id']} and
 										performer_id = {self.__user}''').fetchall()
