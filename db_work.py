@@ -173,7 +173,8 @@ class db_work():
 		"""
 		Функція що дістає завдання та колонки користувача.
 
-		Повертає [{col_id, name, tasks: [{task_id, description, start_date, end_date, done, col_id}]}]
+		Повертає [{col_id, name, tasks: [{task_id, description, start_date,
+										end_date, done}]}]
 		або якщо колонок немає
 		Повертає False
 		"""
@@ -183,7 +184,8 @@ class db_work():
 			return False
 
 		for col in cols:
-			res = self.__cur.execute(f'''SELECT *
+			res = self.__cur.execute(f'''SELECT task_id, description,
+												start_date, end_date, done
 										FROM v_personal_tasks
 										WHERE col_id = {col['col_id']}''').fetchall()
 			col['tasks'] = self.convert_task_date(res)
@@ -216,10 +218,13 @@ class db_work():
 
 	def get_personal_event(self):
 		"""
-		Повертає події користувача
+		Дістає події користувача
+
+		Повертає {[{event_id, description, date, done}] * 5}
 		"""
 
-		res = self.__cur.execute(f'''SELECT * FROM v_personal_events
+		res = self.__cur.execute(f'''SELECT event_id, description, date, done
+									FROM v_personal_events
 									WHERE user_id = {self.__user}''')
 
 		return self.event_order([dict(item) for item in res])
@@ -343,9 +348,8 @@ class db_work():
 		Функція що дістає завдання та колонки команди.
 
 		Повертає [{col_id, name, tasks: [{task_id, description, start_date,
-										end_date, done, performer_id, col_id,
-										command_id, name, owner_id, color,
-										group_name}]}]
+										end_date, done, performer_id,
+										name, color, group_name}]}]
 		або якщо колонок немає False
 		"""
 
@@ -354,7 +358,10 @@ class db_work():
 			return False
 
 		for col in cols:
-			res = self.__cur.execute(f'''SELECT *
+			res = self.__cur.execute(f'''SELECT task_id, description,
+											start_date, end_date, done,
+											performer_id, name,
+											color, group_name
 										FROM v_command_tasks
 										WHERE col_id = {col['col_id']}''').fetchall()
 			col['tasks'] = self.convert_task_date(res)
@@ -367,8 +374,7 @@ class db_work():
 		Дістає завдання сортуючи за групами
 
 		Повертає [{group_id, name, color, [{task_id, description, start_date,
-										end_date, done, performer_id,  group_id,
-										users.name, commands.owner_id}]}]
+										end_date, done, performer_id, name}]}]
 		"""
 
 		cols = self.__cur.execute(f'''SELECT DISTINCT group_id, name, color
@@ -378,7 +384,9 @@ class db_work():
 		cols = [dict(col) for col in cols]
 
 		for col in cols:
-			res = self.__cur.execute(f'''SELECT *
+			res = self.__cur.execute(f'''SELECT task_id, description,
+											start_date, end_date, done,
+											performer_id, name
 										FROM v_command_tasks_group
 										WHERE group_id = {col['group_id']}''').fetchall()
 			col['tasks'] = self.convert_task_date(res)
@@ -391,9 +399,8 @@ class db_work():
 		Функція що дістає завдання призначені користувачу та колонки команди.
 
 		Повертає [{col_id, name, tasks: [{task_id, description, start_date,
-										end_date, done, performer_id, col_id,
-										command_id, name, owner_id, color,
-										group_name}]}]
+										end_date, done, performer_id,
+										color, group_name}]}]
 		або якщо колонок немає False
 		"""
 
@@ -402,7 +409,10 @@ class db_work():
 			return False
 
 		for col in cols:
-			res = self.__cur.execute(f'''SELECT *
+			res = self.__cur.execute(f'''SELECT task_id, description,
+											start_date, end_date, done,
+											performer_id,
+											color, group_name
 										FROM v_command_tasks
 										WHERE col_id = {col['col_id']} and
 										performer_id = {self.__user}''').fetchall()
@@ -498,18 +508,19 @@ class db_work():
 	def get_events(self, element_id, element, is_owner):
 		"""
 		Функція що дістає події
-		Повертає {[{event_id, description, date, command_id, done}] * 5}
+		Повертає {[{event_id, description, date, done}] * 5}
 		"""
 
 		if is_owner:
-			print(1)
-			res = self.__cur.execute(f'''SELECT *
+			res = self.__cur.execute(f'''SELECT event_id, description, date,
+												done
 										FROM v_{element}_events
 										WHERE {element}_id = {element_id}
-										GROUP BY event_id''')
+										GROUP BY event_id
+										ORDER BY date''')
 		else:
-			print(2)
-			res = self.__cur.execute(f'''SELECT *
+			res = self.__cur.execute(f'''SELECT event_id, description, date,
+												done
 										FROM v_{element}_events
 										WHERE {element}_id = {element_id}
 											and user_id = {self.__user}''')
@@ -602,7 +613,8 @@ class db_work():
 		"""
 		Функція що дістає завдання та колонки команди.
 
-		Повертає [{col_id, name, tasks: [{task_id, description, start_date, end_date, done, performer_id, col_id, group_id, name}]}]
+		Повертає [{col_id, name, tasks: [{task_id, description, start_date,
+										end_date, done, performer_id, name}]}]
 		або якщо колонок немає False
 		"""
 
@@ -611,7 +623,9 @@ class db_work():
 			return False
 
 		for col in cols:
-			res = self.__cur.execute(f'''SELECT *
+			res = self.__cur.execute(f'''SELECT task_id, description,
+											start_date, end_date, done,
+											performer_id, name
 										FROM v_group_tasks
 										WHERE col_id = {col['col_id']}''').fetchall()
 			col['tasks'] = self.convert_task_date(res)
@@ -623,7 +637,7 @@ class db_work():
 		"""
 		Функція що дістає завдання користувача та колонки команди.
 
-		Повертає [{col_id, name, tasks: [{task_id, description, start_date, end_date, done, performer_id, col_id, group_id, name}]}]
+		Повертає [{col_id, name, tasks: [{task_id, description, start_date, end_date, done, performer_id}]}]
 		або якщо колонок немає False
 		"""
 
@@ -632,7 +646,9 @@ class db_work():
 			return False
 
 		for col in cols:
-			res = self.__cur.execute(f'''SELECT *
+			res = self.__cur.execute(f'''SELECT task_id, description,
+											start_date, end_date, done,
+											performer_id
 										FROM v_group_tasks
 										WHERE col_id = {col['col_id']} and
 											performer_id = {self.__user}''').fetchall()
