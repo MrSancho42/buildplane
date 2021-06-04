@@ -173,7 +173,8 @@ class db_work():
 		"""
 		Функція що дістає завдання та колонки користувача.
 
-		Повертає [{col_id, name, tasks: [{task_id, description, start_date, end_date, done, col_id}]}]
+		Повертає [{col_id, name, tasks: [{task_id, description, start_date,
+										end_date, done}]}]
 		або якщо колонок немає
 		Повертає False
 		"""
@@ -183,7 +184,8 @@ class db_work():
 			return False
 
 		for col in cols:
-			res = self.__cur.execute(f'''SELECT *
+			res = self.__cur.execute(f'''SELECT task_id, description,
+												start_date, end_date, done
 										FROM v_personal_tasks
 										WHERE col_id = {col['col_id']}''').fetchall()
 			col['tasks'] = self.convert_task_date(res)
@@ -216,10 +218,13 @@ class db_work():
 
 	def get_personal_event(self):
 		"""
-		Повертає події користувача
+		Дістає події користувача
+
+		Повертає {[{event_id, description, date, done}] * 5}
 		"""
 
-		res = self.__cur.execute(f'''SELECT * FROM v_personal_events
+		res = self.__cur.execute(f'''SELECT event_id, description, date, done
+									FROM v_personal_events
 									WHERE user_id = {self.__user}''')
 
 		return self.event_order([dict(item) for item in res])
