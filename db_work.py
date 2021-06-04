@@ -516,7 +516,8 @@ class db_work():
 												done
 										FROM v_{element}_events
 										WHERE {element}_id = {element_id}
-										GROUP BY event_id''')
+										GROUP BY event_id
+										ORDER BY date''')
 		else:
 			res = self.__cur.execute(f'''SELECT event_id, description, date,
 												done
