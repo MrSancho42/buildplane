@@ -462,14 +462,17 @@ def command_event(command_id):
 
 	groups = groups_ownership(command_id)
 
-	events = db.get_events(command_id, 'command', is_owner)
+	all_event = bool(request.args.get('all'))
+
+	events = db.get_events(command_id, 'command', is_owner and all_event)
 
 	return render_template('command_event.html',
 							user=user,
 							is_owner=is_owner,
 							command=command,
 							groups=groups,
-							events=events)
+							events=events,
+							all_event=all_event)
 
 
 #Групи////////////////////////////////////////////////////////////////////////

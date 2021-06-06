@@ -14,6 +14,19 @@
 			<span></span>
 		</a>
 	{% endif %}
+
+	{% if is_owner %}
+		{% if all_event %}
+			<a href=" {{ url_for('command_event', command_id=command.command_id) }} " class="bar__item bar__item_small">
+				Призначенні мені
+			</a>
+		{% else %}
+			<a href=" {{ url_for('command_event', command_id=command.command_id, all=True) }} " class="bar__item bar__item_small">
+				Всі події
+			</a>
+		{% endif %}
+	{% endif %}
+
 	<a href=" {{ url_for('command_task', command_id=command.command_id) }} " class="bar__item bar__item_small">
 		Завдання
 	</a>
@@ -33,11 +46,11 @@
 		</p>
 	</a>
 
-	{% if event.done and is_owner %}
+	{% if all_event and event.done %}
 		<a class="event__submit event__submit_done"></a>
 	{% elif event.done %}
 		<a class="event__submit event__submit_done"></a>
-	{% elif not is_owner %}
+	{% elif not all_event %}
 		<a class="event__submit"></a>
 	{% endif %}
 
