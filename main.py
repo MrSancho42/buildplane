@@ -65,7 +65,7 @@ def before_request():
 		return redirect(url_for('login'))
 
 	if not hasattr(g, 'link_db'):
-		g.link_db = sqlite3.connect(get_path(config.DATABASE))
+		g.link_db = sqlite3.connect(get_path(config.DATABASE), check_same_thread=False)
 		g.link_db.row_factory = sqlite3.Row
 	global db
 	db = db_work(g.link_db.cursor(), session.get('user'))
@@ -92,6 +92,8 @@ def close_db(error):
 	Закриває підключення до БД.
 	"""
 
+	#db.kill()
+	print('baza zakrita   !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
 	if hasattr(g, 'link_db'):
 		g.link_db.commit()
 		g.link_db.close()
@@ -235,7 +237,6 @@ def home_invitation():
 	"""
 
 	data = request.get_json()
-	print(data)
 	if data['status']: # якщо натиснута кнопка "прийняти"
 		db.add_user_to_command(data['command'])
 
@@ -465,8 +466,7 @@ def invitation_resend():
 
 	data = request.get_json()
 	db.change_invitation_status(data['command'], data['user_id'])
-
-	return redirect(url_for('command_members', command_id=data['command']))
+	return make_response(jsonify({}, 200))
 
 
 @app.route('/invitation_del', methods=["POST"])
@@ -479,8 +479,20 @@ def invitation_del():
 
 	data = request.get_json()
 	db.del_invitation(data['command'], data['user_id'])
+	return make_response(jsonify({}, 200))
 
-	return redirect(url_for('command_members', command_id=data['command']))
+
+@app.route('/command_member_del', methods=["POST"])
+def command_member_del():
+	"""
+	Функція видалення користувача із команди
+
+	Використовується на сторінці /command/<command_id>/members
+	"""
+
+	data = request.get_json()
+	db.del_user_from_command( data['user_id'], data['command'])
+	return make_response(jsonify({}, 200))
 
 
 #Групи////////////////////////////////////////////////////////////////////////

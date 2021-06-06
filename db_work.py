@@ -406,6 +406,15 @@ class db_work():
 		self.del_invitation(command_id)
 
 
+	def del_user_from_command(self, user_id, command_id):
+		"""
+		Видаляє користувача і команди
+		"""
+
+		self.__cur.execute(f'''DELETE FROM commands_user
+							WHERE command_id = {command_id} and user_id = {user_id}''')	
+
+
 	#Спільне для команд та груп///////////////////////////////////////////////
 	def set_task_status(self, status, task, element, element_id):
 		"""

@@ -1,17 +1,17 @@
-const del = document.querySelectorAll(".invitation__js-delete");
+const member = document.querySelectorAll(".member-item__js-delete");
 
-del.forEach(del => {
-	del.addEventListener('click', () => {send_hui(del)});
+member.forEach(member => {
+	member.addEventListener('click', () => {member_del(member)});
 });
 
-function send_hui(hui) {
+function member_del(hui) {
 	
 	var dict = {
 		command: hui.parentElement.dataset.command,
         user_id: hui.parentElement.dataset.user_id
 	};
 
-	fetch(`/invitation_del`, {
+	fetch(`/command_member_del`, {
         method: "POST",
         credentials: "include",
         body: JSON.stringify(dict),
