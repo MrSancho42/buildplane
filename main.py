@@ -712,7 +712,9 @@ def group_event(group_id):
 
 	groups = groups_ownership(current_group['command_id'])
 
-	events = db.get_events(group_id, 'group', is_owner or is_group_owner)
+	all_event = bool(request.args.get('all'))
+
+	events = db.get_events(group_id, 'group', (is_owner or is_group_owner) and all_event)
 
 	return render_template('group_event.html',
 							user=user,
@@ -721,7 +723,8 @@ def group_event(group_id):
 							command=command,
 							current_group=current_group,
 							groups=groups,
-							events=events)
+							events=events,
+							all_event=all_event)
 
 
 if __name__ == '__main__':
