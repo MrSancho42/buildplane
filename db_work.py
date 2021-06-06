@@ -505,13 +505,13 @@ class db_work():
 		return False
 
 
-	def get_events(self, element_id, element, is_owner):
+	def get_events(self, element_id, element, all_event):
 		"""
 		Функція що дістає події
 		Повертає {[{event_id, description, date, done}] * 5}
 		"""
 
-		if is_owner:
+		if all_event:
 			res = self.__cur.execute(f'''SELECT event_id, description, date,
 												done
 										FROM v_{element}_events
