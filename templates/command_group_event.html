@@ -28,3 +28,28 @@
 		</a>
 	{% endif %}
 {% endblock %}
+
+{% block tab %}
+
+	<a href="">
+		<span class="event__doc"></span>
+		<p>
+			{{ event.description }}
+		</p>
+		<span class="event__submit-clone"></span>
+		<p>
+			{% if event.date %}
+				{{ event.date }}
+			{% endif %}
+		</p>
+	</a>
+
+	{% if all_event and event.done %}
+		<a class="event__submit event__submit_done"></a>
+	{% elif event.done %}
+		<a class="event__submit event__submit_done"></a>
+	{% elif not all_event %}
+		<a class="event__submit"></a>
+	{% endif %}
+
+{% endblock %}
