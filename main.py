@@ -65,7 +65,7 @@ def before_request():
 		return redirect(url_for('login'))
 
 	if not hasattr(g, 'link_db'):
-		g.link_db = sqlite3.connect(get_path(config.DATABASE))
+		g.link_db = sqlite3.connect(get_path(config.DATABASE), check_same_thread=False)
 		g.link_db.row_factory = sqlite3.Row
 	global db
 	db = db_work(g.link_db.cursor(), session.get('user'))
@@ -210,10 +210,13 @@ def home():
 
 	cols = db.get_personal_tasks()
 
+	invitations = db.get_incoming_invitation()
+
 	return render_template('home.html',
 							user=user,
 							commands=commands,
-							cols=cols)
+							cols=cols,
+							invitations=invitations)
 
 
 @app.route('/home/event')
@@ -263,6 +266,22 @@ def home_dnd():
 	db.set_personal_task_col(data['coll'], data['task'])
 
 	return make_response(jsonify({}, 200))
+
+
+@app.route('/home/task/invitation', methods=["POST"])
+def home_invitation():
+	"""
+	Обробник надходжених запрошень на вступ до команди
+	"""
+
+	data = request.get_json()
+	if data['status']: # якщо натиснута кнопка "прийняти"
+		db.add_user_to_command(data['command'])
+
+	else: # якщо натиснута кнопка "відхилити"
+		db.change_invitation_status(data['command'])
+
+	return redirect(url_for('home'))
 
 
 @app.route('/home/task/task_status', methods=["POST"])
@@ -449,6 +468,79 @@ def command_task_status(command_id, mod):
 	return make_response(jsonify({}, 200))
 
 
+@app.route('/command/<command_id>/members', methods=["POST", "GET"])
+def command_members(command_id):
+	"""
+	Сторінка перегляду і запрошення користувачів до команди
+
+	Ця функція огорнута в try-except тому що помилка, котра виникає,
+	не має відношення до правильності виконання логічних дій застосунку.
+	Якщо помилка виникає, то всі необхідні дії уже були виконані і необхідно
+	просто переадресувати користувача на ту ж сторінку.
+	Швидше всього, помилка пов'язана із підключеними js скриптами
+	"""
+
+	try:
+		if db.get_owner_rights(command_id, 'command'):
+			user = db.get_user_login()
+			command = db.get_command_info(command_id)
+			form = wtf.add_member_form()
+
+			rejected_invitations = db.get_sended_invitation(command_id, 0)
+			sended_invitations = db.get_sended_invitation(command_id, 1)
+			members = db.get_command_members(command_id)
+
+			if form.validate_on_submit():
+				login = form.login.data
+				flash(db.check_send_nice_invitation(login, command_id))
+				return redirect(url_for('command_members', command_id=command_id))		
+
+			return render_template('members_command.html', user=user, command=command,
+									form=form, rejected_invitations=rejected_invitations,
+									sended_invitations=sended_invitations, members=members)
+		else: abort(403)
+
+	except sqlite3.ProgrammingError:
+		return redirect(url_for('command_members', command_id=command_id))	
+
+
+@app.route('/invitation_resend', methods=["POST"])
+def invitation_resend():
+	"""
+	Функція повторного надсилання запрошення
+
+	Використовується на сторінці /command/<command_id>/members
+	"""
+
+	data = request.get_json()
+	db.change_invitation_status(data['command'], data['user_id'])
+	return make_response(jsonify({}, 200))
+
+
+@app.route('/invitation_del', methods=["POST"])
+def invitation_del():
+	"""
+	Функція видалення запрошення
+
+	Використовується на сторінці /command/<command_id>/members
+	"""
+
+	data = request.get_json()
+	db.del_invitation(data['command'], data['user_id'])
+	return make_response(jsonify({}, 200))
+
+
+@app.route('/command_member_del', methods=["POST"])
+def command_member_del():
+	"""
+	Функція видалення користувача із команди
+
+	Використовується на сторінці /command/<command_id>/members
+	"""
+
+	data = request.get_json()
+	db.del_user_from_command( data['user_id'], data['command'])
+	return make_response(jsonify({}, 200))
 @app.route('/command/<command_id>/event')
 def command_event(command_id):
 	"""

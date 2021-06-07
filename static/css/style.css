@@ -270,6 +270,44 @@ h1,h2,h3,h4,h5,h6{font-size:inherit;font-weight: 400;}
 	cursor: pointer;
 }
 
+/* Форма для додання нових учасників */
+.form-members{
+	align-self: center;
+	display: flex;
+	flex-direction: column;
+	max-width: 700px;
+	width: 100%;
+	gap: 5px !important;	
+}
+.form-members__row{
+	display: flex;
+	justify-content: space-between;
+}
+.form-members label {
+	padding-left: 15px;
+	color: var(--settings-label-color);
+}
+.form-members input[type=text] {
+	background-color: var(--light-accent-color);
+	height: 40px;
+	width: 550px;
+	padding-left: 10px;
+	margin-bottom: 20px;
+	border-radius: 20px;
+	box-shadow: inset 0 0 var(--shadow);
+}
+.form-members input[type=submit] {
+	background-color: var(--settings-submit-color);
+	height: 40px;
+	width: 140px;
+	border-radius: 10px;
+}
+.form-members input[type=submit]:hover{
+	transition: transform 0.09s ease-in;
+	transform: scale(1.02);
+	cursor: pointer;
+}
+
 /* Діалогове вікно */
 .dialog-box{
 	background-color: var(--light-color);
@@ -438,7 +476,6 @@ h1,h2,h3,h4,h5,h6{font-size:inherit;font-weight: 400;}
 	margin-left: -20px;
 	margin-right: 10px;
 	height: 100%;
-	background-color: red;
 }
 .bar__item-name{
 	display: flex;
@@ -697,6 +734,104 @@ h1,h2,h3,h4,h5,h6{font-size:inherit;font-weight: 400;}
 	box-shadow: 0 -2px var(--shadow);
 }
 
+/* Списки запрошень та користувачів
+	на сторінці учасників */
+.list-mem-page{
+	display: flex;
+	flex-direction: column;
+	gap: 30px !important;
+	margin-top: 10px;
+	align-self: center;
+	align-items: center;
+	max-width: 700px;
+	width: 100%;
+}
+.list-mem-page__item{
+	margin-right: auto;
+	margin-bottom: -10px;
+	padding-left: 20px;
+}
+.member-item{
+	width: 100%;
+	height: auto;
+	background-color: var(--light-accent-color);
+	border-radius: 20px;
+	padding: 10px;
+	box-shadow: 0 0 var(--shadow);
+}
+.member-item__top-row{
+	display: flex;
+	justify-content: space-between;
+	flex-direction: row;
+}
+.member-item__button{
+	display: flex;
+	width: auto;
+	height: 24px;
+	align-items: center;
+	padding: 0 10px;
+	border-radius: 8px;
+	background-color: var(--settings-delete-color);
+	font-size: 15px;
+}
+.member-item__groups{
+	display: flex;
+	flex-wrap: wrap;
+	gap: 15px;
+	padding-top: 25px;
+}
+.member-item__groups > div{
+	padding: 3px 10px;
+	max-width: 200px;
+	height: 30px;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	font-size: 15px;
+	border: #2f3d5a solid 3px;
+	border-radius: 15px;
+	box-shadow: 0 0 var(--shadow);
+}
+
+/* Запрошення на вступ до команди */
+.invitation {
+	display: flex;
+	flex-direction: column;
+	background-color: var(--light-color);
+	max-width: 330px;
+	width: 100%;
+	height: auto;
+	margin: 0px 0;
+	padding: 5px;
+	border-radius: 10px;
+	box-shadow: 0 0 var(--shadow);
+}
+.invitation__text{
+	padding: 5px 10px;
+}
+.invitation__button-box{
+	display: flex;
+	justify-content: space-between;
+	margin-top: -5px;
+	margin-bottom: 5px;
+	padding: 0 30px;
+}
+.invitation__button-box > a{
+	text-align: center;
+	height: 35px;
+	width: 120px;
+	border-radius: 10px;
+	margin-top: 10px;
+	padding-top: 5px;
+}
+.invitation__button-box > a:hover{
+	transition: transform 0.09s ease-in;
+	transform: scale(1.05);
+}
+.invitation__flash{
+	padding-left: 20px;
+	margin-top: -15px;
+}
 /* Події */
 .work-area__board_event{
 	padding-top: 4px !important;
