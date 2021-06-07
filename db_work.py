@@ -535,7 +535,7 @@ class db_work():
 		Функція редагування групи
 
 		"""
-		print("vars from db_work  --  ", group_id, name, owner_id, blocked, color)
+		
 		self.__cur.execute(f'''UPDATE groups SET name = "{name}", owner_id={owner_id},
 							blocked={blocked}, color="{color}" WHERE group_id = {group_id}''')
 		#рядок на додання нового власника до групи якщо його ще нема

@@ -92,8 +92,6 @@ def close_db(error):
 	Закриває підключення до БД.
 	"""
 
-	#db.kill()
-	print('baza zakrita   !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
 	if hasattr(g, 'link_db'):
 		g.link_db.commit()
 		g.link_db.close()

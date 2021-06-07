@@ -7,8 +7,8 @@ member.forEach(member => {
 function member_del(hui) {
 	
 	var dict = {
-		command: hui.parentElement.dataset.command,
-        user_id: hui.parentElement.dataset.user_id
+		command: hui.dataset.command,
+        user_id: hui.dataset.user_id
 	};
 
 	fetch(`/command_member_del`, {

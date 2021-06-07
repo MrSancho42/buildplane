@@ -34,9 +34,12 @@
             <div class="list-mem-page__item">Відхилені запрошення:</div>
             {% for item in rejected_invitations %}
                 <div class="member-item">
-                    <div class="member-item__top-row" data-command={{command.command_id}} data-user_id={{item.user_id}}>
+                    <div class="member-item__top-row">
                         {{ item.name }} | {{ item.login }}
-                        <a class="member-item__button invitation__js-resend" style="background-color: var(--settings-submit-color);" href="{{url_for('command_members', command_id=command.command_id)}}">
+                        <a class="member-item__button invitation__js-resend"
+                        style="background-color: var(--settings-submit-color);"
+                        data-command={{command.command_id}} data-user_id={{item.user_id}}
+                        href="">
                             Надіслати повторно
                         </a>
                     </div>
@@ -50,9 +53,11 @@
             <div class="list-mem-page__item">Надіслані:</div>
             {% for item in sended_invitations %}
                 <div class="member-item"> 
-                    <div class="member-item__top-row" data-command={{command.command_id}} data-user_id={{item.user_id}}>
+                    <div class="member-item__top-row">
                         {{ item.name }} | {{ item.login }}
-                        <a class="member-item__button invitation__js-delete" href="">
+                        <a class="member-item__button invitation__js-delete"
+                        data-command={{command.command_id}} data-user_id={{item.user_id}}
+                        href="">
                             Видалити
                         </a>
                     </div>
@@ -66,9 +71,11 @@
         <div class="list-mem-page__item">Учасники:</div>
         {% for item in members %}
         <div class="member-item">
-            <div class="member-item__top-row" data-command={{command.command_id}} data-user_id={{item.0.user_id}}>
+            <div class="member-item__top-row">
                 {{ item.0.name }} | {{ item.0.login }}
-                <a class="member-item__button member-item__js-delete" href="">
+                <a class="member-item__button member-item__js-delete"
+                data-command={{command.command_id}} data-user_id={{item.0.user_id}}
+                href="">
                     Вилучити
                 </a>
             </div>
@@ -86,7 +93,6 @@
 {% endblock %}
 
 {% block script %}
-	<script src="{{ url_for('static', filename='script/invitation_resend.js') }}"></script>
-    <script src="{{ url_for('static', filename='script/invitation_del.js') }}"></script>
+    <script src="{{ url_for('static', filename='script/invitation_action.js') }}"></script>
     <script src="{{ url_for('static', filename='script/command_member_del.js') }}"></script>
 {% endblock %}
