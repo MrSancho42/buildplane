@@ -9,19 +9,20 @@
 				<span>{{ user.name }}</span>
 			</a>
 		</div>
-        <div class="left-bar {{ setting }}" style="background-color: var(--light);">
-			<input type="checkbox" id="left-bar__minimize">
+		<div class="left-bar {{ setting }}">
+			<button onclick="hide_left_bar(this)" class="left-bar__minimize" data-status="true">
+				<div></div>
+			</button>
 			<div>
 				{% block left_bar %}
 				{% endblock %}
+				<div style="min-height: 1px;"></div>
 			</div>
-			<label for="left-bar__minimize"></label>
 		</div>
 		<div class="work-area" style="background-color: var(--light-color);">
-            <div class="form-settings">
-                {% block work_area %}
-                {% endblock %}
-            </div>
+			{% block work_area %}
+			{% endblock %}
 		</div>
 	</div>
+	<script src="{{ url_for('static', filename='script/hide_left_bar.js') }}"></script>
 {% endblock %}
