@@ -472,26 +472,36 @@ def command_task_status(command_id, mod):
 def command_members(command_id):
 	"""
 	Сторінка перегляду і запрошення користувачів до команди
+
+	Ця функція огорнута в try-except тому що помилка, котра виникає,
+	не має відношення до правильності виконання логічних дій застосунку.
+	Якщо помилка виникає, то всі необхідні дії уже були виконані і необхідно
+	просто переадресувати користувача на ту ж сторінку.
+	Швидше всього, помилка пов'язана із підключеними js скриптами
 	"""
 
-	if db.get_owner_rights(command_id, 'command'):
-		user = db.get_user_login()
-		command = db.get_command_info(command_id)
-		form = wtf.add_member_form()
+	try:
+		if db.get_owner_rights(command_id, 'command'):
+			user = db.get_user_login()
+			command = db.get_command_info(command_id)
+			form = wtf.add_member_form()
 
-		rejected_invitations = db.get_sended_invitation(command_id, 0)
-		sended_invitations = db.get_sended_invitation(command_id, 1)
-		members = db.get_command_members(command_id)
+			rejected_invitations = db.get_sended_invitation(command_id, 0)
+			sended_invitations = db.get_sended_invitation(command_id, 1)
+			members = db.get_command_members(command_id)
 
-		if form.validate_on_submit():
-			login = form.login.data
-			flash(db.check_send_nice_invitation(login, command_id))
-			return redirect(url_for('command_members', command_id=command_id))
+			if form.validate_on_submit():
+				login = form.login.data
+				flash(db.check_send_nice_invitation(login, command_id))
+				return redirect(url_for('command_members', command_id=command_id))		
 
-		return render_template('members_command.html', user=user, command=command,
-								form=form, rejected_invitations=rejected_invitations,
-								sended_invitations=sended_invitations, members=members)
-	else: abort(403)
+			return render_template('members_command.html', user=user, command=command,
+									form=form, rejected_invitations=rejected_invitations,
+									sended_invitations=sended_invitations, members=members)
+		else: abort(403)
+
+	except sqlite3.ProgrammingError:
+		return redirect(url_for('command_members', command_id=command_id))	
 
 
 @app.route('/invitation_resend', methods=["POST"])
