@@ -435,7 +435,7 @@ def command_members(command_id):
 	"""
 
 	if db.get_owner_rights(command_id, 'command'):
-		user = db.get_user()
+		user = db.get_user_login()
 		command = db.get_command_info(command_id)
 		form = wtf.add_member_form()
 

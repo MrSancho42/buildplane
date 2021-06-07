@@ -73,11 +73,13 @@
         <div class="member-item">
             <div class="member-item__top-row">
                 {{ item.0.name }} | {{ item.0.login }}
-                <a class="member-item__button member-item__js-delete"
-                data-command={{command.command_id}} data-user_id={{item.0.user_id}}
-                href="">
-                    Вилучити
-                </a>
+                {% if item.0.login != user.login %}
+                    <a class="member-item__button member-item__js-delete"
+                    data-command={{command.command_id}} data-user_id={{item.0.user_id}}
+                    href="">
+                        Вилучити
+                    </a>
+                {% endif %}
             </div>
             {% if item.1.0 %}
                 <div class="member-item__groups">
