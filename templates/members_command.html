@@ -7,6 +7,19 @@
 </a>
 {% endblock %}
 
+{% block left_bar %}
+    <div class="bar__item">
+        <a class="bar__item-name" href="{{ url_for('settings_command', command_id=command.command_id) }}">
+            Загальні налаштування
+        </a>
+    </div>
+    <div class="bar__item" style="background-color: var(--settings-example-color);">
+        <a class="bar__item-name" href="">
+            Керування учасниками
+        </a>
+    </div>
+{% endblock %}
+
 {% block work_area %}
     <form action="", method="POST" class="form-members">
         {{ form.hidden_tag() }}
