@@ -120,6 +120,10 @@ def get_session():
 
 @app.route('/date', methods=["POST", "GET"])
 def date():
+	"""
+	Тимчасова сторінка для переведення дат
+	"""
+
 	if request.method == 'POST':
 		date = request.form['date']
 
@@ -213,6 +217,42 @@ def home():
 							commands=commands,
 							cols=cols,
 							invitations=invitations)
+
+
+@app.route('/home/event')
+def personal_event():
+	"""
+	Cторінка подій користувача
+	"""
+
+	user = db.get_user()
+
+	commands = db.get_commands()
+	if commands:
+		for i in commands:
+			i['ownership'] = i['owner_id'] == session['user']
+			i.pop('owner_id')
+
+	events = db.get_personal_event()
+
+	return render_template('personal_event.html',
+							user=user,
+							commands=commands,
+							events=events)
+
+
+@app.route('/home/event/event_status', methods=["POST"])
+def personal_event_status():
+	"""
+	Функція що отримує дані при зміні стану персональної події.
+	"""
+
+	data = request.get_json()
+
+	print(data['status'], data['event'])
+	db.set_personal_event_status(data['status'], data['event'])
+
+	return make_response(jsonify({}, 200))
 
 
 @app.route('/home/task/dnd', methods=["POST"])
@@ -351,7 +391,7 @@ def command_task(command_id):
 	groups = groups_ownership(command_id)
 
 	cols = db.get_command_tasks(command_id)
-	return render_template('command_task.html',
+	return render_template('command_task_all.html',
 							user=user,
 							is_owner=is_owner,
 							command=command,
@@ -362,7 +402,7 @@ def command_task(command_id):
 @app.route('/command/<command_id>/task-group')
 def command_task_group(command_id):
 	"""
-	Сторінка завдань команди.
+	Сторінка завдань команди посортованих за групами.
 	"""
 
 	user = db.get_user()
@@ -384,7 +424,7 @@ def command_task_group(command_id):
 @app.route('/command/<command_id>/task-user')
 def command_task_user(command_id):
 	"""
-	Сторінка завдань команди із відібраними завданнями  користувача.
+	Сторінка завдань команди із відібраними завданнями користувача.
 	"""
 
 	user = db.get_user()
@@ -491,6 +531,27 @@ def command_member_del():
 	data = request.get_json()
 	db.del_user_from_command( data['user_id'], data['command'])
 	return make_response(jsonify({}, 200))
+@app.route('/command/<command_id>/event')
+def command_event(command_id):
+	"""
+	Події команди
+	"""
+
+	user = db.get_user()
+	is_owner = db.get_owner_rights(command_id, 'command')
+
+	command = db.get_command_info(command_id)
+
+	groups = groups_ownership(command_id)
+
+	events = db.get_events(command_id, 'command', is_owner)
+
+	return render_template('command_event.html',
+							user=user,
+							is_owner=is_owner,
+							command=command,
+							groups=groups,
+							events=events)
 
 
 #Групи////////////////////////////////////////////////////////////////////////
@@ -530,7 +591,7 @@ def group_task(group_id):
 	groups = groups_ownership(current_group['command_id'])
 
 	cols = db.get_group_tasks(group_id)
-	return render_template('group_task.html',
+	return render_template('group_task_all.html',
 							user=user,
 							is_owner=is_owner,
 							is_group_owner=is_group_owner,
@@ -712,6 +773,34 @@ def group_task_status(group_id, mod):
 	db.set_task_status(data['status'], data['task'], 'group', group_id)
 
 	return make_response(jsonify({}, 200))
+
+
+@app.route('/group/<group_id>/event')
+def group_event(group_id):
+	"""
+	Події груп
+	"""
+
+	user = db.get_user()
+	current_group = db.get_group_info(group_id)
+
+	is_owner = db.get_owner_rights(current_group['command_id'], 'command')
+	is_group_owner = db.get_owner_rights(group_id, 'group')
+
+	command = db.get_command_info(current_group['command_id'])
+
+	groups = groups_ownership(current_group['command_id'])
+
+	events = db.get_events(group_id, 'group', is_owner or is_group_owner)
+
+	return render_template('group_event.html',
+							user=user,
+							is_owner=is_owner,
+							is_group_owner=is_group_owner,
+							command=command,
+							current_group=current_group,
+							groups=groups,
+							events=events)
 
 
 if __name__ == '__main__':

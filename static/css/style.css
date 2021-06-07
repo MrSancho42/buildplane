@@ -392,8 +392,6 @@ h1,h2,h3,h4,h5,h6{font-size:inherit;font-weight: 400;}
 	display: flex;
 	min-height: 100%;
 	width: min-content;
-	overflow: hidden;
-	min-width: 40px;
 	background-color: var(--main-color);
 	z-index: 2;
 }
@@ -406,9 +404,12 @@ h1,h2,h3,h4,h5,h6{font-size:inherit;font-weight: 400;}
 	box-shadow: 2px 0 var(--shadow);
 	padding: 46px 25px 20px;
 	gap: 20px;
-	margin-right: 15px;
 	overflow-x: hidden;
 	overflow-y: auto;
+}
+.left-bar_hidden > div{
+	width: 0;
+	padding: 0;
 }
 .left-bar .bar__item{
 	max-width: 330px;
@@ -416,8 +417,7 @@ h1,h2,h3,h4,h5,h6{font-size:inherit;font-weight: 400;}
 }
 
 /* Кнопочка що згортає ліве меню */
-#left-bar__minimize{display: none;}
-#left-bar__minimize ~ label{
+.left-bar__minimize{
 	content: url(../ico/close.svg);
 	position: absolute;
 	height: 34px;
@@ -425,25 +425,23 @@ h1,h2,h3,h4,h5,h6{font-size:inherit;font-weight: 400;}
 	padding: 8px;
 	border-radius: 50%;
 	top: 10px;
-	right: 40px;
+	right: 25px;
 	z-index: 2;
 	background-color: var(--light-color);
 	box-shadow: 0 0 var(--shadow);
 	cursor: pointer;
 }
-#left-bar__minimize ~ label:hover{
+.left-bar__minimize > div{
+	content: url(../ico/close.svg);
+	width: 100%;
+	height: 100%;
+}
+.left-bar__minimize:hover{
 	background-color: var(--dark-accent-color);
 	transition: background-color 0.1s ease-in;
 }
-#left-bar__minimize:checked ~ div{
-	width: 0;
-	padding: 0;
-	overflow: hidden;
-}
-#left-bar__minimize:checked ~ label{
-	content: url(../ico/arrow-right.svg);
-	right: 0;
-}
+.left-bar__minimize_hidden{right: -40px;}
+.left-bar__minimize_hidden > div{content: url(../ico/arrow-right.svg);}
 
 /* Кнопка для створення команд */
 .left-bar__add-button{
@@ -540,11 +538,12 @@ h1,h2,h3,h4,h5,h6{font-size:inherit;font-weight: 400;}
 	padding-top: 20px;
 	gap: 20px;
 	background-color: var(--main-color);
+	z-index: 1;
 }
 .work-area > div{
 	display: flex;
 	gap: 20px;
-	padding: 0 20px 0 5px;
+	padding: 0 20px;
 }
 
 /* Меню основної області */
@@ -556,6 +555,7 @@ h1,h2,h3,h4,h5,h6{font-size:inherit;font-weight: 400;}
 	right: 0;
 	z-index: 2;
 }
+.work-area__bar_hidden{padding-left: 40px !important;}
 .work-area__bar .bar__item{
 	justify-content: center;
 	text-align: center;
@@ -831,4 +831,101 @@ h1,h2,h3,h4,h5,h6{font-size:inherit;font-weight: 400;}
 .invitation__flash{
 	padding-left: 20px;
 	margin-top: -15px;
+}
+/* Події */
+.work-area__board_event{
+	padding-top: 4px !important;
+	flex-direction: column;
+	overflow: hidden;
+	overflow-y: auto;
+}
+.event{
+	display: block;
+	min-height: 88px;
+	background-color: var(--light-color);
+	box-shadow: 0 0 var(--shadow);
+	width: 100%;
+	border-radius: 10px;
+	padding: 10px;
+	flex-shrink: 0;
+}
+.event:hover{
+	transition: transform 0.09s ease-in;
+	transform: scale(1.01);
+}
+.event_group{border: 2px solid;}
+
+.event > a{
+	display: block;
+	height: 100%;
+	width: inherit;
+	user-select: none;
+	z-index: 1;
+}
+.event p:first-of-type{margin-bottom: 10px;}
+.event p:not(:first-of-type){font-size: 18px;}
+
+.event__doc{
+	content: url(../ico/document-clip.svg);
+	float: right;
+	height: 34px;
+	margin-left: 10px;
+}
+.event__submit-clone,
+.event__submit{
+	height: 24px !important;
+	width: 54px !important;
+}
+.event__submit-clone{
+	margin-top: 10px;
+	float: right;
+}
+.event__submit{
+	content: url(../ico/check-dark.svg);
+	position: absolute;
+	bottom: 10px;
+	right: 10px;
+	border: 1px solid var(--shadow-color);
+	border-radius: 12px;
+	box-shadow: 0 0 var(--shadow);
+	padding: 3px;
+	z-index: 2;
+}
+.event__submit_done{
+	content: url(../ico/check.svg);
+	background-color: var(--success);
+}
+.event__submit_done[data-status]:hover{background-color: var(--warning);}
+.event__js-submit:hover{
+	transition: transform 0.09s ease-in;
+	transform: scale(1.05);
+}
+
+.event-tab{
+	width: 100%;
+	max-width: 1000px;
+	margin: 0 auto;
+}
+.event-tab > label{
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	width: 100%;
+	height: 40px;
+	border-radius: 20px;
+	background-color: var(--light-color);
+	padding: 0 20px;
+}
+.event-tab__drop-down > div{
+	content: url(../ico/arrow-down.svg);
+	padding: 2px 0 0;
+	width: 25px;
+}
+.event-tab > input{display: none;}
+.event-tab__drop-down ~ input:checked ~ div{display: flex;}
+.event-tab > div{
+	display: none;
+	padding: 10px 20px;
+	gap: 20px;
+	flex-direction: column;
 }
