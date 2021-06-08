@@ -1,0 +1,113 @@
+{% extends "setting_expand.html" %}
+
+{% block top_bar %}
+<a class="bar__item top-bar__home" href="{{ url_for('home') }}"></a>
+<a class="bar__item" href="{{ url_for('command_task', command_id=command.command_id) }}">
+	<span>{{ command.name }}</span>
+</a>
+{% endblock %}
+
+{% block left_bar %}
+    <div class="bar__item">
+        <a class="bar__item-name" href="{{ url_for('settings_command', command_id=command.command_id) }}">
+            Загальні налаштування
+        </a>
+    </div>
+    <div class="bar__item" style="background-color: var(--settings-example-color);">
+        <a class="bar__item-name" href="">
+            Керування учасниками
+        </a>
+    </div>
+{% endblock %}
+
+{% block work_area %}
+    <form action="", method="POST" class="form-members">
+        {{ form.hidden_tag() }}
+        {{ form.login.label() }}
+        <div class="form-members__row">
+            {{ form.login() }}
+            {{ form.submit(class="button") }}
+        </div>
+        
+        {% for message in get_flashed_messages() %}
+            {% if message.status == False %}
+                <span class="invitation__flash" style="color: var(--danger);">
+                    {{ message.message }}
+                </span>
+            {% else %}
+                <span class="invitation__flash" style="color: var(--success);">
+                    {{ message.message }}
+                </span>
+            {% endif %}
+        {% endfor %}
+    </form>
+
+    {% if rejected_invitations %}    
+        <div class="list-mem-page">
+            <div class="list-mem-page__item">Відхилені запрошення:</div>
+            {% for item in rejected_invitations %}
+                <div class="member-item">
+                    <div class="member-item__top-row">
+                        {{ item.name }} | {{ item.login }}
+                        <a class="member-item__button invitation__js-resend"
+                        style="background-color: var(--settings-submit-color);"
+                        data-command={{command.command_id}} data-user_id={{item.user_id}}
+                        href="">
+                            Надіслати повторно
+                        </a>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    {% if sended_invitations %}
+        <div class="list-mem-page">
+            <div class="list-mem-page__item">Надіслані:</div>
+            {% for item in sended_invitations %}
+                <div class="member-item"> 
+                    <div class="member-item__top-row">
+                        {{ item.name }} | {{ item.login }}
+                        <a class="member-item__button invitation__js-delete"
+                        data-command={{command.command_id}} data-user_id={{item.user_id}}
+                        href="">
+                            Видалити
+                        </a>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+
+    <div class="list-mem-page">
+        <div class="list-mem-page__item">Учасники:</div>
+        {% for item in members %}
+        <div class="member-item">
+            <div class="member-item__top-row">
+                {{ item.0.name }} | {{ item.0.login }}
+                {% if item.0.login != user.login %}
+                    <a class="member-item__button member-item__js-delete"
+                    data-command={{command.command_id}} data-user_id={{item.0.user_id}}
+                    href="">
+                        Вилучити
+                    </a>
+                {% endif %}
+            </div>
+            {% if item.1.0 %}
+                <div class="member-item__groups">
+                    <span>Керує:</span>
+                    {% for group in item.1 %}
+                        <div style="border-color:{{ group.color }};">{{ group.name }}</div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        </div>
+        {% endfor %}
+    </div>
+{% endblock %}
+
+{% block script %}
+    <script src="{{ url_for('static', filename='script/invitation_action.js') }}"></script>
+    <script src="{{ url_for('static', filename='script/command_member_del.js') }}"></script>
+{% endblock %}

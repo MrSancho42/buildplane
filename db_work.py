@@ -157,16 +157,37 @@ class db_work():
 									WHERE user_id = "{self.__user}"''').fetchone()
 
 
-	def get_user_login(self):
+	def get_user_login(self, user_id=0):
 		"""
 		Функція для отримання імені та логіну користувача.
 
 		Повертає {user_id, name, login}
 		"""
 
+		#якщо не передано user_id, то береться id користувача в сесії
+		if user_id == 0:
+			user_id = self.__user
+
 		return self.__cur.execute(f'''SELECT *
 									FROM v_users_login
-									WHERE user_id = "{self.__user}"''').fetchone()
+									WHERE user_id = "{user_id}"''').fetchone()
+
+
+	def check_user_login(self, login):
+		"""
+		Перевіряє, чи існує користувач з таким логіном
+
+		Повертає id користувача якщо є
+		Повертає False якщо нема
+		"""
+		
+		res = self.__cur.execute(f'''SELECT *
+									FROM v_users_login
+									WHERE login = "{login}"''').fetchone()
+		if res:
+			return res[0]
+		else:
+			return False
 
 
 	def get_personal_tasks(self):
@@ -216,6 +237,25 @@ class db_work():
 								WHERE task_id = {task} and user_id = {self.__user}''')
 
 
+	def get_command_members(self, command_id):
+		"""
+		Дістає інформацію для формуання списку учасників команди
+
+		Поверає [{user_id, name, login}, [{name, color}]]
+		"""
+		
+		result = []
+		users = self.__cur.execute(f'''SELECT user_id FROM v_command
+										WHERE command_id = {command_id}''').fetchall()
+		i = 0
+		while i < len(users):
+			result.append(self.__cur.execute(f'''SELECT * FROM v_users_login
+										WHERE user_id = {users[i]['user_id']}''').fetchall())
+			result[i].append(self.__cur.execute(f'''SELECT name, color FROM v_group_owner
+										WHERE owner_id = {users[i]['user_id']} AND command_id = {command_id}''').fetchall())
+			i += 1	
+
+		return result
 	def get_personal_event(self):
 		"""
 		Дістає події користувача
@@ -437,6 +477,24 @@ class db_work():
 									WHERE "command_id" = {command_id} and "task_id" = {task}) = 1''')
 
 
+	def add_user_to_command(self, command_id):
+		"""
+		Додає користувача до команди
+		"""
+
+		self.__cur.execute(f'INSERT INTO commands_user VALUES({self.__user}, {command_id})')
+		self.del_invitation(command_id)
+
+
+	def del_user_from_command(self, user_id, command_id):
+		"""
+		Видаляє користувача і команди
+		"""
+
+		self.__cur.execute(f'''DELETE FROM commands_user
+							WHERE command_id = {command_id} and user_id = {user_id}''')	
+
+
 	#Спільне для команд та груп///////////////////////////////////////////////
 	def set_task_status(self, status, task, element, element_id):
 		"""
@@ -453,17 +511,21 @@ class db_work():
 									WHERE {element}_id = {element_id} and task_id = {task}) = 1''')
 
 
-	def get_membership(self, element, element_id):
+	def get_membership(self, element, element_id, user_id=0):
 		"""
-		Функція що перевіряє належність користувача до групи, або команди.
+		Функція що перевіряє належність користувача до групи або команди.
 
 		Повертає True, або False
 		"""
 
+		#якщо user_id не передано - береться id користувача із сесії
+		if user_id == 0:
+			user_id = self.__user
+
 		res = self.__cur.execute(f'''SELECT count(*)
 									FROM {element}s_user
 									WHERE {element}_id = {element_id} and
-										user_id = {self.__user}''').fetchone()
+										user_id = {user_id}''').fetchone()
 
 		return bool(res[0])
 
@@ -577,7 +639,7 @@ class db_work():
 		Функція редагування групи
 
 		"""
-		print("vars from db_work  --  ", group_id, name, owner_id, blocked, color)
+		
 		self.__cur.execute(f'''UPDATE groups SET name = "{name}", owner_id={owner_id},
 							blocked={blocked}, color="{color}" WHERE group_id = {group_id}''')
 		#рядок на додання нового власника до групи якщо його ще нема
@@ -744,6 +806,112 @@ class db_work():
 		"""
 
 		self.__cur.execute(f'DELETE FROM events WHERE event_id = {event_id}')
+
+
+
+	#Запрошення//////////////////////////////////////////////////////////////
+	def check_send_nice_invitation(self, login, command_id):
+		"""
+		Крутезний метод надсилання запрошення
+
+		Повертає {status, message}
+		"""
+
+		user_id = self.check_user_login(login)
+		# перевірка чи існує користувач із таким логіном
+		if user_id:
+			
+			# перевіряє, чи користувачеві вже надіслано запрошення
+			if not self.__cur.execute(f'''SELECT * FROM invite
+								WHERE user_id = "{user_id}" and command_id = "{command_id}"''').fetchall():
+				
+				#перевірка, чи такий користувач уже є в команді
+				if self.get_membership('command', command_id, user_id):
+					return {'status': False, 'message': 'Користувач уже є в цій команді'}
+
+				else:
+					# надсилання запрошення
+					self.__cur.execute(f'INSERT INTO invite VALUES({user_id}, {command_id}, 1)')
+					return {'status': True, 'message': 'Запрошення надіслано'}
+			
+			else:
+				return {'status': False, 'message': 'Користувачеві вже надіслано запрошення'}
+
+		else:
+			return {'status': False, 'message': 'Користувача з таким логіном не існує'}
+
+
+	def get_incoming_invitation(self):
+		"""
+		Перевіряє, чи є запрошення, які прийшли користувачеві
+
+		Повертає [{command_id, name}] - якщо запрошення є
+		False - якщо запрошень нема
+		"""
+
+		invitations = self.__cur.execute(f'''SELECT command_id FROM invite
+								WHERE user_id = {self.__user} and status = 1''').fetchall()
+		if invitations:
+			result = []
+			for invitation in invitations:
+				result.append(self.get_command_info(invitation[0]))
+			return result
+		else: return False
+
+
+	def get_sended_invitation(self, command_id, status):
+		"""
+		Перевіряє чи є відхилені (status=0) або надіслані (status=1) запрошення
+
+		Повертає [{user_id, name, login}] - якщо запрошення є
+		False - якщо запрошень нема
+		"""
+
+		invitations = self.__cur.execute(f'''SELECT user_id FROM invite
+								WHERE command_id = {command_id} and status = {status}''').fetchall()
+		if invitations:
+			result = []
+			for invitation in invitations:
+				result.append(self.get_user_login(invitation[0]))
+			return result
+		else: return False
+
+
+	def change_invitation_status(self, command_id, user_id=0):
+		"""
+		Змінює статус запрошення
+
+		З 0 стає 1
+		З 1 стає 0
+		"""
+
+		#якщо не передано user_id, то береться id користувача в сесії
+		if user_id == 0:
+			user_id = self.__user
+
+		status = self.__cur.execute(f'''SELECT status FROM invite
+								WHERE user_id = {user_id} and command_id = {command_id}''').fetchone()[0]
+
+		if status == 1:
+			self.__cur.execute(f'''UPDATE invite
+								SET status = 0
+								WHERE user_id = {user_id} and command_id = {command_id}''')
+		else:
+			self.__cur.execute(f'''UPDATE invite
+								SET status = 1
+								WHERE user_id = {user_id} and command_id = {command_id}''')
+
+
+	def del_invitation(self, command_id, user_id=0):
+		"""
+		Видаляє запрошення
+		"""
+
+		#якщо не передано user_id, то береться id користувача в сесії
+		if user_id == 0:
+			user_id = self.__user
+
+		self.__cur.execute(f'DELETE FROM invite WHERE user_id = {user_id} and command_id = {command_id}')
 
 
 if __name__ == '__main__':
