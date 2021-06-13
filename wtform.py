@@ -75,7 +75,11 @@ class edit_group_form(FlaskForm):
 	blocked = BooleanField('ЗАБОРОНИТИ РУХ ЗАВДАНЬ У КОЛОНКАХ:')
 	submit = SubmitField('Підтвердити')
 
-class add_member_form(FlaskForm):
+class add_command_member_form(FlaskForm):
 	login = StringField("НАДІСЛАТИ ЗАПРОШЕННЯ:", render_kw={"placeholder": "логін користувача"},
 						validators=[DataRequired(message='Заповніть це поле')])
 	submit = SubmitField('Надіслати')
+
+class add_group_member_form(FlaskForm):
+	login = SelectField('ДОДАТИ КОРИСТУВАЧА:', choices=[], coerce=str, validate_choice=False)
+	submit = SubmitField('Додати')

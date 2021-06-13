@@ -1,9 +1,22 @@
-{% extends "setting.html" %}
+{% extends "setting_expand.html" %}
 
 {% block top_bar %}
 <a class="bar__item top-bar__home" href="/home/task"></a>
 <a class="bar__item" href="{{ url_for('command_task', command_id=command.command_id) }}">{{ command.name }}</a>
 <a class="bar__item" href="{{ url_for('group_task', group_id=group.group_id) }}">{{ group.name }}</a>
+{% endblock %}
+
+{% block left_bar %}
+    <div class="bar__item" style="background-color: var(--settings-example-color);">
+        <a class="bar__item-name" href="">
+            Загальні налаштування
+        </a>
+    </div>
+    <div class="bar__item">
+        <a class="bar__item-name" href="{{ url_for('group_members', group_id=group.group_id) }}">
+			Керування учасниками
+        </a>
+    </div>
 {% endblock %}
 
 {% block work_area %}
