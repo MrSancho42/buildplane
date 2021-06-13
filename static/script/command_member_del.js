@@ -4,11 +4,11 @@ member.forEach(member => {
 	member.addEventListener('click', () => {member_del(member)});
 });
 
-function member_del(hui) {
+function member_del(element) {
 	
 	var dict = {
-		command: hui.dataset.command,
-        user_id: hui.dataset.user_id
+		command: element.dataset.command,
+        user_id: element.dataset.user_id
 	};
 
 	fetch(`/command_member_del`, {
