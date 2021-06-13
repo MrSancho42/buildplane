@@ -484,7 +484,7 @@ def command_members(command_id):
 		if db.get_owner_rights(command_id, 'command'):
 			user = db.get_user_login()
 			command = db.get_command_info(command_id)
-			form = wtf.add_member_form()
+			form = wtf.add_command_member_form()
 
 			rejected_invitations = db.get_sended_invitation(command_id, 0)
 			sended_invitations = db.get_sended_invitation(command_id, 1)
@@ -541,6 +541,8 @@ def command_member_del():
 	data = request.get_json()
 	db.del_user_from_command( data['user_id'], data['command'])
 	return make_response(jsonify({}, 200))
+
+
 @app.route('/command/<command_id>/event')
 def command_event(command_id):
 	"""
@@ -817,6 +819,60 @@ def group_event(group_id):
 							groups=groups,
 							events=events,
 							all_event=all_event)
+
+
+@app.route('/group/<group_id>/members', methods=["POST", "GET"])
+def group_members(group_id):
+	"""
+	Сторінка перегляду і додавання користувачів до групи
+	"""
+
+	try:
+		user = db.get_user_login()
+		group = db.get_full_group_info(group_id)
+
+		if db.get_edit_group_rights(user['user_id'], group['group_id']):
+			command = db.get_command_info(group['command_id'])
+			list_users = db.get_users_in_command(group['command_id'])
+			form = wtf.add_group_member_form(request.form)
+
+			# формування списку для додавання користувачів
+			form.login.choices = list_users # це список [(user_id, user_name)]
+
+			members = db.get_group_members(group_id)
+			
+			if form.validate_on_submit():
+				login = form.login.data
+
+				try:
+					for member in members:
+						if member[0]['user_id'] == int(login):
+							raise ValueError()
+					db.add_user_to_group(group_id, login)
+				except ValueError:
+					flash('Користувач уже є в команді')
+
+				return redirect(url_for('group_members', group_id=group_id))
+
+			return render_template('members_group.html', user=user, command=command,
+									group=group, form=form, members=members)
+		else: abort(403)
+
+	except sqlite3.ProgrammingError:
+		return redirect(url_for('group_members', group_id=group_id))
+
+
+@app.route('/group_member_del', methods=["POST"])
+def group_member_del():
+	"""
+	Функція видалення користувача із групи
+
+	Використовується на сторінці /group/<group_id>/members
+	"""
+
+	data = request.get_json()
+	db.del_user_from_group(data['user_id'], data['group'])
+	return make_response(jsonify({}, 200))
 
 
 if __name__ == '__main__':

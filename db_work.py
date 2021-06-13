@@ -256,6 +256,8 @@ class db_work():
 			i += 1	
 
 		return result
+
+
 	def get_personal_event(self):
 		"""
 		Дістає події користувача
@@ -808,7 +810,6 @@ class db_work():
 		self.__cur.execute(f'DELETE FROM events WHERE event_id = {event_id}')
 
 
-
 	#Запрошення//////////////////////////////////////////////////////////////
 	def check_send_nice_invitation(self, login, command_id):
 		"""
@@ -912,6 +913,42 @@ class db_work():
 			user_id = self.__user
 
 		self.__cur.execute(f'DELETE FROM invite WHERE user_id = {user_id} and command_id = {command_id}')
+
+
+	def get_group_members(self, group_id):
+		"""
+		Дістає інформацію для формуання списку учасників групи
+
+		Поверає [{user_id, name, login}]
+		"""
+
+		result = []
+		users = self.__cur.execute(f'''SELECT user_id FROM v_group
+										WHERE group_id = {group_id}''').fetchall()
+		i = 0
+		while i < len(users):
+			result.append(self.__cur.execute(f'''SELECT * FROM v_users_login
+										WHERE user_id = {users[i]['user_id']}''').fetchall())
+			i += 1
+
+		return result
+
+
+	def add_user_to_group(self, group_id, user_id):
+		"""
+		Додає користувача до групи
+		"""
+
+		self.__cur.execute(f'INSERT INTO groups_user VALUES({user_id}, {group_id})')
+
+
+	def del_user_from_group(self, user_id, group_id):
+		"""
+		Видаляє користувача і команди
+		"""
+
+		self.__cur.execute(f'''DELETE FROM groups_user
+							WHERE group_id = {group_id} and user_id = {user_id}''')	
 
 
 if __name__ == '__main__':
