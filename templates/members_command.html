@@ -18,6 +18,11 @@
             Керування учасниками
         </a>
     </div>
+    <div class="bar__item">
+        <a class="bar__item-name" href="{{ url_for('edit_command_cols', command_id=command.command_id) }}">
+            Керування колонками
+        </a>
+    </div>
 {% endblock %}
 
 {% block work_area %}

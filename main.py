@@ -468,7 +468,7 @@ def command_task_status(command_id, mod):
 	return make_response(jsonify({}, 200))
 
 
-@app.route('/command/<command_id>/members', methods=["POST", "GET"])
+@app.route('/command/<command_id>/members')
 def command_members(command_id):
 	"""
 	Сторінка перегляду і запрошення користувачів до команди
@@ -567,6 +567,59 @@ def command_event(command_id):
 							groups=groups,
 							events=events,
 							all_event=all_event)
+
+
+@app.route('/command/<command_id>/edit_cols', methods=["POST", "GET"])
+def edit_command_cols(command_id):
+	"""
+	Сторінка редагування колонок команди
+	"""
+
+	try:
+		user = db.get_user()
+		if db.get_owner_rights(command_id, 'command'):
+			form = wtf.add_new_col_form()
+			command = db.get_command_info(command_id)
+			cols = db.get_cols('command', command_id)
+			
+			if form.validate_on_submit():
+				db.add_col('command', command_id, form.name.data)
+				flash('Колонка успішно додана')
+				return redirect(url_for('edit_command_cols', command_id=command_id))	
+
+			return render_template('edit_command_cols.html', user=user,
+									form=form, command=command, cols=cols)
+		else:
+			abort(403)
+
+	except sqlite3.ProgrammingError:
+		return redirect(url_for('edit_command_cols', command_id=command_id))
+	
+
+@app.route('/col_del', methods=["POST"])
+def del_col():
+	'''
+	Функція видалення колонки
+
+	Використавується на сторінці редагування колонок команди
+	'''
+
+	data = request.get_json()
+	db.del_col('command', data['command_id'], data['col_id'])
+	return make_response(jsonify({}, 200))
+
+
+@app.route('/change_col_status', methods=["POST"])
+def change_col_status():
+	'''
+	Функція зміни порядку колонки
+
+	Використавується на сторінці редагування колонок команди
+	'''
+
+	data = request.get_json()
+	db.change_col_status('command', data['command_id'], data['col_id'], data['status'])
+	return make_response(jsonify({}, 200))
 
 
 #Групи////////////////////////////////////////////////////////////////////////
