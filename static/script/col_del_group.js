@@ -8,10 +8,10 @@ function col_del(element) {
 
 	var dict = {
         col_id: element.dataset.col,
-        command_id: element.dataset.command_id
+        group_id: element.dataset.group_id
 	};
 
-	fetch(`/comm_col_del`, {
+	fetch(`/group_col_del`, {
         method: "POST",
         credentials: "include",
         body: JSON.stringify(dict),

@@ -17,6 +17,11 @@
 			Керування учасниками
         </a>
     </div>
+	<div class="bar__item">
+        <a class="bar__item-name" href="{{ url_for('edit_group_cols', group_id=group.group_id) }}">
+            Керування колонками
+        </a>
+    </div>
 {% endblock %}
 
 {% block work_area %}

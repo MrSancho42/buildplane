@@ -596,10 +596,10 @@ def edit_command_cols(command_id):
 		return redirect(url_for('edit_command_cols', command_id=command_id))
 	
 
-@app.route('/col_del', methods=["POST"])
-def del_col():
+@app.route('/comm_col_del', methods=["POST"])
+def del_comm_col():
 	'''
-	Функція видалення колонки
+	Функція видалення колонки команди
 
 	Використавується на сторінці редагування колонок команди
 	'''
@@ -609,10 +609,10 @@ def del_col():
 	return make_response(jsonify({}, 200))
 
 
-@app.route('/change_col_status', methods=["POST"])
-def change_col_status():
+@app.route('/comm_change_col_status', methods=["POST"])
+def change_comm_col_status():
 	'''
-	Функція зміни порядку колонки
+	Функція зміни порядку колонки команди
 
 	Використавується на сторінці редагування колонок команди
 	'''
@@ -925,6 +925,60 @@ def group_member_del():
 
 	data = request.get_json()
 	db.del_user_from_group(data['user_id'], data['group'])
+	return make_response(jsonify({}, 200))
+
+
+@app.route('/group/<group_id>/edit_cols', methods=["POST", "GET"])
+def edit_group_cols(group_id):
+	"""
+	Сторінка редагування колонок групи
+	"""
+
+	try:
+		user = db.get_user()
+		group = db.get_full_group_info(group_id)
+		if db.get_edit_group_rights(user['user_id'], group['group_id']):
+			command = db.get_command_info(group['command_id'])
+			form = wtf.add_new_col_form()
+			cols = db.get_cols('group', group_id)
+			
+			if form.validate_on_submit():
+				db.add_col('group', group_id, form.name.data)
+				flash('Колонка успішно додана')
+				return redirect(url_for('edit_group_cols', group_id=group_id))	
+
+			return render_template('edit_group_cols.html', user=user, command=command,
+									form=form, group=group, cols=cols)
+		else:
+			abort(403)
+
+	except sqlite3.ProgrammingError:
+		return redirect(url_for('edit_group_cols', group_id=group_id))
+
+
+@app.route('/group_col_del', methods=["POST"])
+def del_group_col():
+	'''
+	Функція видалення колонки команди
+
+	Використавується на сторінці редагування колонок команди
+	'''
+
+	data = request.get_json()
+	db.del_col('group', data['group_id'], data['col_id'])
+	return make_response(jsonify({}, 200))
+
+
+@app.route('/group_change_col_status', methods=["POST"])
+def change_group_col_status():
+	'''
+	Функція зміни порядку колонки команди
+
+	Використавується на сторінці редагування колонок команди
+	'''
+
+	data = request.get_json()
+	db.change_col_status('group', data['group_id'], data['col_id'], data['status'])
 	return make_response(jsonify({}, 200))
 
 

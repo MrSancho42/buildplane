@@ -12,11 +12,11 @@ function col_change(element, status) {
 
 	var dict = {
         col_id: element.parentElement.dataset.col,
-        command_id: element.parentElement.dataset.command_id, 
+        group_id: element.parentElement.dataset.group_id, 
         status: status
 	};
 
-	fetch(`/comm_change_col_status`, {
+	fetch(`/group_change_col_status`, {
         method: "POST",
         credentials: "include",
         body: JSON.stringify(dict),

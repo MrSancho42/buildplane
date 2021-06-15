@@ -84,5 +84,5 @@ class add_group_member_form(FlaskForm):
 	submit = SubmitField('Додати')
 
 class add_new_col_form(FlaskForm):
-	name = StringField('НАЗВА КОЛОНКИ', validators=[DataRequired(message='Заповніть це поле')])
+	name = StringField('НАЗВА КОЛОНКИ:', validators=[DataRequired(message='Заповніть це поле')])
 	submit = SubmitField('Додати')
