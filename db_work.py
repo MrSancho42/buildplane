@@ -2,6 +2,8 @@ from hashlib import sha256 as sha256
 import sqlite3 as sqlite3
 from datetime import datetime
 
+from wtforms.widgets.core import Select
+
 
 """
 Робота із базою даних.
@@ -792,13 +794,80 @@ class db_work():
 		"""
 
 		tasks = self.__cur.execute(f'''SELECT task_id FROM v_{element}_tasks
-							WHERE {element}_id = {element_id}''').fetchall()
+									WHERE col_id = {col_id}''').fetchall()
 		if tasks:
 			for task in tasks:
 				task = task['task_id']
 				self.__cur.execute(f'DELETE FROM tasks WHERE task_id = {task}')
 
+		cols_list = self.__cur.execute(f'''SELECT cols_order from v_{element}_cols
+										WHERE {element}_id = {element_id}''').fetchone()[0]
+		cols_list = cols_list.replace(str(col_id) + ',', "")
+		if str(col_id) in cols_list:
+			cols_list = cols_list.replace(',' + str(col_id), "")
+
+		self.__cur.execute(f'''UPDATE {element}s SET cols_order = '{cols_list}'
+								WHERE {element}_id = {element_id}''')
+
 		self.__cur.execute(f'DELETE FROM cols WHERE col_id = {col_id}')
+
+
+	def add_col(self, element, element_id, col_name):
+		"""
+		Додає колонку
+		"""
+
+		cols_list = self.__cur.execute(f'''SELECT cols_order from v_{element}_cols
+										WHERE {element}_id = {element_id}''').fetchone()[0]
+		self.__cur.execute(f'''INSERT INTO cols VALUES(NULL, '{col_name}')''')
+		col_id = self.__cur.execute('SELECT last_insert_rowid() from cols').fetchone()[0]
+		cols_list = cols_list + ',' + str(col_id)
+		self.__cur.execute(f'''UPDATE {element}s SET cols_order = '{cols_list}'
+								WHERE {element}_id = {element_id}''')
+
+
+	def change_col_status(self, element, element_id, col_id, status):
+		'''
+		Змінює порядок колонки
+
+		Якщо status == True то на одну позицію вправо
+		Якщо status == False то на одну позицію вліво
+		'''
+
+		cols_list = self.__cur.execute(f'''SELECT cols_order from v_{element}_cols
+										WHERE {element}_id = {element_id}''').fetchone()[0].split(',')
+		
+		replace = True
+		i = 0
+		while i < len(cols_list):
+			if col_id == cols_list[i]:
+				if i == 0:
+					if status == True:
+						replace = False
+					else:
+						cols_list = cols_list[1:]
+						i += 1
+				elif i == len(cols_list):
+					if status == False:
+						replace = False
+					else:
+						cols_list = cols_list[:i]
+						i -= 1
+				else:
+					cols_list = cols_list[0:i] + cols_list[i+1:]
+					if status == True:
+						i -= 1
+					else:
+						i += 1
+				break
+			else: i += 1
+
+		if replace:
+			cols_list.insert(i, col_id)
+		
+		cols_list = ','.join(cols_list)
+		self.__cur.execute(f'''UPDATE {element}s SET cols_order = '{cols_list}'
+								WHERE {element}_id = {element_id}''')
 
 
 	#Події////////////////////////////////////////////////////////////////////
