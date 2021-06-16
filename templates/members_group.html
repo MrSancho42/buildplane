@@ -1,0 +1,66 @@
+{% extends "setting_expand.html" %}
+
+{% block top_bar %}
+<a class="bar__item top-bar__home" href="{{ url_for('home') }}"></a>
+<a class="bar__item" href="{{ url_for('group_task', group_id=group.group_id) }}">
+    <span>{{ group.name }}</span>
+</a>
+<a class="bar__item" href="{{ url_for('command_task', command_id=command.command_id) }}">
+    <span>{{ command.name }}</span>
+</a>
+{% endblock %}
+
+{% block left_bar %}
+    <div class="bar__item">
+        <a class="bar__item-name" href="{{ url_for('settings_group', group_id=group.group_id) }}">
+            Загальні налаштування
+        </a>
+    </div>
+    <div class="bar__item" style="background-color: var(--settings-example-color);">
+        <a class="bar__item-name" href="">
+            Керування учасниками
+        </a>
+    </div>
+    <div class="bar__item">
+        <a class="bar__item-name" href="{{ url_for('edit_group_cols', group_id=group.group_id) }}">
+            Керування колонками
+        </a>
+    </div>
+{% endblock %}
+
+{% block work_area %}
+    <form action="", method="POST" class="form-members">
+        {{ form.hidden_tag() }}
+        {{ form.login.label() }}
+        <div class="form-members__row">
+            {{ form.login() }}
+            {{ form.submit(class="button") }}
+        </div>
+
+        {% for message in get_flashed_messages() %}
+            <span style="color: var(--danger);">{{ message }}</span>
+        {% endfor %}
+    </form>
+
+    <div class="list-mem-page">
+        <div class="list-mem-page__item">Учасники:</div>
+        {% for item in members %}
+        <div class="member-item">
+            <div class="member-item__top-row">
+                {{ item.0.name }} | {{ item.0.login }}
+                {% if item.0.login != user.login %}
+                    <a class="member-item__button member-item__js-delete"
+                    data-group={{group.group_id}} data-user_id={{item.0.user_id}}
+                    href="">
+                        Вилучити
+                    </a>
+                {% endif %}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+{% endblock %}
+
+{% block script %}
+    <script src="{{ url_for('static', filename='script/group_member_del.js') }}"></script>
+{% endblock %}

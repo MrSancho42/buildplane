@@ -7,11 +7,11 @@ member.forEach(member => {
 function member_del(element) {
 	
 	var dict = {
-		command: element.dataset.command,
+		group: element.dataset.group,
         user_id: element.dataset.user_id
 	};
 
-	fetch(`/command_member_del`, {
+	fetch('/group_member_del', {
         method: "POST",
         credentials: "include",
         body: JSON.stringify(dict),

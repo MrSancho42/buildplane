@@ -56,10 +56,9 @@ class edit_command_form(FlaskForm):
 class del_dialog_form(FlaskForm):
 	submit = SubmitField('Так')
 
-
 class add_group_form(FlaskForm):
 	name = StringField("НАЗВА ГРУПИ:", validators=[Length(min=1, max=130,
-										message='Довжина назви повинна бути до 30 символів'),
+										message='Довжина назви повинна бути до 130 символів'),
 						DataRequired(message='Заповніть це поле')])	
 	color = StringField('КОЛІР ГРУПИ:', widget=ColorInput())
 	owner = SelectField('ВЛАСНИК ГРУПИ:')
@@ -68,14 +67,22 @@ class add_group_form(FlaskForm):
 
 class edit_group_form(FlaskForm):
 	name = StringField("НАЗВА ГРУПИ:", validators=[Length(min=1, max=130,
-										message='Довжина назви повинна бути до 30 символів'),
+										message='Довжина назви повинна бути до 130 символів'),
 						DataRequired(message='Заповніть це поле')])	
 	color = StringField('КОЛІР ГРУПИ:', widget=ColorInput())
 	owner = SelectField('ВЛАСНИК ГРУПИ:', choices=[], coerce=str, validate_choice=False)
 	blocked = BooleanField('ЗАБОРОНИТИ РУХ ЗАВДАНЬ У КОЛОНКАХ:')
 	submit = SubmitField('Підтвердити')
 
-class add_member_form(FlaskForm):
+class add_command_member_form(FlaskForm):
 	login = StringField("НАДІСЛАТИ ЗАПРОШЕННЯ:", render_kw={"placeholder": "логін користувача"},
 						validators=[DataRequired(message='Заповніть це поле')])
 	submit = SubmitField('Надіслати')
+
+class add_group_member_form(FlaskForm):
+	login = SelectField('ДОДАТИ КОРИСТУВАЧА:', choices=[], coerce=str, validate_choice=False)
+	submit = SubmitField('Додати')
+
+class add_new_col_form(FlaskForm):
+	name = StringField('НАЗВА КОЛОНКИ:', validators=[DataRequired(message='Заповніть це поле')])
+	submit = SubmitField('Додати')
