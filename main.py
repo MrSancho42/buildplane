@@ -136,8 +136,8 @@ def date():
 		date = db.to_timestamp(date)
 		flash(f'timestamp: {date}')
 
-		date = db.from_timestamp(date)
-		flash(f'output date: {date}')
+		#date = db.from_timestamp(date)
+		#flash(f'output date: {date}')
 
 	return render_template('date.html')
 
@@ -239,6 +239,23 @@ def personal_event():
 							user=user,
 							commands=commands,
 							events=events)
+
+
+@app.route('/home/event/add', methods=["POST", "GET"])
+def add_personal_event():
+	"""
+	Сторінка додавання особистого завдання
+	"""
+
+	user = db.get_user()
+	form = wtf.add_personal_event_form()
+
+	if form.validate_on_submit():
+		db.add_personal_event(form.name.data, form.date.data)
+		return redirect(url_for('add_personal_event'))
+
+	return render_template('add_personal_event.html',
+							user=user, form=form)
 
 
 @app.route('/home/event/event_status', methods=["POST"])

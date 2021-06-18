@@ -879,6 +879,28 @@ class db_work():
 		self.__cur.execute(f'DELETE FROM events WHERE event_id = {event_id}')
 
 
+	def add_event(self, element, element_id, name, date):
+		'''
+		Додає подію для команди або групи
+		'''
+		#не дописано!!!!!!!
+		date = self.to_timestamp(date)
+		self.__cur.execute(f'INSERT INTO events VALUES(NULL, {name}, {date})')
+		self.__cur.execute(f'INSERT INTO {element}s_event VALUES({name}, {date})')
+
+
+	def add_personal_event(self, name, date):
+		'''
+		Додає подію користувача
+		'''
+
+		if date:
+			print('date  - - ', date, type(date))
+			date = date.strftime("%s")
+			print(date)
+		#self.__cur.execute(f'INSERT INTO personal_events VALUES(NULL, {name}, {date}, NULL, {self.__user})')		
+
+
 	#Запрошення//////////////////////////////////////////////////////////////
 	def check_send_nice_invitation(self, login, command_id):
 		"""
