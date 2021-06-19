@@ -313,7 +313,7 @@ def add_personal_event():
 		data = form.date.data
 		if (name and not data) or (name and data):
 			db.add_personal_event(form.name.data, form.date.data)
-			return redirect(url_for('add_personal_event'))
+			return redirect(url_for('personal_event'))
 		if not name and not data:
 			flash('Введіть назву події')
 
