@@ -614,6 +614,26 @@ class db_work():
 		return False
 
 
+	def get_list_groups_owners(self, command_id, owner):
+		'''
+		Дістає список керівників груп в команді
+
+		Повертає [(user_id, 'login - name')]
+		'''
+
+		res = [(owner['user_id'], owner['login'] + ' - ' + owner['name'])]
+		users = self.__cur.execute(f'''SELECT owner_id FROM v_group_owner
+										WHERE command_id={command_id} and
+										owner_id != {owner['user_id']}
+										GROUP BY owner_id''').fetchall()
+
+		if users:
+			for user in users:
+				user_info = self.get_user_login(user['owner_id'])
+				res.append((user['owner_id'], user_info['login'] + ' - ' + user_info['name']))
+		return res
+
+
 	def get_group_info(self, group_id):
 		"""
 		Функція що дістає дані про групу
@@ -887,15 +907,20 @@ class db_work():
 		self.__cur.execute(f'DELETE FROM personal_events WHERE event_id = {event_id}')
 
 
-	def add_event(self, element, element_id, name, date):
+	def add_event(self, element, element_id, user_id, name, date):
 		'''
 		Додає подію для команди або групи
 		'''
 
-		#не дописано!!!!!!!
-		date = self.to_timestamp(date)
-		self.__cur.execute(f'INSERT INTO events VALUES(NULL, {name}, {date})')
-		self.__cur.execute(f'INSERT INTO {element}s_event VALUES({name}, {date})')
+		if date:
+			date = date.strftime("%s")
+		else:
+			date = 'NULL'
+		
+		self.__cur.execute(f'''INSERT INTO events VALUES(NULL, '{name}', {date})''')
+		event_id = self.__cur.execute('SELECT last_insert_rowid() from events').fetchone()[0]
+		self.__cur.execute(f'INSERT INTO {element}s_event VALUES({event_id}, {element_id})')
+		self.__cur.execute(f'INSERT INTO users_event VALUES({event_id}, 0, {user_id})')
 
 
 	def add_personal_event(self, name, date):

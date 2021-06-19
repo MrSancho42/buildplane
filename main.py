@@ -312,7 +312,7 @@ def add_personal_event():
 		name = form.name.data
 		data = form.date.data
 		if (name and not data) or (name and data):
-			db.add_personal_event(form.name.data, form.date.data)
+			db.add_personal_event(name, date)
 			return redirect(url_for('personal_event'))
 		if not name and not data:
 			flash('Введіть назву події')
@@ -647,6 +647,34 @@ def command_event(command_id):
 							groups=groups,
 							events=events,
 							all_event=all_event)
+
+
+@app.route('/command/<command_id>/event/add', methods=["POST", "GET"])
+def add_command_event(command_id):
+	"""
+	Сторінка додавання командного завдання
+	"""
+
+	user = db.get_user_login()
+	is_owner = db.get_owner_rights(command_id, 'command')
+	if not is_owner:
+		abort(403)
+
+	command = db.get_command_info(command_id)
+	form = wtf.add_command_event_form()
+	form.user.choices = db.get_list_groups_owners(command_id, user)
+
+	if request.method == "POST":
+		if form.name.data and form.user.data:
+			name = form.name.data
+			user = form.user.data
+			date = form.date.data
+			if (name and user and not date) or (name and user and date):
+				db.add_event('command', command_id, user, name, date)
+				return redirect(url_for('command_event', command_id=command_id))
+
+	return render_template('add_command_event.html',
+							user=user, form=form, command=command)
 
 
 @app.route('/command/<command_id>/edit_cols', methods=["POST", "GET"])

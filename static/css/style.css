@@ -161,6 +161,10 @@ h1,h2,h3,h4,h5,h6{font-size:inherit;font-weight: 400;}
 	border: var(--settings-label-color) solid 2px;
 	border-radius: 20px;
 }
+.form-settings li {
+	padding-left: 30px;
+	padding-bottom: 5px;
+}
 .form-settings input[type=submit] {
 	background-color: var(--settings-submit-color);
 	align-self: center;
