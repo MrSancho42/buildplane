@@ -2,7 +2,7 @@ import sqlite3
 from flask import Flask, render_template, g, redirect, url_for, request, flash, session, abort, jsonify, make_response
 from flask_session import Session
 import redis
-from datetime import timedelta
+from datetime import timedelta, datetime
 from re import search as research
 
 import config
@@ -241,6 +241,64 @@ def personal_event():
 							events=events)
 
 
+@app.route('/home/event/<int:event_id>', methods=["POST", "GET"])
+def personal_event_edit(event_id):
+	'''
+	Сторінка редагування особистої події
+	'''
+	
+	if db.check_personal_event_owner(event_id):
+		user = db.get_user()
+
+		event = db.get_personal_event_info(event_id)
+		if event['date']:
+			event_date = datetime.fromtimestamp(event['date'])
+			form = wtf.add_personal_event_form(name=event['description'],
+											date=event_date)
+		else:
+			event_date = None
+			form = wtf.add_personal_event_form(name=event['description'])
+
+		form_dialog = wtf.del_dialog_form()
+
+		if request.method == "POST":
+			if form.date.data:
+				db.edit_personal_event(event_id, form.name.data,
+									db.to_timestamp(str(form.date.data)))
+			else:
+				db.edit_personal_event(event_id, form.name.data, None)
+
+		return render_template('edit_personal_event.html', user=user,
+								form=form, event_id=event_id,
+								form_dialog=form_dialog)
+	else:
+		abort(403)
+
+
+@app.route('/home/event/<int:event_id>/del', methods=["POST"])
+def del_personal_event(event_id):
+	'''
+	Функція видалення особистої події
+	'''
+
+	try:		
+		event = db.get_personal_event_info(event_id)
+		form_dialog = wtf.del_dialog_form()
+	except TypeError: #якщо подія уже видалена
+		abort(404)
+
+	if form_dialog.submit.data:
+		print('here!!!')
+		db.del_personal_event(event_id)
+		return redirect(url_for('personal_event'))
+
+	# при натисненні "НІ" у діалоговому вікні
+	if request.method == 'POST':
+		return redirect(url_for('personal_event_edit', event_id=event_id))
+
+	abort(404) # якщо користувач прописав шлях сам
+
+
 @app.route('/home/event/add', methods=["POST", "GET"])
 def add_personal_event():
 	"""
@@ -390,7 +448,7 @@ def del_command(command_id):
 
 	if form_dialog.submit.data:
 		db.del_command(command_id)
-		return redirect(url_for('home'))
+		return redirect(url_for('/home_event'))
 
 	# при натисненні "НІ" у діалоговому вікні
 	if request.method == 'POST':

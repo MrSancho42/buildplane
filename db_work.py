@@ -879,6 +879,14 @@ class db_work():
 		self.__cur.execute(f'DELETE FROM events WHERE event_id = {event_id}')
 
 
+	def del_personal_event(self, event_id):
+		"""
+		Видаляє одну особисту подію
+		"""
+
+		self.__cur.execute(f'DELETE FROM personal_events WHERE event_id = {event_id}')
+
+
 	def add_event(self, element, element_id, name, date):
 		'''
 		Додає подію для команди або групи
@@ -901,6 +909,45 @@ class db_work():
 			date = 'NULL'
 		self.__cur.execute(f'''INSERT INTO personal_events
 							VALUES(NULL, '{name}', {date}, 0, {self.__user})''')
+
+
+	def check_personal_event_owner(self, event_id):
+		'''
+		Визначає, чи є користувач власником особистої події
+		'''
+
+		res = self.__cur.execute(f'''SELECT user_id
+									FROM v_personal_events
+									WHERE event_id = "{event_id}"''').fetchone()[0]
+		if res == self.__user:
+			return True
+		else:
+			return False
+
+
+	def get_personal_event_info(self, event_id):
+		'''
+		Дістає інформацію про конкретну особисту подію
+		'''
+
+		return self.__cur.execute(f'''SELECT description, date
+									FROM v_personal_events
+									WHERE event_id = {event_id}''').fetchone()
+
+
+
+	def edit_personal_event(self, event_id, description, date):
+		"""
+		Функція редагування особистої події
+		"""
+		
+		print(date)
+		if date:
+			self.__cur.execute(f'''UPDATE personal_events SET description = "{description}",
+								date={date} WHERE event_id = {event_id}''')
+		else:
+			self.__cur.execute(f'''UPDATE personal_events SET description = "{description}",
+								date=NULL WHERE event_id = {event_id}''')
 
 
 	#Запрошення//////////////////////////////////////////////////////////////

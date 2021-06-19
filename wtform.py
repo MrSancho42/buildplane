@@ -91,4 +91,4 @@ class add_new_col_form(FlaskForm):
 class add_personal_event_form(FlaskForm):
 	name = StringField('НАЗВА ПОДІЇ:', validators=[DataRequired(message='Заповніть це поле')])
 	date = DateField('ДАТА НАСТАННЯ:')
-	submit = SubmitField('Додати')
+	submit = SubmitField('Підтвердити')
