@@ -621,6 +621,18 @@ def change_comm_col_status():
 	return make_response(jsonify({}, 200))
 
 
+#Спільне для груп і команд////////////////////////////////////////////////////
+@app.route('/<cg>/<id>/event/event_status', methods=["POST"])
+def event_status(cg, id):
+
+	data = request.get_json()
+
+	print(data['status'], data['event'])
+	db.set_event_status(data['status'], data['event'])
+
+	return make_response(jsonify({}, 200))
+
+
 #Групи////////////////////////////////////////////////////////////////////////
 def groups_ownership(command_id):
 	"""
