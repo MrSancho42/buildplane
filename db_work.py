@@ -883,6 +883,7 @@ class db_work():
 		'''
 		Додає подію для команди або групи
 		'''
+
 		#не дописано!!!!!!!
 		date = self.to_timestamp(date)
 		self.__cur.execute(f'INSERT INTO events VALUES(NULL, {name}, {date})')
@@ -895,10 +896,11 @@ class db_work():
 		'''
 
 		if date:
-			print('date  - - ', date, type(date))
 			date = date.strftime("%s")
-			print(date)
-		#self.__cur.execute(f'INSERT INTO personal_events VALUES(NULL, {name}, {date}, NULL, {self.__user})')		
+		else:
+			date = 'NULL'
+		self.__cur.execute(f'''INSERT INTO personal_events
+							VALUES(NULL, '{name}', {date}, 0, {self.__user})''')
 
 
 	#Запрошення//////////////////////////////////////////////////////////////

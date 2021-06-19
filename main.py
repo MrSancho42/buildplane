@@ -250,9 +250,14 @@ def add_personal_event():
 	user = db.get_user()
 	form = wtf.add_personal_event_form()
 
-	if form.validate_on_submit():
-		db.add_personal_event(form.name.data, form.date.data)
-		return redirect(url_for('add_personal_event'))
+	if request.method == "POST":
+		name = form.name.data
+		data = form.date.data
+		if (name and not data) or (name and data):
+			db.add_personal_event(form.name.data, form.date.data)
+			return redirect(url_for('add_personal_event'))
+		if not name and not data:
+			flash('Введіть назву події')
 
 	return render_template('add_personal_event.html',
 							user=user, form=form)

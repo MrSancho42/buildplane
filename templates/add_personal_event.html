@@ -19,10 +19,6 @@
 			{% endif %}
 		{% endfor %}
 
-		{% for message in get_flashed_messages() %}
-			<span>{{ message }}</span>
-		{% endfor %}
-
 		{{ form.submit(class="button") }}
 	</form>
 {% endblock %}
