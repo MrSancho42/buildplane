@@ -32,7 +32,7 @@
 {% endblock %}
 
 {% block tab %}
-	<a href="">
+	<a href="{{ url_for('personal_event_edit', event_id=event.event_id) }}">
 		<span class="event__doc"></span>
 		<p>
 			{{ event.description }}
