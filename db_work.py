@@ -896,6 +896,9 @@ class db_work():
 		Видаляє одну подію
 		"""
 
+		print(event_id)
+		self.__cur.execute(f'DELETE FROM users_event WHERE event_id = {event_id}')
+		self.__cur.execute(f'DELETE FROM commands_event WHERE event_id = {event_id}')
 		self.__cur.execute(f'DELETE FROM events WHERE event_id = {event_id}')
 
 
@@ -966,13 +969,49 @@ class db_work():
 		Функція редагування особистої події
 		"""
 		
-		print(date)
 		if date:
 			self.__cur.execute(f'''UPDATE personal_events SET description = "{description}",
 								date={date} WHERE event_id = {event_id}''')
 		else:
 			self.__cur.execute(f'''UPDATE personal_events SET description = "{description}",
 								date=NULL WHERE event_id = {event_id}''')
+
+
+	def get_event(self, event_id):
+		'''
+		Дістає інформацію про подію команди/групи
+
+		Повертає {description, date, user_id}
+		'''
+
+		res = self.__cur.execute(f'''SELECT description, date, user_id
+									FROM v_command_events
+									WHERE event_id = {event_id}''').fetchone()
+		return res
+
+	
+	def edit_event(self, event_id, description, user_id, date):
+		'''
+		Редагує подію команди/групи
+		'''
+
+		print('- - edit event - -')
+		if description:
+			print('e 1', description)
+			self.__cur.execute(f'''UPDATE events SET description='{description}'
+								WHERE event_id={event_id}''')
+		if date:
+			print('e 2', date)
+			self.__cur.execute(f'''UPDATE events SET date={date}
+								WHERE event_id={event_id}''')
+		if date == None:
+			print('e 3', date)
+			self.__cur.execute(f'''UPDATE events SET date=NULL
+								WHERE event_id={event_id}''')
+		if user_id:
+			print('e 4', user_id)
+			self.__cur.execute(f'''UPDATE users_event SET user_id={user_id}
+								WHERE event_id={event_id}''')
 
 
 	#Запрошення//////////////////////////////////////////////////////////////
