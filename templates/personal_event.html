@@ -22,7 +22,7 @@
 {% endblock %}
 
 {% block bar %}
-	<a href="" class="add-button">
+	<a href="{{ url_for('add_personal_event') }}" class="add-button">
 		<span>Нова подія</span>
 		<span></span>
 	</a>
@@ -32,7 +32,7 @@
 {% endblock %}
 
 {% block tab %}
-	<a href="">
+	<a href="{{ url_for('personal_event_edit', event_id=event.event_id) }}">
 		<span class="event__doc"></span>
 		<p>
 			{{ event.description }}

@@ -624,6 +624,26 @@ class db_work():
 		return False
 
 
+	def get_list_groups_owners(self, command_id, owner):
+		'''
+		Дістає список керівників груп в команді
+
+		Повертає [(user_id, 'login - name')]
+		'''
+
+		res = [(owner['user_id'], owner['login'] + ' - ' + owner['name'])]
+		users = self.__cur.execute(f'''SELECT owner_id FROM v_group_owner
+										WHERE command_id={command_id} and
+										owner_id != {owner['user_id']}
+										GROUP BY owner_id''').fetchall()
+
+		if users:
+			for user in users:
+				user_info = self.get_user_login(user['owner_id'])
+				res.append((user['owner_id'], user_info['login'] + ' - ' + user_info['name']))
+		return res
+
+
 	def get_group_info(self, group_id):
 		"""
 		Функція що дістає дані про групу
@@ -886,7 +906,122 @@ class db_work():
 		Видаляє одну подію
 		"""
 
+		print(event_id)
+		self.__cur.execute(f'DELETE FROM users_event WHERE event_id = {event_id}')
+		self.__cur.execute(f'DELETE FROM commands_event WHERE event_id = {event_id}')
 		self.__cur.execute(f'DELETE FROM events WHERE event_id = {event_id}')
+
+
+	def del_personal_event(self, event_id):
+		"""
+		Видаляє одну особисту подію
+		"""
+
+		self.__cur.execute(f'DELETE FROM personal_events WHERE event_id = {event_id}')
+
+
+	def add_event(self, element, element_id, user_id, name, date):
+		'''
+		Додає подію для команди або групи
+		'''
+
+		if date:
+			date = date.strftime("%s")
+		else:
+			date = 'NULL'
+		
+		self.__cur.execute(f'''INSERT INTO events VALUES(NULL, '{name}', {date})''')
+		event_id = self.__cur.execute('SELECT last_insert_rowid() from events').fetchone()[0]
+		self.__cur.execute(f'INSERT INTO {element}s_event VALUES({event_id}, {element_id})')
+		self.__cur.execute(f'INSERT INTO users_event VALUES({event_id}, 0, {user_id})')
+
+
+	def add_personal_event(self, name, date):
+		'''
+		Додає подію користувача
+		'''
+
+		if date:
+			date = date.strftime("%s")
+		else:
+			date = 'NULL'
+		self.__cur.execute(f'''INSERT INTO personal_events
+							VALUES(NULL, '{name}', {date}, 0, {self.__user})''')
+
+
+	def check_personal_event_owner(self, event_id):
+		'''
+		Визначає, чи є користувач власником особистої події
+		'''
+
+		res = self.__cur.execute(f'''SELECT user_id
+									FROM v_personal_events
+									WHERE event_id = "{event_id}"''').fetchone()[0]
+		if res == self.__user:
+			return True
+		else:
+			return False
+
+
+	def get_personal_event_info(self, event_id):
+		'''
+		Дістає інформацію про конкретну особисту подію
+		'''
+
+		return self.__cur.execute(f'''SELECT description, date
+									FROM v_personal_events
+									WHERE event_id = {event_id}''').fetchone()
+
+
+
+	def edit_personal_event(self, event_id, description, date):
+		"""
+		Функція редагування особистої події
+		"""
+		
+		if date:
+			self.__cur.execute(f'''UPDATE personal_events SET description = "{description}",
+								date={date} WHERE event_id = {event_id}''')
+		else:
+			self.__cur.execute(f'''UPDATE personal_events SET description = "{description}",
+								date=NULL WHERE event_id = {event_id}''')
+
+
+	def get_event(self, event_id):
+		'''
+		Дістає інформацію про подію команди/групи
+
+		Повертає {description, date, user_id}
+		'''
+
+		res = self.__cur.execute(f'''SELECT description, date, user_id
+									FROM v_command_events
+									WHERE event_id = {event_id}''').fetchone()
+		return res
+
+	
+	def edit_event(self, event_id, description, user_id, date):
+		'''
+		Редагує подію команди/групи
+		'''
+
+		print('- - edit event - -')
+		if description:
+			print('e 1', description)
+			self.__cur.execute(f'''UPDATE events SET description='{description}'
+								WHERE event_id={event_id}''')
+		if date:
+			print('e 2', date)
+			self.__cur.execute(f'''UPDATE events SET date={date}
+								WHERE event_id={event_id}''')
+		if date == None:
+			print('e 3', date)
+			self.__cur.execute(f'''UPDATE events SET date=NULL
+								WHERE event_id={event_id}''')
+		if user_id:
+			print('e 4', user_id)
+			self.__cur.execute(f'''UPDATE users_event SET user_id={user_id}
+								WHERE event_id={event_id}''')
 
 
 	#Запрошення//////////////////////////////////////////////////////////////
