@@ -145,7 +145,7 @@ CREATE TABLE IF NOT EXISTS "users_event" (
 	"event_id" INTEGER NOT NULL,
 	"done" INTEGER DEFAULT 0 NOT NULL,
 	"user_id" INTEGER NOT NULL,
-	FOREIGN KEY ("event_id") REFERENCES "events" ("event_id"),
+	FOREIGN KEY ("event_id") REFERENCES "events" ("event_id") ON DELETE CASCADE,
 	FOREIGN KEY ("user_id") REFERENCES "users" ("user_id")
 );
 

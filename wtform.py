@@ -1,7 +1,8 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, SubmitField, BooleanField, PasswordField, SelectField
+from wtforms import StringField, SubmitField, BooleanField, PasswordField, SelectField, RadioField
 from wtforms.validators import DataRequired, Length, EqualTo, InputRequired, Regexp
 from wtforms.widgets.html5 import ColorInput
+from wtforms.fields.html5 import DateField
 
 
 """
@@ -86,3 +87,20 @@ class add_group_member_form(FlaskForm):
 class add_new_col_form(FlaskForm):
 	name = StringField('НАЗВА КОЛОНКИ:', validators=[DataRequired(message='Заповніть це поле')])
 	submit = SubmitField('Додати')
+
+class add_personal_event_form(FlaskForm):
+	name = StringField('НАЗВА ПОДІЇ:', validators=[DataRequired(message='Заповніть це поле')])
+	date = DateField('ДАТА НАСТАННЯ:')
+	submit = SubmitField('Підтвердити')
+
+class add_command_event_form(FlaskForm):
+	name = StringField('НАЗВА ПОДІЇ:', validators=[DataRequired(message='Заповніть це поле')])
+	user = RadioField("ПРИЗНАЧИТИ:", choices=[], coerce=str)
+	date = DateField('ДАТА НАСТАННЯ:')
+	submit = SubmitField('Підтвердити')
+
+class edit_command_event_form(FlaskForm):
+	name = StringField('НАЗВА ПОДІЇ:', validators=[DataRequired(message='Заповніть це поле')])
+	user = RadioField("ПРИЗНАЧИТИ:", choices=[], coerce=str)
+	date = DateField('ДАТА НАСТАННЯ:')
+	submit = SubmitField('Підтвердити')

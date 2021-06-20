@@ -2,7 +2,7 @@ import sqlite3
 from flask import Flask, render_template, g, redirect, url_for, request, flash, session, abort, jsonify, make_response
 from flask_session import Session
 import redis
-from datetime import timedelta
+from datetime import timedelta, datetime
 from re import search as research
 
 import config
@@ -135,8 +135,8 @@ def date():
 		date = db.to_timestamp(date)
 		flash(f'timestamp: {date}')
 
-		date = db.from_timestamp(date)
-		flash(f'output date: {date}')
+		#date = db.from_timestamp(date)
+		#flash(f'output date: {date}')
 
 	return render_template('date.html')
 
@@ -238,6 +238,85 @@ def personal_event():
 							user=user,
 							commands=commands,
 							events=events)
+
+
+@app.route('/home/event/<int:event_id>', methods=["POST", "GET"])
+def personal_event_edit(event_id):
+	'''
+	Сторінка редагування особистої події
+	'''
+	
+	if db.check_personal_event_owner(event_id):
+		user = db.get_user()
+
+		event = db.get_personal_event_info(event_id)
+		if event['date']:
+			event_date = datetime.fromtimestamp(event['date'])
+			form = wtf.add_personal_event_form(name=event['description'],
+											date=event_date)
+		else:
+			event_date = None
+			form = wtf.add_personal_event_form(name=event['description'])
+
+		form_dialog = wtf.del_dialog_form()
+
+		if request.method == "POST":
+			if form.date.data:
+				db.edit_personal_event(event_id, form.name.data,
+									db.to_timestamp(str(form.date.data)))
+			else:
+				db.edit_personal_event(event_id, form.name.data, None)
+			return redirect(url_for('personal_event'))
+
+		return render_template('edit_personal_event.html', user=user,
+								form=form, event_id=event_id,
+								form_dialog=form_dialog)
+	else:
+		abort(403)
+
+
+@app.route('/home/event/<int:event_id>/del', methods=["POST"])
+def del_personal_event(event_id):
+	'''
+	Функція видалення особистої події
+	'''
+
+	try:		
+		event = db.get_personal_event_info(event_id)
+		form_dialog = wtf.del_dialog_form()
+	except TypeError: #якщо подія уже видалена
+		abort(404)
+
+	if form_dialog.submit.data:
+		print('here!!!')
+		db.del_personal_event(event_id)
+		return redirect(url_for('personal_event'))
+
+	# при натисненні "НІ" у діалоговому вікні
+	if request.method == 'POST':
+		return redirect(url_for('personal_event_edit', event_id=event_id))
+
+	abort(404) # якщо користувач прописав шлях сам
+
+
+@app.route('/home/event/add', methods=["POST", "GET"])
+def add_personal_event():
+	"""
+	Сторінка додавання особистого завдання
+	"""
+
+	user = db.get_user()
+	form = wtf.add_personal_event_form()
+
+	if request.method == "POST":
+		name = form.name.data
+		data = form.date.data
+		if (name and not data) or (name and data):
+			db.add_personal_event(name, data)
+			return redirect(url_for('personal_event'))
+
+	return render_template('add_personal_event.html',
+							user=user, form=form)
 
 
 @app.route('/home/event/event_status', methods=["POST"])
@@ -367,7 +446,7 @@ def del_command(command_id):
 
 	if form_dialog.submit.data:
 		db.del_command(command_id)
-		return redirect(url_for('home'))
+		return redirect(url_for('/home_event'))
 
 	# при натисненні "НІ" у діалоговому вікні
 	if request.method == 'POST':
@@ -566,6 +645,103 @@ def command_event(command_id):
 							groups=groups,
 							events=events,
 							all_event=all_event)
+
+
+@app.route('/command/<command_id>/event/add', methods=["POST", "GET"])
+def add_command_event(command_id):
+	"""
+	Сторінка додавання командної події
+	"""
+
+	user = db.get_user_login()
+	is_owner = db.get_owner_rights(command_id, 'command')
+	if not is_owner:
+		abort(403)
+
+	command = db.get_command_info(command_id)
+	form = wtf.add_command_event_form()
+	form.user.choices = db.get_list_groups_owners(command_id, user)
+
+	if request.method == "POST":
+		if form.name.data and form.user.data:
+			name = form.name.data
+			user = form.user.data
+			date = form.date.data
+			if (name and user and not date) or (name and user and date):
+				db.add_event('command', command_id, user, name, date)
+				return redirect(url_for('command_event', command_id=command_id))
+
+	return render_template('add_command_event.html',
+							user=user, form=form, command=command)
+
+
+@app.route('/command/<command_id>/event/<event_id>/edit', methods=["POST", "GET"])
+def command_event_edit(command_id, event_id):
+	'''
+	Сторінка редагування події команди
+	'''
+
+	is_owner = db.get_owner_rights(command_id, 'command')
+	if not is_owner:
+		abort(403)
+
+	user = db.get_user_login()
+	command = db.get_command_info(command_id)
+	event = db.get_event(event_id)
+
+	if event['date']:
+		print('variant 1')
+		event_date = datetime.fromtimestamp(event['date'])
+		form = wtf.edit_command_event_form(name=event['description'],
+											date=event_date)
+	else:
+		print('variant 2')
+		event_date = None
+		form = wtf.edit_command_event_form(name=event['description'])
+
+	form.user.choices = db.get_list_groups_owners(command_id, user)
+	form.user.default = event['user_id']
+	#form.process()
+
+	#form.date.data = event_date
+	#form.name.data = event['description']
+
+	form_dialog = wtf.del_dialog_form()
+
+	if request.method == "POST":
+		if form.date.data:
+			date = datetime.strptime(str(form.date.data), '%Y-%m-%d').strftime('%s') # %H:%M:%S
+			db.edit_event(event_id, form.name.data, form.user.data, date)
+		else:
+			db.edit_event(event_id, form.name.data, form.user.data, None)
+
+	return render_template('edit_command_event.html', user=user, command=command,
+								form=form, event_id=event_id, form_dialog=form_dialog)
+
+
+@app.route('/command/<int:command_id>/event/<int:event_id>/del', methods=["POST"])
+def del_command_event(command_id, event_id):
+	'''
+	Функція видалення події команди
+	'''
+
+	try:		
+		event = db.get_event(event_id)
+		form_dialog = wtf.del_dialog_form()
+	except TypeError: #якщо подія уже видалена
+		abort(404)
+
+	if form_dialog.submit.data:
+		print('here1')
+		db.del_event(event_id)
+		return redirect(url_for('command_event', command_id=command_id))
+
+	# при натисненні "НІ" у діалоговому вікні
+	if request.method == 'POST':
+		return redirect(url_for('command_event_edit', command_id=command_id,
+												event_id=event_id))
+
+	abort(404) # якщо користувач прописав шлях сам
 
 
 @app.route('/command/<command_id>/edit_cols', methods=["POST", "GET"])
