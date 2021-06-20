@@ -4,4 +4,6 @@ DB_DATA = f'/db_file/data.sql' #відносний шлях до даних
 VIEWS = f'/db_file/views.sql' #відносний шлях до представлень
 DEBUG = True
 SECRET_KEY = '42'
-HOST = 'localhost'
+HOST = '0.0.0.0'
+REDIS_HOST = 'localhost'
+PORT = 8080

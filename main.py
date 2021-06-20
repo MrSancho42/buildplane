@@ -28,16 +28,15 @@ def get_path(f):
 
 app = Flask(__name__)
 
+app.secret_key = config.SECRET_KEY #	Встановлення секретного ключа із config.py
 app.config['SESSION_TYPE'] = 'redis' #	Встановлення типу сесії
-app.config['SECRET_KEY'] = config.SECRET_KEY #	Встановлення секретного ключа із config.py
 app.config['SESSION_PERMANENT'] = False #	Встановлення запам'ятовування сесії
-app.config['SESSION_USE_SIGNER'] = False #	Вимагання підпису сеансу?
-app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(days=31) #	Час життя сеансу
+app.config['SESSION_USE_SIGNER'] = True #	Вимагання підпису сеансу?
 app.config['SESSION_KEY_PREFIX'] = 'session:' #  Префікс для ключів сесії у Redis 
-app.config['SESSION_MEMCACHED'] = redis.Redis(host=config.HOST, port='6379', password=config.SECRET_KEY) # Підключення до Redis
+app.config['SESSION_REDIS'] = redis.from_url(f'redis://{config.REDIS_HOST}:6379') # Підключення до Redis
+app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(days=31) #	Час життя сеансу
 
 Session(app)
-
 
 
 db = None
@@ -798,6 +797,18 @@ def change_comm_col_status():
 	return make_response(jsonify({}, 200))
 
 
+#Спільне для груп і команд////////////////////////////////////////////////////
+@app.route('/<cg>/<id>/event/event_status', methods=["POST"])
+def event_status(cg, id):
+
+	data = request.get_json()
+
+	print(data['status'], data['event'])
+	db.set_event_status(data['status'], data['event'])
+
+	return make_response(jsonify({}, 200))
+
+
 #Групи////////////////////////////////////////////////////////////////////////
 def groups_ownership(command_id):
 	"""
@@ -1159,4 +1170,4 @@ def change_group_col_status():
 
 
 if __name__ == '__main__':
-	app.run(host=config.HOST, debug=config.DEBUG)
+	app.run(host=config.HOST, debug=config.DEBUG, port=config.PORT)

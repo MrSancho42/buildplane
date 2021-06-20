@@ -594,6 +594,16 @@ class db_work():
 		return self.event_order([dict(item) for item in res])
 
 
+	def set_event_status(self, status, event):
+		"""
+		Змінює статус події команди або групи
+		"""
+
+		self.__cur.execute(f'''UPDATE users_event
+								SET done = {int(status)}
+								WHERE event_id = {event} and user_id = {self.__user}''')
+
+
 	#Групи////////////////////////////////////////////////////////////////////
 	def get_groups(self, command_id):
 		"""
