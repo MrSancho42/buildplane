@@ -546,7 +546,7 @@ def command_task_status(command_id, mod):
 	return make_response(jsonify({}, 200))
 
 
-@app.route('/command/<command_id>/members')
+@app.route('/command/<command_id>/members', methods=["GET", "POST"])
 def command_members(command_id):
 	"""
 	Сторінка перегляду і запрошення користувачів до команди
