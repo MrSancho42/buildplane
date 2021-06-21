@@ -1,0 +1,34 @@
+{% extends "setting.html" %}
+
+{% block top_bar %}
+	<a class="bar__item top-bar__home" href="{{ url_for('home') }}"></a>
+    <a class="bar__item" href="{{ url_for('command_event', command_id=command.command_id) }}">
+		<span>{{ command.name }}</span>
+	</a>
+    <a class="bar__item" href="{{ url_for('group_event', group_id=group.group_id) }}">
+		<span>{{ group.name }}</span>
+	</a>
+{% endblock %}
+
+
+{% block work_area %}
+    <div class="list-mem-page">
+        <div class="event-description">
+            {{ event.description }}
+        </div>
+        {% if event_performers %}
+            {% for performer in event_performers %}
+                <div class="member-item member-item__top-row">
+                    {{ performer[1] }} | {{ performer[2]}}
+                    {% if performer[3] == 0 %}
+                        <div class="member-item__button">Не виконано</div>
+                    {% else %}
+                        <div class="member-item__button dialog-box__green-button">Виконано</div>
+                    {% endif %}               
+                </div>
+            {% endfor %}
+        {% endif %}
+        <a class="dialog-box__button dialog-box__green-button" style="padding-top: 10px;"
+            href="{{ url_for('group_event_edit', group_id=group.group_id, event_id=event_id) }}">Змінити</a>
+    </div>
+{% endblock %}
