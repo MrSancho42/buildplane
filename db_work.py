@@ -53,6 +53,17 @@ class db_work():
 		return datetime.fromtimestamp(int(value)).strftime('%d.%m.%Y')
 
 
+	@staticmethod
+	def from_timestamp_form(value):
+		"""
+		Приймає timestamp.
+
+		Повертає дату у форматі yyyy-mm-dd hh:mm:ss
+		"""
+		if value: print(datetime.fromtimestamp(value))
+		if value: return datetime.fromtimestamp(value)
+
+
 	def convert_task_date(self, col):
 		"""
 		Функція для конвертування дат завдань.
