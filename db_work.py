@@ -901,6 +901,24 @@ class db_work():
 		self.__cur.execute(f'''UPDATE {element}s SET cols_order = '{cols_list}'
 								WHERE {element}_id = {element_id}''')
 
+	#Завдання/////////////////////////////////////////////////////////////////
+	def add_personal_task(self, description, start_date, end_date, col_id):
+		'''
+		Додає подію користувача
+		'''
+
+		if start_date and end_date and start_date > end_date:
+			return False
+
+
+		self.__cur.execute(f'''INSERT INTO personal_tasks
+							VALUES(NULL, '{description}',
+								{db_work.to_timestamp(start_date)},
+								{db_work.to_timestamp(end_date)}, 0,
+								'{self.__user}', '{col_id}')''')
+		
+		return True
+
 
 	#Події////////////////////////////////////////////////////////////////////
 	def del_event(self, event_id):

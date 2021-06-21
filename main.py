@@ -375,6 +375,29 @@ def home_task_status():
 	return make_response(jsonify({}, 200))
 
 
+@app.route('/home/task/add', methods=["POST", "GET"])
+def add_personal_task():
+	form = wtf.add_personal_task_form()
+
+	cols = db.get_cols('user', session['user'])
+	cols = [(col['col_id'], col['name']) for col in cols]
+	form.cols.choices = cols
+
+	if request.method == "POST":
+		description = form.description.data
+		start_date = form.start_date.data
+		end_date = form.end_date.data
+		cols = form.cols.data
+
+		if not db.add_personal_task(description, start_date, end_date, cols):
+			flash('Дата початку повинна наставати до дати завершення')
+
+	user = db.get_user()
+	return render_template('add_personal_task.html',
+							user=user, form=form)
+
+
+
 #Команди//////////////////////////////////////////////////////////////////////
 @app.route('/command/add', methods=["POST", "GET"])
 def add_command():

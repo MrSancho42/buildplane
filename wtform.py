@@ -2,6 +2,7 @@ from flask_wtf import FlaskForm
 from wtforms import StringField, SubmitField, BooleanField, PasswordField, SelectField, RadioField
 from wtforms.validators import DataRequired, Length, EqualTo, InputRequired, Regexp
 from wtforms.widgets.html5 import ColorInput
+from wtforms.widgets import TextArea
 from wtforms.fields.html5 import DateField
 
 
@@ -104,3 +105,10 @@ class edit_command_event_form(FlaskForm):
 	user = RadioField("ПРИЗНАЧИТИ:", choices=[], coerce=str)
 	date = DateField('ДАТА НАСТАННЯ:')
 	submit = SubmitField('Підтвердити')
+
+class add_personal_task_form(FlaskForm):
+	description = StringField('Завдання:', validators=[DataRequired(message='Заповніть це поле')], widget=TextArea())
+	start_date = DateField('Дата початку')
+	end_date = DateField('Дата закінчення')
+	cols = SelectField('Колонка', choices=[], coerce=str, validate_choice=False)
+	submit = SubmitField('Підтвердити')	
