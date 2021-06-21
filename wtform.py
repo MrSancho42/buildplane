@@ -104,3 +104,9 @@ class edit_command_event_form(FlaskForm):
 	user = RadioField("ПРИЗНАЧИТИ:", choices=[], coerce=str)
 	date = DateField('ДАТА НАСТАННЯ:')
 	submit = SubmitField('Підтвердити')
+
+class group_event_form(FlaskForm):
+	name = StringField('НАЗВА ПОДІЇ:', validators=[DataRequired(message='Заповніть це поле')])
+	user = RadioField("ПРИЗНАЧИТИ:", choices=[], coerce=str)
+	date = DateField('ДАТА НАСТАННЯ:')
+	submit = SubmitField('Підтвердити')

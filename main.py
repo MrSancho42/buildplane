@@ -687,16 +687,13 @@ def command_event_edit(command_id, event_id):
 
 	user = db.get_user_login()
 	command = db.get_command_info(command_id)
-	event = db.get_event(event_id)
+	event = db.get_event(event_id, 'command')
 
 	if event['date']:
-		print('variant 1')
 		event_date = datetime.fromtimestamp(event['date'])
 		form = wtf.edit_command_event_form(name=event['description'],
 											date=event_date)
 	else:
-		print('variant 2')
-		event_date = None
 		form = wtf.edit_command_event_form(name=event['description'])
 
 	form.user.choices = db.get_list_groups_owners(command_id, user)
@@ -714,6 +711,7 @@ def command_event_edit(command_id, event_id):
 			db.edit_event(event_id, form.name.data, form.user.data, date)
 		else:
 			db.edit_event(event_id, form.name.data, form.user.data, None)
+		return redirect(url_for('command_event', command_id=command_id))
 
 	return render_template('edit_command_event.html', user=user, command=command,
 								form=form, event_id=event_id, form_dialog=form_dialog)
@@ -726,7 +724,7 @@ def del_command_event(command_id, event_id):
 	'''
 
 	try:		
-		event = db.get_event(event_id)
+		event = db.get_event(event_id, 'command')
 		form_dialog = wtf.del_dialog_form()
 	except TypeError: #якщо подія уже видалена
 		abort(404)
@@ -807,6 +805,41 @@ def event_status(cg, id):
 	db.set_event_status(data['status'], data['event'])
 
 	return make_response(jsonify({}, 200))
+
+
+
+@app.route('/event/<int:event_id>/info', methods=["POST", "GET"])
+def event_info(event_id):
+	'''
+	Сторінка перегляdу інформації про подію
+	'''
+
+	element = request.args.get('element')
+	element_id = request.args.get('id')
+	
+	if element == 'command':
+		if not db.get_owner_rights(element_id, 'command'):
+			abort(403)
+
+		user = db.get_user()
+		command = db.get_command_info(element_id)
+		event = db.get_event(event_id, 'command')
+		event_performers = db.get_event_performers(event_id, 'command')
+
+		return render_template('command_event_info.html', user=user, command=command,
+								event=event, event_performers=event_performers, event_id=event_id)
+
+	if element == 'group':
+		user = db.get_user()
+		if not db.get_edit_group_rights(user['user_id'], element_id):
+			abort(403)
+
+		group = db.get_group_info(element_id)
+		event = db.get_event(event_id, 'group')
+		event_performers = db.get_event_performers(event_id, 'group')
+		command = db.get_command_info(group['command_id'])
+		return render_template('group_event_info.html', user=user, command=command, event_id=event_id,
+								group=group, event=event, event_performers=event_performers)
 
 
 #Групи////////////////////////////////////////////////////////////////////////
@@ -1169,6 +1202,96 @@ def change_group_col_status():
 	return make_response(jsonify({}, 200))
 
 
+@app.route('/group/<group_id>/event/<event_id>/edit', methods=["POST", "GET"])
+def group_event_edit(group_id, event_id):
+	'''
+	Сторінка редагування події групи
+	'''
+
+	user = db.get_user()
+	group = db.get_full_group_info(group_id)
+	if not db.get_edit_group_rights(user['user_id'], group['group_id']):
+		abort(403)
+
+	command = db.get_command_info(group['command_id'])
+	event = db.get_event(event_id, 'group')
+
+	if event['date']:
+		event_date = datetime.fromtimestamp(event['date'])
+		form = wtf.group_event_form(name=event['description'],
+											date=event_date)
+	else:
+		event_date = None
+		form = wtf.group_event_form(name=event['description'])
+
+	form.user.choices = db.get_list_users_in_group(group_id)
+	form.user.default = event['user_id']
+
+	form_dialog = wtf.del_dialog_form()
+
+	if request.method == "POST":
+		if form.date.data:
+			date = datetime.strptime(str(form.date.data), '%Y-%m-%d').strftime('%s')
+			db.edit_event(event_id, form.name.data, form.user.data, date)
+		else:
+			db.edit_event(event_id, form.name.data, form.user.data, None)
+		return redirect(url_for('group_event', group_id=group_id))
+
+	return render_template('edit_group_event.html', user=user, command=command, group=group,
+								form=form, event_id=event_id, form_dialog=form_dialog)
+
+
+@app.route('/group/<int:group_id>/event/<int:event_id>/del', methods=["POST"])
+def del_group_event(group_id, event_id):
+	'''
+	Функція видалення події команди
+	'''
+
+	try:		
+		event = db.get_event(event_id, 'group')
+		form_dialog = wtf.del_dialog_form()
+	except TypeError: #якщо подія уже видалена
+		abort(404)
+
+	if form_dialog.submit.data:
+		print('here1')
+		db.del_event(event_id)
+		return redirect(url_for('group_event', group_id=group_id))
+
+	# при натисненні "НІ" у діалоговому вікні
+	if request.method == 'POST':
+		return redirect(url_for('group_event_edit', group_id_id=group_id,
+												event_id=event_id))
+
+	abort(404) # якщо користувач прописав шлях сам
+
+
+@app.route('/group/<int:group_id>/event/add', methods=["POST", "GET"])
+def add_group_event(group_id):
+	"""
+	Сторінка додавання командної події
+	"""
+
+	user = db.get_user()
+	group = db.get_full_group_info(group_id)
+	if not db.get_edit_group_rights(user['user_id'], group['group_id']):
+		abort(403)
+	
+	command = db.get_command_info(group['command_id'])
+	form = wtf.group_event_form()
+	form.user.choices = db.get_list_users_in_group(group_id)
+
+	if request.method == "POST":
+		if form.name.data and form.user.data:
+			name = form.name.data
+			user = form.user.data
+			date = form.date.data
+			if (name and user and not date) or (name and user and date):
+				db.add_event('group', group_id, user, name, date)
+				return redirect(url_for('group_event', group_id=group_id))
+
+	return render_template('add_group_event.html', group=group,
+							user=user, form=form, command=command)
 # Помилки/////////////////////////////////////////////////////////////////////
 @app.errorhandler(404)
 def page_not_found(error):

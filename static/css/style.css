@@ -363,7 +363,7 @@ h1,h2,h3,h4,h5,h6{font-size:inherit;font-weight: 400;}
 	background-color: var(--settings-delete-color);
 }
 .dialog-box__green-button{
-	background-color: var(--settings-submit-color);
+	background-color: var(--settings-submit-color) !important;
 }
 
 /* Головна сторінка та розміщення елементів на ній */
@@ -953,6 +953,14 @@ h1,h2,h3,h4,h5,h6{font-size:inherit;font-weight: 400;}
 	padding: 10px 20px;
 	gap: 20px;
 	flex-direction: column;
+}
+.event-description{
+	width: 100%;
+	align-self: left;
+	padding-left: 20px;
+	font-size: 22px;
+	word-wrap: break-word;
+	text-indent: 30px;
 }
 /*Список колонок у налаштуваннях*/
 .list-cols{

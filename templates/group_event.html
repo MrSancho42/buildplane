@@ -12,7 +12,7 @@
 
 {% block bar %}
 	{% if is_group_owner %}
-		<a href="" class="add-button">
+		<a href="{{ url_for('add_group_event', group_id=current_group.group_id) }}" class="add-button">
 			<span>Нова подія</span>
 			<span></span>
 		</a>
