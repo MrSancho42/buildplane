@@ -405,8 +405,10 @@ def edit_personal_task(task_id):
 	'''
 	Сторінка редагування особистого завдання
 	'''
-	
-	if not db.check_personal_task_owner(task_id):
+
+	task = db.get_personal_task_info(task_id)
+	print(task)
+	if not task:
 		abort(403)
 
 	cols = db.get_cols('user', session['user'])
@@ -414,8 +416,6 @@ def edit_personal_task(task_id):
 		abort(403)
 
 	user = db.get_user()
-
-	task = db.get_personal_task_info(task_id)
 
 	form = wtf.add_personal_task_form(
 		description=task['description'],

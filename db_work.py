@@ -964,29 +964,20 @@ class db_work():
 		return True
 
 
-	def check_personal_task_owner(self, task_id):
-		'''
-		Визначає, чи є користувач власником особистого завдання
-		'''
-
-		res = self.__cur.execute(f'''SELECT user_id
-									FROM v_personal_tasks
-									WHERE task_id = "{task_id}"''').fetchone()[0]
-		if res == self.__user:
-			return True
-		else:
-			return False
-
-
 	def get_personal_task_info(self, task_id):
 		'''
 		Дістає інформацію про конкретне особисте завдання
 		'''
 
-		res = dict(self.__cur.execute(f'''SELECT *
+		res = self.__cur.execute(f'''SELECT *
 									FROM v_personal_tasks
-									WHERE task_id = {task_id}''').fetchone())
+									WHERE task_id = {task_id}
+										and user_id = {self.__user}''').fetchone()
+		
+		if not res:
+			return False
 
+		res = dict(res)
 		res['start_date'] = db_work.from_timestamp_form(res['start_date'])
 		res['end_date'] = db_work.from_timestamp_form(res['end_date'])
 
