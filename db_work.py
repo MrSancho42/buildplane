@@ -1002,6 +1002,10 @@ class db_work():
 		return True
 
 
+	def del_personal_task(self, task_id):
+		self.__cur.execute(f'DELETE FROM personal_tasks WHERE task_id = {task_id}')
+
+
 	#Події////////////////////////////////////////////////////////////////////
 	def del_event(self, event_id):
 		"""

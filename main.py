@@ -407,7 +407,6 @@ def edit_personal_task(task_id):
 	'''
 
 	task = db.get_personal_task_info(task_id)
-	print(task)
 	if not task:
 		abort(403)
 
@@ -441,9 +440,20 @@ def edit_personal_task(task_id):
 							form_dialog=form_dialog)
 
 
-@app.route('/home/task/<int:task_id>/del', methods=["POST", "GET"])
+@app.route('/home/task/<int:task_id>/del', methods=["POST"])
 def del_personal_task(task_id):
-	return
+	task = db.get_personal_task_info(task_id)
+	if not task:
+		abort(403)
+	
+	form_dialog = wtf.del_dialog_form()
+
+	if form_dialog.submit.data:
+		db.del_personal_task(task_id)
+		return redirect(url_for('home'))
+
+	# при натисненні "НІ" у діалоговому вікні
+	return redirect(url_for('edit_personal_task', task_id=task_id))
 
 
 #Команди//////////////////////////////////////////////////////////////////////
