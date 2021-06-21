@@ -856,6 +856,7 @@ class db_work():
 
 		tasks = self.__cur.execute(f'''SELECT task_id FROM v_{element}_tasks
 									WHERE col_id = {col_id}''').fetchall()
+
 		if tasks:
 			for task in tasks:
 				task = task['task_id']
@@ -863,13 +864,24 @@ class db_work():
 
 		cols_list = self.__cur.execute(f'''SELECT cols_order from v_{element}_cols
 										WHERE {element}_id = {element_id}''').fetchone()[0]
-		cols_list = cols_list.replace(str(col_id) + ',', "")
-		if str(col_id) in cols_list:
+
+		if str(col_id) + ',' in cols_list:
+			cols_list = cols_list.replace(str(col_id) + ',', "")
+
+		elif ',' + str(col_id) in cols_list:
 			cols_list = cols_list.replace(',' + str(col_id), "")
 
-		self.__cur.execute(f'''UPDATE {element}s SET cols_order = '{cols_list}'
-								WHERE {element}_id = {element_id}''')
+		elif str(col_id) == cols_list:
+			cols_list = ""
 
+		if cols_list:
+			self.__cur.execute(f'''UPDATE {element}s SET cols_order = '{cols_list}'
+								WHERE {element}_id = {element_id}''')
+		else:
+			self.__cur.execute(f'''UPDATE {element}s SET cols_order = NULL
+								WHERE {element}_id = {element_id}''')
+		
+		
 		self.__cur.execute(f'DELETE FROM cols WHERE col_id = {col_id}')
 
 
@@ -882,7 +894,10 @@ class db_work():
 										WHERE {element}_id = {element_id}''').fetchone()[0]
 		self.__cur.execute(f'''INSERT INTO cols VALUES(NULL, '{col_name}')''')
 		col_id = self.__cur.execute('SELECT last_insert_rowid() from cols').fetchone()[0]
-		cols_list = cols_list + ',' + str(col_id)
+		if cols_list:
+			cols_list = cols_list + ',' + str(col_id)
+		else:
+			cols_list = str(col_id)
 		self.__cur.execute(f'''UPDATE {element}s SET cols_order = '{cols_list}'
 								WHERE {element}_id = {element_id}''')
 
