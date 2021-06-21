@@ -31,7 +31,11 @@
 
 {% block tab %}
 
-	<a href="">
+	{% if current_group %}
+		<a href=" {{ url_for('event_info', event_id=event.event_id, element='group', id=current_group.group_id) }} ">
+	{% elif command %}
+		<a href=" {{ url_for('event_info', event_id=event.event_id, element='command', id=command.command_id) }} ">
+	{% endif %}
 		<span class="event__doc"></span>
 		<p>
 			{{ event.description }}

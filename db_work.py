@@ -657,6 +657,24 @@ class db_work():
 		return res
 
 
+	def get_list_users_in_group(self, group_id):
+		"""
+		Дістає список коистувачів у групі
+
+		Повертає [(user_id, 'login - name')]
+		"""
+
+		users = self.__cur.execute(f'''SELECT user_id FROM v_group
+										WHERE group_id={group_id}''').fetchall()
+		
+		res = []
+		if users:
+			for user in users:
+				user_info = self.get_user_login(user['user_id'])
+				res.append((user['user_id'], user_info['login'] + ' - ' + user_info['name']))
+		return res
+
+
 	def get_group_info(self, group_id):
 		"""
 		Функція що дістає дані про групу
@@ -1018,7 +1036,7 @@ class db_work():
 								date=NULL WHERE event_id = {event_id}''')
 
 
-	def get_event(self, event_id):
+	def get_event(self, event_id, element):
 		'''
 		Дістає інформацію про подію команди/групи
 
@@ -1026,7 +1044,7 @@ class db_work():
 		'''
 
 		res = self.__cur.execute(f'''SELECT description, date, user_id
-									FROM v_command_events
+									FROM v_{element}_events
 									WHERE event_id = {event_id}''').fetchone()
 		return res
 
@@ -1053,6 +1071,22 @@ class db_work():
 			print('e 4', user_id)
 			self.__cur.execute(f'''UPDATE users_event SET user_id={user_id}
 								WHERE event_id={event_id}''')
+
+
+	def get_event_performers(self, event_id, element):
+		'''
+		Дістає виконавців події та дані про виконання
+
+		Повертає [{user_id, login, name, done}]
+		'''
+
+		res = []
+		users = self.__cur.execute(f'''SELECT user_id, done FROM v_{element}_events
+										WHERE event_id = {event_id}''').fetchall()
+		for user in users:
+			info = self.get_user_login(user['user_id'])
+			res.append([info['user_id'], info['login'], info['name'], user['done']])
+		return res
 
 
 	#Запрошення//////////////////////////////////////////////////////////////

@@ -111,4 +111,10 @@ class add_personal_task_form(FlaskForm):
 	start_date = DateField('Дата початку')
 	end_date = DateField('Дата закінчення')
 	cols = SelectField('Колонка', choices=[], coerce=str, validate_choice=False)
-	submit = SubmitField('Підтвердити')	
+	submit = SubmitField('Підтвердити')
+
+class group_event_form(FlaskForm):
+	name = StringField('НАЗВА ПОДІЇ:', validators=[DataRequired(message='Заповніть це поле')])
+	user = RadioField("ПРИЗНАЧИТИ:", choices=[], coerce=str)
+	date = DateField('ДАТА НАСТАННЯ:')
+	submit = SubmitField('Підтвердити')
