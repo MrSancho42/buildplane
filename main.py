@@ -1315,6 +1315,8 @@ def add_group_event(group_id):
 
 	return render_template('add_group_event.html', group=group,
 							user=user, form=form, command=command)
+
+
 # Помилки/////////////////////////////////////////////////////////////////////
 @app.errorhandler(404)
 def page_not_found(error):
