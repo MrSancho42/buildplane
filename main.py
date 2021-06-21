@@ -397,6 +397,51 @@ def add_personal_task():
 							user=user, form=form)
 
 
+@app.route('/home/task/<int:task_id>', methods=["POST", "GET"])
+def edit_personal_task(task_id):
+	'''
+	Сторінка редагування особистого завдання
+	'''
+	
+	if not db.check_personal_task_owner(task_id):
+		abort(403)
+
+	cols = db.get_cols('user', session['user'])
+	if not cols:
+		abort(403)
+
+	user = db.get_user()
+
+	task = db.get_personal_task_info(task_id)
+
+	form = wtf.add_personal_task_form(
+		description=task['description'],
+		start_date=task['start_date'],
+		end_date=task['end_date']
+	)
+
+	cols = [(col['col_id'], col['name']) for col in cols]
+	form.cols.choices = cols
+	form_dialog = wtf.del_dialog_form()
+
+	if request.method == "POST":
+		description = form.description.data
+		start_date = form.start_date.data
+		end_date = form.end_date.data
+		cols = form.cols.data
+
+		if not db.edit_personal_task(task_id, description, start_date, end_date, cols):
+			flash('Дата початку повинна наставати до дати завершення')
+
+	return render_template('edit_personal_task.html', user=user,
+							form=form, task_id=task['task_id'],
+							form_dialog=form_dialog)
+
+
+@app.route('/home/task/<int:task_id>/del', methods=["POST", "GET"])
+def del_personal_task(task_id):
+	return
+
 
 #Команди//////////////////////////////////////////////////////////////////////
 @app.route('/command/add', methods=["POST", "GET"])

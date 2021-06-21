@@ -949,6 +949,53 @@ class db_work():
 		return True
 
 
+	def check_personal_task_owner(self, task_id):
+		'''
+		Визначає, чи є користувач власником особистого завдання
+		'''
+
+		res = self.__cur.execute(f'''SELECT user_id
+									FROM v_personal_tasks
+									WHERE task_id = "{task_id}"''').fetchone()[0]
+		if res == self.__user:
+			return True
+		else:
+			return False
+
+
+	def get_personal_task_info(self, task_id):
+		'''
+		Дістає інформацію про конкретне особисте завдання
+		'''
+
+		res = dict(self.__cur.execute(f'''SELECT *
+									FROM v_personal_tasks
+									WHERE task_id = {task_id}''').fetchone())
+
+		res['start_date'] = db_work.from_timestamp_form(res['start_date'])
+		res['end_date'] = db_work.from_timestamp_form(res['end_date'])
+
+		return res
+
+
+	def edit_personal_task(self, task_id, description, start_date, end_date, col_id):
+		'''
+		Додає подію користувача
+		'''
+
+		if start_date and end_date and start_date > end_date:
+			return False
+
+		self.__cur.execute(f'''UPDATE  personal_tasks
+								SET description = "{description}",
+									start_date = {db_work.to_timestamp(start_date)},
+									end_date = {db_work.to_timestamp(end_date)},
+									col_id = {col_id}
+								WHERE task_id = {task_id}''')
+		
+		return True
+
+
 	#Події////////////////////////////////////////////////////////////////////
 	def del_event(self, event_id):
 		"""
