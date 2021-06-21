@@ -36,8 +36,10 @@ class db_work():
 		
 		Повертає timestamp
 		"""
-
-		return datetime.strptime(value, '%Y-%m-%d').strftime('%s')
+		if value:
+			return value.strftime('%s')
+		else:
+			return 'NULL'
 
 
 	@staticmethod
