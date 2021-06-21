@@ -380,6 +380,9 @@ def add_personal_task():
 	form = wtf.add_personal_task_form()
 
 	cols = db.get_cols('user', session['user'])
+	if not cols:
+		abort(403)
+
 	cols = [(col['col_id'], col['name']) for col in cols]
 	form.cols.choices = cols
 
