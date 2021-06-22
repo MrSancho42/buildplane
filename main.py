@@ -199,23 +199,27 @@ def home():
 	Головна сторінка користувача
 	"""
 
-	user = db.get_user()
+	try:
+		user = db.get_user()
 
-	commands = db.get_commands()
-	if commands:
-		for i in commands:
-			i['ownership'] = i['owner_id'] == session['user']
-			i.pop('owner_id')
+		commands = db.get_commands()
+		if commands:
+			for i in commands:
+				i['ownership'] = i['owner_id'] == session['user']
+				i.pop('owner_id')
 
-	cols = db.get_personal_tasks()
+		cols = db.get_personal_tasks()
 
-	invitations = db.get_incoming_invitation()
+		invitations = db.get_incoming_invitation()
 
-	return render_template('home.html',
-							user=user,
-							commands=commands,
-							cols=cols,
-							invitations=invitations)
+		return render_template('home.html',
+								user=user,
+								commands=commands,
+								cols=cols,
+								invitations=invitations)
+	
+	except sqlite3.ProgrammingError:
+		return redirect(url_for('command_members', command_id=command_id))	
 
 
 @app.route('/home/event')
@@ -224,20 +228,24 @@ def personal_event():
 	Cторінка подій користувача
 	"""
 
-	user = db.get_user()
+	try:
+		user = db.get_user()
 
-	commands = db.get_commands()
-	if commands:
-		for i in commands:
-			i['ownership'] = i['owner_id'] == session['user']
-			i.pop('owner_id')
+		commands = db.get_commands()
+		if commands:
+			for i in commands:
+				i['ownership'] = i['owner_id'] == session['user']
+				i.pop('owner_id')
 
-	events = db.get_personal_event()
+		events = db.get_personal_event()
 
-	return render_template('personal_event.html',
-							user=user,
-							commands=commands,
-							events=events)
+		return render_template('personal_event.html',
+								user=user,
+								commands=commands,
+								events=events)
+
+	except sqlite3.ProgrammingError:
+		return redirect(url_for('command_members', command_id=command_id))	
 
 
 @app.route('/home/event/<int:event_id>', methods=["POST", "GET"])
@@ -288,7 +296,6 @@ def del_personal_event(event_id):
 		abort(404)
 
 	if form_dialog.submit.data:
-		print('here!!!')
 		db.del_personal_event(event_id)
 		return redirect(url_for('personal_event'))
 
@@ -454,6 +461,56 @@ def del_personal_task(task_id):
 
 	# при натисненні "НІ" у діалоговому вікні
 	return redirect(url_for('edit_personal_task', task_id=task_id))
+
+
+@app.route('/home/sett/cols', methods=['POST', 'GET'])
+def edit_personal_cols():
+	'''
+	Сторінка редагування колонок користувача
+	'''
+
+	try:
+		user = db.get_user()
+
+		form = wtf.add_new_col_form()
+		cols = db.get_cols('user', session['user'])
+
+		if form.validate_on_submit():
+			db.add_col('user', form.name.data)
+			flash('Колонка успішно додана')
+			return redirect(url_for('edit_personal_cols'))	
+
+		return render_template('edit_personal_cols.html', user=user,
+								form=form, cols=cols)
+
+	except sqlite3.ProgrammingError:
+		return redirect(url_for('edit_personal_cols'))
+
+
+@app.route('/pers_col_del', methods=["POST"])
+def del_pers_col():
+	'''
+	Функція видалення особистої колонки
+
+	Використавується на сторінці редагування колонок команди
+	'''
+
+	data = request.get_json()
+	db.del_col('user', data['col_id'])
+	return make_response(jsonify({}, 200))
+
+
+@app.route('/pers_change_col_status', methods=["POST"])
+def change_pers_col_status():
+	'''
+	Функція зміни порядку особистої колонки
+
+	Використавується на сторінці редагування колонок команди
+	'''
+
+	data = request.get_json()
+	db.change_col_status('user', session['user'], data['col_id'], data['status'])
+	return make_response(jsonify({}, 200))
 
 
 #Команди//////////////////////////////////////////////////////////////////////
@@ -837,7 +894,7 @@ def edit_command_cols(command_id):
 			cols = db.get_cols('command', command_id)
 			
 			if form.validate_on_submit():
-				db.add_col('command', command_id, form.name.data)
+				db.add_col('command', form.name.data, command_id)
 				flash('Колонка успішно додана')
 				return redirect(url_for('edit_command_cols', command_id=command_id))	
 
@@ -859,7 +916,7 @@ def del_comm_col():
 	'''
 
 	data = request.get_json()
-	db.del_col('command', data['command_id'], data['col_id'])
+	db.del_col('command',  data['col_id'], data['command_id'])
 	return make_response(jsonify({}, 200))
 
 
@@ -1244,7 +1301,7 @@ def edit_group_cols(group_id):
 			cols = db.get_cols('group', group_id)
 			
 			if form.validate_on_submit():
-				db.add_col('group', group_id, form.name.data)
+				db.add_col('group', form.name.data, group_id)
 				flash('Колонка успішно додана')
 				return redirect(url_for('edit_group_cols', group_id=group_id))	
 
@@ -1266,7 +1323,7 @@ def del_group_col():
 	'''
 
 	data = request.get_json()
-	db.del_col('group', data['group_id'], data['col_id'])
+	db.del_col('group', data['col_id'], data['group_id'])
 	return make_response(jsonify({}, 200))
 
 
