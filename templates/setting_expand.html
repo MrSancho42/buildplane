@@ -5,7 +5,7 @@
 			<div class="logo"></div>
 			{% block top_bar %}
 			{% endblock %}
-			<a href="" class="bar__item user">
+			<a href="{{ url_for('edit_personal_cols') }}" class="bar__item user">
 				<span>{{ user.name }}</span>
 			</a>
 		</div>
@@ -19,7 +19,7 @@
 				<div style="min-height: 1px;"></div>
 			</div>
 		</div>
-		<div class="work-area" style="background-color: var(--light-color); overflow: scroll;">
+		<div class="work-area" style="background-color: var(--light-color); overflow-y: auto;">
 			{% block work_area %}
 			{% endblock %}
 		</div>

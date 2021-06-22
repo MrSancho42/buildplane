@@ -395,7 +395,7 @@ class db_work():
 				if cols['cols_order'] is not None:
 					cols = cols['cols_order'].split(',')
 					for col_id in cols:
-						self.del_col('command', command_id, col_id)
+						self.del_col('command', col_id, command_id)
 
 		self.__cur.execute(f'DELETE FROM commands WHERE command_id = {command_id}')
 
@@ -731,7 +731,7 @@ class db_work():
 				if cols['cols_order'] is not None:
 					cols = cols['cols_order'].split(',')
 					for col_id in cols:
-						self.del_col('group', group_id, col_id)
+						self.del_col('group', col_id, group_id)
 
 		self.__cur.execute(f'DELETE FROM groups WHERE group_id = {group_id}')
 
