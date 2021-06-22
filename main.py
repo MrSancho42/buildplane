@@ -584,7 +584,7 @@ def del_command(command_id):
 
 	if form_dialog.submit.data:
 		db.del_command(command_id)
-		return redirect(url_for('/home_event'))
+		return redirect(url_for('home'))
 
 	# при натисненні "НІ" у діалоговому вікні
 	if request.method == 'POST':
