@@ -199,23 +199,27 @@ def home():
 	Головна сторінка користувача
 	"""
 
-	user = db.get_user()
+	try:
+		user = db.get_user()
 
-	commands = db.get_commands()
-	if commands:
-		for i in commands:
-			i['ownership'] = i['owner_id'] == session['user']
-			i.pop('owner_id')
+		commands = db.get_commands()
+		if commands:
+			for i in commands:
+				i['ownership'] = i['owner_id'] == session['user']
+				i.pop('owner_id')
 
-	cols = db.get_personal_tasks()
+		cols = db.get_personal_tasks()
 
-	invitations = db.get_incoming_invitation()
+		invitations = db.get_incoming_invitation()
 
-	return render_template('home.html',
-							user=user,
-							commands=commands,
-							cols=cols,
-							invitations=invitations)
+		return render_template('home.html',
+								user=user,
+								commands=commands,
+								cols=cols,
+								invitations=invitations)
+	
+	except sqlite3.ProgrammingError:
+		return redirect(url_for('command_members', command_id=command_id))	
 
 
 @app.route('/home/event')
@@ -224,20 +228,24 @@ def personal_event():
 	Cторінка подій користувача
 	"""
 
-	user = db.get_user()
+	try:
+		user = db.get_user()
 
-	commands = db.get_commands()
-	if commands:
-		for i in commands:
-			i['ownership'] = i['owner_id'] == session['user']
-			i.pop('owner_id')
+		commands = db.get_commands()
+		if commands:
+			for i in commands:
+				i['ownership'] = i['owner_id'] == session['user']
+				i.pop('owner_id')
 
-	events = db.get_personal_event()
+		events = db.get_personal_event()
 
-	return render_template('personal_event.html',
-							user=user,
-							commands=commands,
-							events=events)
+		return render_template('personal_event.html',
+								user=user,
+								commands=commands,
+								events=events)
+
+	except sqlite3.ProgrammingError:
+		return redirect(url_for('command_members', command_id=command_id))	
 
 
 @app.route('/home/event/<int:event_id>', methods=["POST", "GET"])
@@ -288,7 +296,6 @@ def del_personal_event(event_id):
 		abort(404)
 
 	if form_dialog.submit.data:
-		print('here!!!')
 		db.del_personal_event(event_id)
 		return redirect(url_for('personal_event'))
 
