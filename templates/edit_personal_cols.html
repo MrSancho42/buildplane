@@ -1,0 +1,56 @@
+{% extends "setting_expand.html" %}
+
+{% block top_bar %}
+    <a class="bar__item top-bar__home" href="{{ url_for('home') }}"></a>
+{% endblock %}
+
+{% block left_bar %}
+    <div class="bar__item">
+        <a class="bar__item-name" href="{{ url_for('home') }}">
+            Загальні налаштування
+        </a>
+    </div>
+    <div class="bar__item" style="background-color: var(--settings-example-color);">
+        <a class="bar__item-name" href="">
+            Керування колонками
+        </a>
+    </div>
+{% endblock %}
+
+{% block work_area %}
+    <form action="", method="POST" class="form-members">
+        {{ form.hidden_tag() }}
+        {{ form.name.label() }}
+        <div class="form-members__row">
+            {{ form.name() }}
+            {{ form.submit(class="button") }}
+        </div>
+        {% for message in get_flashed_messages() %}
+            <span style="color: var(--success);">{{ message }}</span>
+        {% endfor %}
+    </form>
+
+    {% if cols %}
+        <div class="list-cols">
+            {% for item in cols %}
+                <div class="cols-item">
+                    <div class="cols-item__buttn-box" data-col={{item.col_id}}>
+                        <a class="cols-item__buttn cols-item__js-up" href=""></a>
+                        <a class="cols-item__buttn cols-item__js-down" href=""></a>
+                    </div>
+                    <div class="cols-item__name">
+                        <span>{{ item.name }}</span>
+                        <a class="cols-item__del-buttn cols-item__js-delete"
+                        data-col={{item.col_id}}
+                        href=""></a>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+{% endblock %}
+
+{% block script %}
+    <script src="{{ url_for('static', filename='script/col_del_personal.js') }}"></script>
+    <script src="{{ url_for('static', filename='script/col_up_down_personal.js') }}"></script>
+{% endblock %}

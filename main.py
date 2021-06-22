@@ -398,6 +398,56 @@ def add_personal_task():
 
 
 
+@app.route('/home/sett/cols', methods=['POST', 'GET'])
+def edit_personal_cols():
+	'''
+	Сторінка редагування колонок користувача
+	'''
+
+	try:
+		user = db.get_user()
+
+		form = wtf.add_new_col_form()
+		cols = db.get_cols('user', session['user'])
+
+		if form.validate_on_submit():
+			db.add_col('user', form.name.data)
+			flash('Колонка успішно додана')
+			return redirect(url_for('edit_personal_cols'))	
+
+		return render_template('edit_personal_cols.html', user=user,
+								form=form, cols=cols)
+
+	except sqlite3.ProgrammingError:
+		return redirect(url_for('edit_personal_cols'))
+
+
+@app.route('/pers_col_del', methods=["POST"])
+def del_pers_col():
+	'''
+	Функція видалення особистої колонки
+
+	Використавується на сторінці редагування колонок команди
+	'''
+
+	data = request.get_json()
+	db.del_col('user', data['col_id'])
+	return make_response(jsonify({}, 200))
+
+
+@app.route('/pers_change_col_status', methods=["POST"])
+def change_pers_col_status():
+	'''
+	Функція зміни порядку особистої колонки
+
+	Використавується на сторінці редагування колонок команди
+	'''
+
+	data = request.get_json()
+	db.change_col_status('user', session['user'], data['col_id'], data['status'])
+	return make_response(jsonify({}, 200))
+
+
 #Команди//////////////////////////////////////////////////////////////////////
 @app.route('/command/add', methods=["POST", "GET"])
 def add_command():
@@ -779,7 +829,7 @@ def edit_command_cols(command_id):
 			cols = db.get_cols('command', command_id)
 			
 			if form.validate_on_submit():
-				db.add_col('command', command_id, form.name.data)
+				db.add_col('command', form.name.data, command_id)
 				flash('Колонка успішно додана')
 				return redirect(url_for('edit_command_cols', command_id=command_id))	
 
@@ -801,7 +851,7 @@ def del_comm_col():
 	'''
 
 	data = request.get_json()
-	db.del_col('command', data['command_id'], data['col_id'])
+	db.del_col('command',  data['col_id'], data['command_id'])
 	return make_response(jsonify({}, 200))
 
 
@@ -1186,7 +1236,7 @@ def edit_group_cols(group_id):
 			cols = db.get_cols('group', group_id)
 			
 			if form.validate_on_submit():
-				db.add_col('group', group_id, form.name.data)
+				db.add_col('group', form.name.data, group_id)
 				flash('Колонка успішно додана')
 				return redirect(url_for('edit_group_cols', group_id=group_id))	
 
@@ -1208,7 +1258,7 @@ def del_group_col():
 	'''
 
 	data = request.get_json()
-	db.del_col('group', data['group_id'], data['col_id'])
+	db.del_col('group', data['col_id'], data['group_id'])
 	return make_response(jsonify({}, 200))
 
 

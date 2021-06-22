@@ -846,7 +846,7 @@ class db_work():
 			return False
 
 
-	def del_col(self, element, element_id, col_id):
+	def del_col(self, element, col_id, element_id=False):
 		"""
 		Видаляє одну колонку
 
@@ -854,7 +854,14 @@ class db_work():
 		та id колонки
 		"""
 
-		tasks = self.__cur.execute(f'''SELECT task_id FROM v_{element}_tasks
+		if not element_id:
+			element_id = self.__user
+
+		if element == 'user':
+			tasks = self.__cur.execute(f'''SELECT task_id FROM v_personal_tasks
+									WHERE col_id = {col_id}''').fetchall()
+		else:
+			tasks = self.__cur.execute(f'''SELECT task_id FROM v_{element}_tasks
 									WHERE col_id = {col_id}''').fetchall()
 
 		if tasks:
@@ -885,10 +892,13 @@ class db_work():
 		self.__cur.execute(f'DELETE FROM cols WHERE col_id = {col_id}')
 
 
-	def add_col(self, element, element_id, col_name):
+	def add_col(self, element, col_name, element_id=False):
 		"""
 		Додає колонку
 		"""
+
+		if not element_id:
+			element_id = self.__user
 
 		cols_list = self.__cur.execute(f'''SELECT cols_order from v_{element}_cols
 										WHERE {element}_id = {element_id}''').fetchone()[0]
@@ -912,7 +922,7 @@ class db_work():
 
 		cols_list = self.__cur.execute(f'''SELECT cols_order from v_{element}_cols
 										WHERE {element}_id = {element_id}''').fetchone()[0].split(',')
-		
+
 		replace = True
 		i = 0
 		while i < len(cols_list):
@@ -944,6 +954,7 @@ class db_work():
 		cols_list = ','.join(cols_list)
 		self.__cur.execute(f'''UPDATE {element}s SET cols_order = '{cols_list}'
 								WHERE {element}_id = {element_id}''')
+
 
 	#Завдання/////////////////////////////////////////////////////////////////
 	def add_personal_task(self, description, start_date, end_date, col_id):
